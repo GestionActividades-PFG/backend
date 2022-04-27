@@ -65,7 +65,7 @@ if(!$this->session->has_userdata('coordinador')){
                                     <tr>
                                         <td>
                                             <?php
-                                            echo '<a href="'.base_url().'/index.php/Coordinador/menuCrearActividad">Crear actividad</a>'
+                                            echo '<a href="'.base_url().'index.php/Coordinador/menuCrearActividad">Crear actividad</a>'
                                             ?>
                                         </td>
 
@@ -73,7 +73,7 @@ if(!$this->session->has_userdata('coordinador')){
                                     <tr>
                                         <td>
                                             <?php
-                                            echo '<a href="'.base_url().'/index.php/Coordinador/menuModificarActividad">Gestionar actividades</a>'
+                                            echo '<a href="'.base_url().'index.php/Coordinador/menuModificarActividad">Gestionar actividades</a>'
                                             ?>
                                         </td>
 
@@ -81,7 +81,7 @@ if(!$this->session->has_userdata('coordinador')){
                                     <tr>
                                         <td>
                                             <?php
-                                            echo '<a href="'.base_url().'/index.php/Coordinador/menuAsignarActividades">Asignar categoria a actividades</a>'
+                                            echo '<a href="'.base_url().'index.php/Coordinador/menuAsignarActividades">Asignar categoria a actividades</a>'
                                             ?>
 
                                         </td>
@@ -89,7 +89,7 @@ if(!$this->session->has_userdata('coordinador')){
                                     <tr>
                                         <td>
                                             <?php
-                                            echo '<a href="'.base_url().'/index.php/Coordinador/mostrarAlumnosApuntados">Mirar alumnos inscritos</a>'
+                                            echo '<a href="'.base_url().'index.php/Coordinador/mostrarAlumnosApuntados">Mirar alumnos inscritos</a>'
                                             ?>
 
                                         </td>
@@ -111,7 +111,7 @@ if(!$this->session->has_userdata('coordinador')){
                                     <tr>
                                         <td>
                                             <?php
-                                            echo '<a href="'.base_url().'/index.php/Coordinador/menuMomentos">Gestionar Momentos</a>'
+                                            echo '<a href="'.base_url().'index.php/Coordinador/menuMomentos">Gestionar Momentos</a>'
                                             ?>
                                         </td>
                                     </tr>
