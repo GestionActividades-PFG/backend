@@ -17,7 +17,7 @@
         <div class="alert alert-info">
             <p>En este proceso, se crearan las tablas en la base de datos necesarias para hacer funcionar el programa.</p>
         </div>
-        <a href="<?php echo base_url()?>index.php/Instalacion/Instalacion2" class="btn btn-success">Siguiente</a>
+        <a href="<?php echo base_url()?>index.php/Instalacion/FileInstalation" class="btn btn-success">Siguiente</a>
         <div align="left">
             <p>Progreso: 0%</p>
         </div>

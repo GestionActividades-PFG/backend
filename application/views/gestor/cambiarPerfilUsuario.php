@@ -44,7 +44,7 @@
             <a href="<?php echo base_url()?>index.php/Gestor/SesionGestor" class="btn btn-success menu-buttons" role="button">Inicio</a>
             <a href="<?php echo base_url()?>index.php/Gestor/GestionarPerfiles" class="btn btn-success menu-buttons" role="button">Gestionar tipos de perfil</a>
             <a href="<?php echo base_url()?>index.php/Gestor/GestionarPerfilesUsuarios" class="btn btn-success menu-buttons" role="button">Asignar perfiles a usuarios</a>
-            <a href="" class="btn btn-success menu-buttons" role="button">Cerrar sesión</a>
+            <a href="<?php echo base_url()?>index.php/Sesion/cerrarSesion" class="btn btn-success menu-buttons" role="button">Cerrar sesión</a>
         </aside>
         <article class="col-md-9 articulo">
             <div class="form-group">

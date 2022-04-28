@@ -17,7 +17,7 @@
         <div>
             <p>Bienvenido al proceso de instalación del programa de las Actividades EVG.</p>
             <p>Este programa es una ampliacion del programa de las Incidencias de Escuela Virgen de Guadalupe. Con lo cual, para instalar este programa, necesitas instalar primero el de las Incidencias.</p>
-            <a href="Instalacion/Instalacion1" class="btn btn-success">Siguiente</a>
+            <a href="<?php echo base_url()?>index.php/Instalacion/Instalacion1" class="btn btn-success">Siguiente</a>
         </div>
     </div>
 

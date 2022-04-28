@@ -22,6 +22,16 @@
             $this->obtenerDatos();
         }
 
+        function cerrarSesion() {
+            session_start();
+
+            $_SESSION = null;
+            
+            session_destroy();
+
+            redirect(base_url()."index.php");
+        }
+
         function obtenerDatos()
         {
             //Recogemos los datos del formulario

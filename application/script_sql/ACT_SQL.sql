@@ -1,3 +1,7 @@
+/**
+	Fecha: 28/04/2022
+*/
+
 CREATE TABLE `ACT_Momentos` (
 	`idMomento` TINYINT unsigned NOT NULL AUTO_INCREMENT,
 	`nombre` VARCHAR(60) NOT NULL UNIQUE,

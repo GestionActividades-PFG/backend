@@ -13,9 +13,9 @@
     <div class="col-md-6"><img src="<?= base_url()?>assets/imagenes/logotipo.png"> </div>
     <div class="col-md-6"><h1>INSTALACIÓN</h1></div>
     <div class="col-md-12">
-        <h3>Crear perfil de coordinador de actividades</h3>
+        <h3>Creación de datos de ejemplo</h3>
         <div>
-            <p>Ahora se creara el perfil de coordinador de actividades</p>
+            <p>Se va a hacer una inserción de datos de ejemplo para tí...</p>
             <a href="<?php echo base_url()?>index.php/Instalacion/Instalacion3" class="btn btn-success">Siguiente</a>
             <div>
                 <p>Progreso: 60%</p>
