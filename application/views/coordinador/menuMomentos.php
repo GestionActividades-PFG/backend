@@ -249,7 +249,7 @@
                                 }
 
                             }
-                            $sql_momentos = "SELECT * FROM act_momento";
+                            $sql_momentos = "SELECT * FROM act_momentos";
                             $query_mom = $this->db->query($sql_momentos);
                             if($query_mom->num_rows()){
                                 echo '<table class="table table-striped">';

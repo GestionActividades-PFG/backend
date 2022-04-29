@@ -205,7 +205,7 @@
                 <div class="form-group">
                     <?php
 
-                    $sql = "SELECT * FROM act_momento WHERE idMomento = ".$_GET['momento'];
+                    $sql = "SELECT * FROM act_momentos WHERE idMomento = ".$_GET['momento'];
                     $query = $this->db->query($sql);
                     $fila = $query->row();
 

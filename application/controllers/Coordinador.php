@@ -634,6 +634,4 @@ class Coordinador extends CI_Controller
     }
 
 
-
-
 }

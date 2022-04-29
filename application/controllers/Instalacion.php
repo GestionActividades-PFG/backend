@@ -53,6 +53,7 @@ class Instalacion extends CI_Controller
         foreach ($lineas as $linea) {
             // Nos la saltamos si es un comentario o similares...
             if (substr($linea, 0, 2) == '--' || $linea == '' || $linea == "/*" || $linea == "*/") continue;
+            //if (substr($linea, 0, 2) == '/*') continue;
 
             // Añadimos la linea
             $templine .= $linea;

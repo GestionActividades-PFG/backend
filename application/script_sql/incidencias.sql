@@ -23,9 +23,13 @@ CREATE TABLE IF NOT EXISTS profesores(
 
 /* TABLA 2 - ETAPAS*/
 CREATE TABLE IF NOT EXISTS etapas(
-  codEtapa CHAR(5) PRIMARY KEY,
-  nombre VARCHAR(30) NOT NULL,
+  idEtapa TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  codEtapa CHAR(5) NOT NULL UNIQUE,
+  nombre VARCHAR(40) NOT NULL UNIQUE,
   coordinador TINYINT UNSIGNED DEFAULT NULL,
+
+  CONSTRAINT PK_idEtapa PRIMARY KEY(idEtapa),
+
   CONSTRAINT fk_etapas_profesores FOREIGN KEY (coordinador) REFERENCES profesores(idUsuario)
 );
 
@@ -42,14 +46,18 @@ CREATE TABLE IF NOT EXISTS secciones(
 
 
 /* TABLA 4-ALUMNOS */
-CREATE TABLE  IF NOT EXISTS alumnos(
-  nia CHAR (7) PRIMARY KEY,
+CREATE TABLE IF NOT EXISTS alumnos(
+  idAlumno INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  nia CHAR (7) NOT NULL UNIQUE,
   nombreCompleto VARCHAR(50) NOT NULL,
   telefono VARCHAR(9) NOT NULL,
   sexo CHAR(1) NOT NULL,
-  idSeccion CHAR(6) NOT NULL ,
+  idSeccion CHAR(6) NOT NULL,
   numPartes tinyint(4) DEFAULT NULL,
-  CONSTRAINT fk_secciones_alumnos  FOREIGN KEY (idSeccion) REFERENCES secciones(idSeccion)
+
+  CONSTRAINT PK_idAlumno PRIMARY KEY(idAlumno),
+
+  CONSTRAINT fk_secciones_alumnos FOREIGN KEY (idSeccion) REFERENCES secciones(idSeccion)
 );
 
 /*TABLA 5 - PROFESORES-SECCION*/
@@ -165,82 +173,122 @@ CREATE TABLE IF NOT EXISTS gestion(
 );
 
 /**
-  === TABLAS DE ACTIVIDADES ==
+--  ========================== /!\============================= 
+--                    __...--~~~~~-._   _.-~~~~~--...__
+--                //               `V'               \\ 
+--              //                 |                 \\ 
+--              //__...--~~~~~~-._  |  _.-~~~~~~--...__\\ 
+--            //__.....----~~~~._\ | /_.~~~~----.....__\\
+--            ====================\\|//====================
+--                                `---`
+--                  *** TABLAS DE ACTIVIDADES ***
+--  ========================== /!\=============================
 */
 
-/*
-    B.D arreglada...
+/**
+	Fecha: 28/04/2022
 */
-CREATE TABLE IF NOT EXISTS act_momento(
-	idMomento tinyint(3) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	nombreMomento varchar(25) NOT NULL
+
+CREATE TABLE IF NOT EXISTS ACT_Momentos (
+	idMomento TINYINT unsigned NOT NULL AUTO_INCREMENT,
+	nombre VARCHAR(60) NOT NULL UNIQUE,
+	ultimoCelebrado CHAR(5),
+	fechaInicio_Inscripcion TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	fechaFin_Inscripcion TIMESTAMP NOT NULL DEFAULT current_timestamp(),
+	CONSTRAINT PK_momentos_idMomento PRIMARY KEY (`idMomento`)
 );
 
-CREATE TABLE IF NOT EXISTS act_categorias(
-	idCategoria char(1) PRIMARY KEY,
-  nombreCategoria varchar(35) NOT NULL
+CREATE TABLE IF NOT EXISTS `ACT_Actividades` (
+	`idActividad` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`sexo` CHAR(2) NULL default NULL check(sexo = 'M' OR sexo = 'F' OR sexo = 'MX'),
+	`nombre` VARCHAR(60) NOT NULL,
+	`esIndividual` BIT NOT NULL,
+	`idMomento` TINYINT unsigned NOT NULL,
+	`numMaxParticipantes` TINYINT unsigned NULL,
+	`fechaInicio_Inscripcion` TIMESTAMP NULL DEFAULT current_timestamp(),
+	`fechaFin_Inscripcion` TIMESTAMP NULL DEFAULT current_timestamp(),
+	`created_at` TIMESTAMP NOT NULL default now(),
+	`updated_at` TIMESTAMP NOT NULL default now(),
+	`material` VARCHAR(100) NULL,
+	`descripcion` VARCHAR(200) NULL,
+	`idResponsable` TINYINT unsigned NOT NULL,
+	`tipo_Participacion` CHAR(1) NOT NULL check(tipo_Participacion = 'C' OR tipo_Participacion = 'G'),
+
+	CONSTRAINT PK_actividades_idActividad PRIMARY KEY (`idActividad`),
+
+	CONSTRAINT fk_ACT_Actividades_idMomento FOREIGN KEY (idMomento) REFERENCES ACT_Momentos(idMomento) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Actividades_idResponsable FOREIGN KEY (idResponsable) REFERENCES profesores(idUsuario) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS act_cursos(
-  codCurso tinyint(3) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  nombreCurso varchar(20) NOT NULL,
-  idCategoria char(1) NOT NULL,
-  CONSTRAINT fk_cursos_categorias FOREIGN KEY (idCategoria) REFERENCES act_categorias(idCategoria) ON DELETE CASCADE ON UPDATE CASCADE
+CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Actividad` (
+	`idEstadisticaAlumno` TINYINT unsigned NOT NULL AUTO_INCREMENT,
+	`idActividad` TINYINT unsigned NOT NULL,
+	`idEtapa` TINYINT unsigned NOT NULL,
+	`idMomento` TINYINT unsigned NOT NULL,
+	`created_at` TIMESTAMP NOT NULL default now(),
+	`updated_at` TIMESTAMP NOT NULL default now(),
+	`anioEscolar` CHAR(5) NULL,
+	`total_Inscripciones` SMALLINT unsigned NOT NULL,
+	CONSTRAINT PK_estadisticasActividad PRIMARY KEY (`idEstadisticaAlumno`),
+	CONSTRAINT fk_ACT_Estadisticas_Actividades_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Estadisticas_Actividades_idEtapa FOREIGN KEY (idEtapa) REFERENCES etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Estadisticas_Actividades_idMomento FOREIGN KEY (idMomento) REFERENCES ACT_Momentos(idMomento) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS act_actividad(
-    idActividad tinyint(7) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    nombreActividad varchar(35) NOT NULL,
-    monitor varchar(50) NULL,
-    sexo char(1) NULL,
-    concurso char(1) NOT NULL,
-    urlBases varchar(255) NULL,
-    fechaInicio date NOT NULL,
-    fechaFin date NOT NULL,
-    maxClase tinyint(1) NOT NULL,
-    tipoAct char(1) NOT NULL,
-    momento tinyint(3) UNSIGNED NOT NULL,
-    CONSTRAINT fk_actividad_momento FOREIGN KEY (momento) REFERENCES act_momento(idMomento) ON DELETE CASCADE ON UPDATE CASCADE
+
+CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Totales` (
+	`idEstadisticaTotal` TINYINT unsigned NOT NULL AUTO_INCREMENT,
+	`idEtapa` TINYINT unsigned NOT NULL,
+	`idMomento` TINYINT unsigned NOT NULL,
+	`created_at` TIMESTAMP NOT NULL default now(),
+	`updated_at` TIMESTAMP NOT NULL default now(),
+	`anioEscolar` CHAR(5) NULL,
+	`total_Alumnos` SMALLINT unsigned NOT NULL,
+	CONSTRAINT PK_ACT_idEstadisticaTotal PRIMARY KEY (`idEstadisticaTotal`),
+	CONSTRAINT fk_ACT_Estadisticas_Totales_idActividad FOREIGN KEY (idMomento) REFERENCES ACT_Estadisticas_Actividad(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Estadisticas_Totales_idEtapa FOREIGN KEY (idEtapa) REFERENCES etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS act_individual_al(
-    idActividad tinyint(7) UNSIGNED NOT NULL,
-    NIA char(7) NOT NULL,
-    CONSTRAINT pk_act_individual_al PRIMARY KEY (idActividad, NIA),
-    CONSTRAINT fk_act_individual_actividad FOREIGN KEY (idActividad) REFERENCES act_actividad(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_act_individual_nia FOREIGN KEY (NIA) REFERENCES alumnos(nia) ON DELETE CASCADE ON UPDATE CASCADE
+
+
+CREATE TABLE IF NOT EXISTS `ACT_Actividades_Etapas` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	`idEtapa` TINYINT unsigned NOT NULL,
+	CONSTRAINT PK_ACT_idActividad_idEtapa PRIMARY KEY (`idActividad`, `idEtapa`)
 );
 
-CREATE TABLE IF NOT EXISTS act_grupo(
-    idActividad tinyint(7) UNSIGNED NOT NULL PRIMARY KEY,
-    alumnos char(1) NOT NULL,
-    CONSTRAINT fk_grupo_actividad FOREIGN KEY (idActividad) REFERENCES act_actividad(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+ALTER TABLE ACT_Actividades_Etapas ADD CONSTRAINT fk_ACT_Actividades_Etapas_idAlumno FOREIGN KEY ACT_Actividades_Etapas(idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE ACT_Actividades_Etapas ADD CONSTRAINT fk_ACT_Actividades_Etapas_idActividad FOREIGN KEY ACT_Actividades_Etapas(idEtapa) REFERENCES etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
+CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Secciones` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	`idSeccion` CHAR(5) NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP NOT NULL default now(),
+
+	CONSTRAINT PK_ACT_Inscriben_idActividad_idSeccion PRIMARY KEY (`idActividad`, `idSeccion`),
+
+	CONSTRAINT fk_ACT_Inscriben_Secciones_idSeccion FOREIGN KEY (idSeccion) REFERENCES secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Inscriben_Secciones_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS act_insc_grupo(
-    numGrupo tinyint(7) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    idActividad tinyint(7) UNSIGNED NOT NULL,
-    idSeccion char(6) NOT NULL,
-    CONSTRAINT fk_insc_grupo_actividad FOREIGN KEY (idActividad) REFERENCES act_grupo(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_insc_grupo_seccion FOREIGN KEY (idSeccion) REFERENCES secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE
+
+CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Alumnos` (
+	`idAlumno` INT unsigned NOT NULL,
+	`idActividad` TINYINT unsigned NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP NOT NULL default now(),
+
+	CONSTRAINT PK_ACT_idAlumno PRIMARY KEY (`idAlumno`, `idActividad`),
+
+	CONSTRAINT fk_ACT_Inscriben_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES alumnos(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Inscriben_Alumnos_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS act_detalle_al_grupo(
-    numGrupo tinyint(7) UNSIGNED NOT NULL,
-    nia char(7) NOT NULL,
-    CONSTRAINT pk_act_detalle_grupo PRIMARY KEY (numGrupo,nia),
-    CONSTRAINT fk_detalle_numGrupo FOREIGN KEY (numGrupo) REFERENCES act_insc_grupo(numGrupo) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_detalle_nia FOREIGN KEY (nia) REFERENCES alumnos(nia) ON DELETE CASCADE ON UPDATE CASCADE
-    
-);
 
-CREATE TABLE IF NOT EXISTS act_actividad_cat(
-    idActividad tinyint(7) UNSIGNED NOT NULL,
-    idCategoria char(1) NOT NULL,
-    CONSTRAINT pk_actividad_cat PRIMARY KEY (idActividad,idCategoria),
-    CONSTRAINT fk_actividad_actividad_categoria FOREIGN KEY (idActividad) REFERENCES act_actividad(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT fk_actividad_act_cat FOREIGN KEY (idCategoria) REFERENCES act_categorias(idCategoria) ON DELETE CASCADE ON UPDATE CASCADE
-);
+
+
+
+-- nada que ver
 
 CREATE TABLE IF NOT EXISTS perfiles(
     idPerfil tinyint(3) UNSIGNED AUTO_INCREMENT PRIMARY KEY,

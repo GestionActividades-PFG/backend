@@ -214,7 +214,7 @@ if(!$this->session->has_userdata('coordinador')){
                     $sql_tabla = "SELECT act_actividad.nombreActividad,act_categorias.*,act_actividad.idActividad
                                     FROM act_actividad_cat INNER JOIN act_categorias
                                         ON act_actividad_cat.idCategoria=act_categorias.idCategoria
-                                        INNER JOIN act_actividad
+                                        INNER JOIN act_actividades
                                         ON act_actividad.idActividad=act_actividad_cat.idActividad";
 
                     $query_tabla = $this->db->query($sql_tabla);

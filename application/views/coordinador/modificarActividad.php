@@ -216,7 +216,7 @@
             <div class="col-sm-8 col-md-8" id="cuerpo">
                 <h3>Modificar actividad</h3>
                 <?php
-                    $sql = "SELECT * FROM act_actividad WHERE idActividad = ".$_GET['actividad'];
+                    $sql = "SELECT * FROM act_actividades WHERE idActividad = ".$_GET['actividad'];
                     $query_actividad = $this->db->query($sql);
                     $fila = $query_actividad->row();
                 ?>
@@ -352,7 +352,7 @@
                         </div>
                         <label>Momento en el que se celebra la actividad*</label>
                         <?php
-                            $this->db->select('*')->from('act_momento');
+                            $this->db->select('*')->from('act_momentos');
                             $query_momento = $this->db->get();
 
                             echo '<select name="momento" class="form-control">';

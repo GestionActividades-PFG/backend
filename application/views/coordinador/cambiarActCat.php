@@ -206,7 +206,7 @@
                     <p>ATENCIÓN: Cuando cambies le des al botón de asignar categorias, se borrarán las inscripciones de los alumnos de todas las categorías de la actividad en cuestión</p>
                 </div>
                 <?php
-                    $sql_actividad = "SELECT * FROM act_actividad WHERE idActividad = ".$_GET['actividad'];
+                    $sql_actividad = "SELECT * FROM act_actividades WHERE idActividad = ".$_GET['actividad'];
                     $query_actividad = $this->db->query($sql_actividad);
                     $fila_act = $query_actividad->row();
                 ?>

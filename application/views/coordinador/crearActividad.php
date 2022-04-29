@@ -299,7 +299,7 @@
                         </div>
                         <label>Momento en el que se celebra la actividad *</label>
                         <?php
-                            $this->db->select('*')->from('act_momento');
+                            $this->db->select('*')->from('act_momentos');
                             $query_momento = $this->db->get();
 
                             $momentos = array();

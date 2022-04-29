@@ -77,10 +77,7 @@ class Gestor extends CI_Controller {
             else{
                 redirect(base_url()."index.php/Gestor?error=sesion");
             }
-
-
         }
-
     }
 
     public function crearPerfil(){
@@ -192,5 +189,39 @@ class Gestor extends CI_Controller {
         else{
             echo $correcto;
         }
+    }
+
+    /**
+     * Función de ejemplo...
+     */
+    public function crearProfesor() {
+
+        $data = array(
+            'nombre' => $this->input->get('nombre'),
+            'pass' => $this->input->get('pass')
+            //'pass2' => $this->input->post('pass2')
+        );
+
+        if(!empty($data["nombre"] && !empty($data["pass"]))) {
+
+            $contra = password_hash($data['pass'], PASSWORD_DEFAULT);
+
+            $profesor = "INSERT INTO `profesores` (`usuario`, `correo`, `nombre`, `pass`, `profesor`, `gestor`,"
+                . " `tutor`, `coordinador`, `baja_temporal`) VALUES"
+                . " ('$data[nombre]', '$data[nombre]@evg', '$data[nombre]', '$contra', 1, 0, 1, 1, 0);";
+
+            $this->db->query($profesor);
+
+            //Crear un perfil nuevo...
+
+            $lastInsert = $this->db->insert_id();
+
+            $perfil = "INSERT INTO perfiles_profesor(idUsuario, idPerfil) VALUES ($lastInsert, 1);";
+
+            $this->db->query($perfil);
+
+            redirect(base_url() . "index.php/Gestor/SesionGestor");
+        }
+
     }
 }

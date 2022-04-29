@@ -230,7 +230,7 @@
                         echo '</div>';
                     }
 
-                    $sql_actividades = "SELECT * FROM act_actividad";
+                    $sql_actividades = "SELECT * FROM act_actividades";
                     $query_actividades = $this->db->query($sql_actividades);
                     if($query_actividades->num_rows()){
                         echo '<table class="table table-striped">';
