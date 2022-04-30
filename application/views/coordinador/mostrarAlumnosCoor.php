@@ -205,7 +205,7 @@ if(!$this->session->has_userdata('coordinador')){
 
                 <?php
 
-                $sql = "SELECT * FROM act_momento";
+                $sql = "SELECT * FROM act_momentos";
                 $query = $this->db->query($sql);
 
                 echo form_open('Coordinador/crearPDFAlumnos');

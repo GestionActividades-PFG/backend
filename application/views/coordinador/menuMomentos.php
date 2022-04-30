@@ -262,7 +262,7 @@
                                 foreach($query_mom->result() as $fila){
                                     echo '<tr>';
                                     echo '<td>';
-                                    echo $fila->nombreMomento;
+                                    echo $fila->nombre;
                                     echo '</td>';
                                     echo '<td><a href="modificarMomento?momento='.$fila->idMomento.'">Modificar</a></td>';
                                     echo '<td><a href="paginaBorrarMomento?momento='.$fila->idMomento.'">Borrar</a></td>';

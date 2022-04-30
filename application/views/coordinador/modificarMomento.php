@@ -210,9 +210,9 @@
                     $fila = $query->row();
 
                     echo form_open('Coordinador/modificarMomentoProceso');
-                    echo form_hidden('idMomento',$_GET['momento']);
+                    echo form_hidden('idMomento', $_GET['momento']);
                     echo form_label('Nombre del momento','momento','');
-                    echo form_input('momento',$fila->nombreMomento,'class="form-control" required');
+                    echo form_input('momento', $fila->nombre,'class="form-control" required');
                     echo form_submit('','Modificar momento','class="btn btn-success buttons-separator"');
                     echo form_close();
                     ?>

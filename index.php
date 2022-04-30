@@ -313,3 +313,9 @@ switch (ENVIRONMENT)
  * And away we go...
  */
 require_once BASEPATH.'core/CodeIgniter.php';
+
+
+
+//Establecer COORS
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: *");

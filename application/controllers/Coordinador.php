@@ -633,5 +633,10 @@ class Coordinador extends CI_Controller
         }
     }
 
+    public function obtenerMomentos() {
+
+        echo json_encode($this->ModelMomentos->getMomentos()->result());
+    }
+
 
 }
