@@ -1,0 +1,408 @@
+/* ---------------------------------------------------
+    ESTILOS GENERALES
+----------------------------------------------------- */
+*
+{
+	margin: 0;
+	padding: 0;
+}
+
+body
+{
+	background: #f7fcfe;
+}
+
+/* ---------------------------------------------------
+    INSTALACIÓN
+----------------------------------------------------- */
+.instalacion
+{
+	width: 100%;
+	height: 70vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* ---------------------------------------------------
+    ESTILOS HEADER
+----------------------------------------------------- */
+
+header
+{
+	background: #0079B6;
+	color: white;
+	height: 10vh;
+	display: flex;
+	flex-direction: row;
+}
+
+header div
+{
+	display: flex;
+	align-items: center;
+}
+
+header div:nth-child(2)
+{
+	display: flex;
+	justify-content: flex-end;
+}
+
+#logo-evg
+{
+	height: auto;
+	width: 13rem;
+	margin-right: 2rem;
+}
+
+header h3
+{
+	font-weight: bolder!important;
+}
+
+#profile_picture
+{
+	width: 4rem;
+	height: auto;
+}
+
+#icon-grid
+{
+	font-size: 1.25rem;
+	margin-right: .75rem;
+}
+
+#icon-logout
+{
+	font-size: 1.25rem;
+	margin-left: .75rem;
+}
+
+#icon-grid:hover,
+#icon-logout:hover
+{
+	color: lightgray;
+}
+
+/* ---------------------------------------------------
+    ESTILOS AJAX
+----------------------------------------------------- */
+
+.sugerenciaAjax
+{
+	display: none;
+	background-color: lightgray;
+	padding: 0;
+	overflow: hidden;
+	border-radius: 10px;
+	margin-top: 1.5rem;
+}
+
+.sugerenciaAjax button
+{
+	background-color: lightgray;
+	border: none;
+	height: auto;
+	color: black;
+	font-weight: bolder;
+	box-shadow: none;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+.sugerenciaAjax button:hover, .sugerenciaAjax button:focus
+{
+	background-color: #a0a0a0;
+}
+
+/* ---------------------------------------------------
+    FORMULARIOS
+----------------------------------------------------- */
+
+form
+{
+	text-align: center;
+	width: 25rem;
+	margin-bottom: unset!important;
+}
+
+label
+{
+	font-weight: bolder;
+}
+
+input[type="text"], select
+{
+	background: lightgray;
+}
+
+input[type="text"]:focus, select:focus
+{
+	background: white;
+}
+
+input[type="submit"]
+{
+	background-color: #00FF08;
+	font-weight: bolder;
+	color: #fff;
+}
+
+input[type="submit"]:disabled
+{
+	background-color: lightgray;
+}
+
+h3 > span
+{
+	font-weight: 400;
+}
+
+/*Spinner*/
+.reload
+{
+	cursor: unset;
+	display: none;
+}
+
+.import
+{
+	display: initial;
+}
+
+/* ---------------------------------------------------
+    GOOGLE
+----------------------------------------------------- */
+
+#main
+{
+	display: table-cell;
+	height: 100%;
+	vertical-align: middle;
+	text-align: center;
+}
+
+#logo
+{
+	width: 6rem;
+	height: 100%;
+}
+
+.gbtn
+{
+	transition: all .5s ease;
+	color: #000;
+	border: 3px solid black;
+}
+
+.gbtn:hover
+{
+	color: #fff;
+	background-color: #C82333;
+	border-color: #C82333;
+}
+
+/* Carta que presenta el icono del usuario e información adicional */
+#cartaGoogle
+{
+	margin: auto;
+	width: 25rem;
+	height: auto;
+}
+
+.card-img-top
+{
+	width: 9.5rem;
+	height: auto;
+	border-radius: 100%;
+	margin: 1rem auto;
+}
+
+/* ---------------------------------------------------
+    GRID DE APLICACIONES
+----------------------------------------------------- */
+
+#gridAplicaciones
+{
+	padding: 2rem;
+	justify-content: center;
+}
+
+#gridAplicaciones a div
+{
+	margin: 3rem auto;
+}
+
+/* Diseño de la tarjeta */
+.box
+{
+	margin: 2.45rem;
+	padding-left: unset!important;
+	padding-right: unset!important;
+	height: 20rem;
+	text-align: center;
+	border-radius: 10px;
+	cursor: pointer;
+	-webkit-transition: 200ms ease-in-out;
+	-o-transition: 200ms ease-in-out;
+	transition: 200ms ease-in-out;
+	-webkit-box-shadow: 0 0 15px rgba(0,0,0,0.3);
+	        box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.box:hover
+{
+	margin-top: 10px;
+	-webkit-box-shadow: 0 0 5px rgba(0,0,0,0.7);
+			box-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+
+.box h1
+{
+	color: #fff;
+	padding: 30px;
+	margin-top: unset!important;
+	border-radius: 10px;
+	text-align: center;
+	font-weight: 450;
+	font-size: 1.65rem;
+	background: rgba(0,0,0,0.8);
+	-webkit-box-shadow: 0 0 30px rgba(0,0,0,0.7);
+	        box-shadow: 0 0 30px rgba(0,0,0,0.8);
+}
+
+.one
+{
+	background-color: #eee;
+}
+
+.poster
+{
+	width: 130px;
+	height: 130px;
+	border-radius: 100px;
+}
+
+.p1
+{
+	background: #2b5876;  /* fallback for old browsers */
+	background: -webkit-linear-gradient(to right, #4e4376, #2b5876);  /* Chrome 10-25, Safari 5.1-6 */
+	background: -webkit-gradient(linear, left top, right top, from(#4e4376), to(#2b5876));
+	background: -webkit-linear-gradient(left, #4e4376, #2b5876);
+	background: -o-linear-gradient(left, #4e4376, #2b5876);
+	background: linear-gradient(to right, #4e4376, #2b5876); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+	-webkit-box-shadow: 0 0 20px darkblue;
+	        box-shadow: 0 0 20px darkblue;
+}
+
+#icono-app
+{
+	width: 100%;
+	height: 100%;
+	border-radius: 100%;
+	overflow: hidden;
+	object-fit: cover;
+}
+
+.icono-app
+{
+	width: 10rem;
+	height: auto;
+	margin-bottom: 3rem;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 100%;
+	overflow: hidden;
+	object-fit: cover;
+}
+
+/* Filas de gestión de contenido */
+.fila
+{
+	margin-bottom: .5rem;
+}
+
+.fila h3
+{
+	display: inline-block;
+	vertical-align: middle;
+	font-weight: bolder;
+	margin-right: 1rem;
+}
+
+/* ---------------------------------------------------
+    DISPOSICIÓN DEL CONTENIDO EN LAS PÁGINAS
+----------------------------------------------------- */
+
+.general
+{
+	padding: 2.5rem;
+}
+
+.gestiones
+{
+	display: flex;
+	justify-content: center;
+}
+
+.gestiones > div:nth-child(2)
+{
+	margin-left: 3rem;
+}
+
+.gestion-apps
+{
+	display: flex;
+	flex-direction: column;
+	margin-top: 1.5rem;
+	min-height: 30vh;
+}
+
+.operaciones
+{
+	margin: .5rem 0;
+}
+
+.operaciones span
+{
+	font-size: 1.15rem;
+}
+
+.operaciones button
+{
+	margin-left: .45rem;
+}
+
+/*Iconos Font-Awesome*/
+.curso-info
+{
+	cursor: unset!important;
+}
+
+/* ---------------------------------------------------
+    MODALES
+----------------------------------------------------- */
+.modal-open
+{
+	padding-right: unset!important;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+@media screen and (max-width: 1024px)
+{
+	#principal .row h3
+	{
+		font-size: 1rem;
+	}
+
+	.one a h1
+	{
+		font-size: 1rem;
+	}
+
+
+}
