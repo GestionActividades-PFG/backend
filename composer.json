@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
 	"description": "Implantación de Aplicaciones EVG",
 	"name": "gestion/evg",
 	"type": "project",
@@ -6,6 +7,21 @@
 	"license": "GNU General Public License 3.0",
 	"require": {
 		"php": ">=5.3.7"
+=======
+	"description": "The CodeIgniter framework",
+	"name": "codeigniter/framework",
+	"type": "project",
+	"homepage": "https://codeigniter.com",
+	"license": "MIT",
+	"support": {
+		"forum": "http://forum.codeigniter.com/",
+		"wiki": "https://github.com/bcit-ci/CodeIgniter/wiki",
+		"irc": "irc://irc.freenode.net/codeigniter",
+		"source": "https://github.com/bcit-ci/CodeIgniter"
+	},
+	"require": {
+		"php": ">=5.2.4"
+>>>>>>> 20654f4d7c4be7a554905fffd9203310815f5c2b
 	},
 	"suggest": {
 		"paragonie/random_compat": "Provides better randomness in PHP 5.x"
