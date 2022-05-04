@@ -97,7 +97,7 @@ class M_General extends CI_Model
 	 * 
 	 * @return void
 	 */
-	public function modificar($tabla,$datos,$id,$nombreId)
+	public function modificar($tabla, $datos, $id, $nombreId)
 	{
 		foreach($datos as $indice => $valor)
 			$this -> bd -> set($indice, $valor);

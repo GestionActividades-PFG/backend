@@ -32,7 +32,6 @@ class C_GestionActividades extends RestController
 
         if($this->session->userdata('sess_logged_in') == 0 || !$idUsuario=$this->M_General->obtenerIdUsuario($_SESSION['email']))
 		{
-			$this->response(null, 403);
 		}
 		else
 		{
@@ -48,16 +47,93 @@ class C_GestionActividades extends RestController
 				redirect('Grid');
 		}
 	}
+
+    private $momentos = null;
 	
 
-    //Momentos y blabla
+    /**
+     * Método que obtiene todos los momentos disponibles.
+     */
     public function getMomentos_get() {
 
 		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
 		
-		$momentos = ["Navidad", "Momento 1", "Momento 2"];
+		$this->momentos = [
+			array(
+				"id" => "1",
+				"nombre" => "Navidad"
+			),
+			array(
+				"id" => "2",
+				"nombre" => "Momento 1"
+			),
+			array(
+				"id" => "3",
+				"nombre" => "Momento 2"
+			)
+		];
 
-		$this->response($momentos, 200);
+		$this->response($this->momentos, 200);
+    }
+
+    /**
+     * Método que añade un nuevo momento
+     */
+    public function addMomento_post() {
+
+		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
+		
+		$this->momentos = [
+			array(
+				"id" => "1",
+				"nombre" => "Navidad"
+			),
+			array(
+				"id" => "2",
+				"nombre" => "Momento 1"
+			),
+			array(
+				"id" => "3",
+				"nombre" => "Momento 2"
+			)
+		];
+
+		$this->response($this->momentos, 200);
+    }
+
+    /**
+     * Método que actualiza un momento
+     */
+    public function updateMomento_put() {
+
+		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
+       
+        $id = $this -> put('id');
+        $datos[] = $this -> put("datos");
+
+        if($id != null) {
+
+            //Consulta SQL update
+            $this -> M_General -> modificar("Momentos", $datos, $id, "id");
+
+        } else 
+		    $this->response($this->momentos, 402);
+
+		
+
+		$this->response($this->momentos, 200);
+    }
+
+    /**
+     * Método que elimina un momento
+     */
+    public function removeMomento_delete() {
+
+		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
+		
+        //Eliminar por ID
+
+		$this->response($this->momentos, 200);
     }
 	
 	//Ejemplo HTTP...
