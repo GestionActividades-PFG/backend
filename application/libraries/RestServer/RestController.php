@@ -6,10 +6,10 @@ use Exception;
 use RecursiveArrayIterator;
 use RecursiveIteratorIterator;
 use stdClass;
-require APPPATH . 'libraries/Format.php';
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
+
+require_once APPPATH . 'libraries/RestServer/Format.php';
 
 /**
  * CodeIgniter Rest Controller
@@ -304,7 +304,7 @@ class RestController extends \CI_Controller
         }
 
         // Load the language file
-        $this->lang->load('rest_controller', $language, false, true, __DIR__.'/../');
+        $this->lang->load('rest_controller', $language, false, true, __DIR__.'/../../');
 
         // Initialise the response, request and rest objects
         $this->request = new stdClass();

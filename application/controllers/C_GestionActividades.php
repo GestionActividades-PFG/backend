@@ -5,7 +5,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 use chriskacerguis\RestServer\RestController;
 
-require APPPATH . 'libraries/RestController.php';
+require APPPATH . 'libraries/RestServer/RestController.php';
 
 
 /**
@@ -32,6 +32,8 @@ class C_GestionActividades extends RestController
 
         if($this->session->userdata('sess_logged_in') == 0 || !$idUsuario=$this->M_General->obtenerIdUsuario($_SESSION['email']))
 		{
+            //Decir al cliente que tiene que reedirigir al login
+            $this->response(null, 200);
 		}
 		else
 		{
@@ -48,32 +50,23 @@ class C_GestionActividades extends RestController
 		}
 	}
 
-    private $momentos = null;
 	
+    /**
+     * ================================
+     *          MOMENTOS
+     * ================================
+    */
 
     /**
      * Método que obtiene todos los momentos disponibles.
      */
     public function getMomentos_get() {
 
-		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
-		
-		$this->momentos = [
-			array(
-				"id" => "1",
-				"nombre" => "Navidad"
-			),
-			array(
-				"id" => "2",
-				"nombre" => "Momento 1"
-			),
-			array(
-				"id" => "3",
-				"nombre" => "Momento 2"
-			)
-		];
+        $campo = ["idMomento", "nombre"];
 
-		$this->response($this->momentos, 200);
+		$momentos = $this -> M_General -> seleccionar("ACT_Momentos", $campo);
+
+		$this->response($momentos, 200);
     }
 
     /**
@@ -81,24 +74,21 @@ class C_GestionActividades extends RestController
      */
     public function addMomento_post() {
 
-		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
-		
-		$this->momentos = [
-			array(
-				"id" => "1",
-				"nombre" => "Navidad"
-			),
-			array(
-				"id" => "2",
-				"nombre" => "Momento 1"
-			),
-			array(
-				"id" => "3",
-				"nombre" => "Momento 2"
-			)
-		];
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
 
-		$this->response($this->momentos, 200);
+        //Decodificamos el JSON
+        $data = json_decode($json);
+
+
+        //Insertamos los datos pasados por el cliente...
+        $this -> M_General -> insertar('ACT_Momentos', 
+            array(
+                'nombre' => $data->nombre
+            ));
+		
+        
+		$this->response(null, 200);
     }
 
     /**
@@ -129,12 +119,108 @@ class C_GestionActividades extends RestController
      */
     public function removeMomento_delete() {
 
-		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
 		
+        $this -> M_General -> borrar("ACT_Momentos", array("idMomento", ));
         //Eliminar por ID
+
+		$this->response(null, 200);
+    }
+
+    /**
+     * ================================
+     *          ACTIVIDADES
+     * ================================
+    */
+
+     /**
+     * Método que obtiene todas las actividades disponibles.
+     */
+    public function getActividades_get() {
+
+        $campo = ["idMomento", "nombre"];
+
+        $idMomento = $this->input->get("idMomento");
+
+        $actividades = array(
+            "idMomento" => $idMomento,
+            "nombre" => "No hay nombre",
+            "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento))
+        );
+
+		$this->response($actividades, 200);
+    }
+
+    /**
+     * Método que añade una nueva actividad
+     */
+    public function addActividades_post() {
+
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
+
+        //Decodificamos el JSON
+        $data = json_decode($json);
+
+
+        //Insertamos los datos pasados por el cliente...
+        $this -> M_General -> insertar('ACT_Actividades', 
+            array(
+                'nombre' => $data->nombre,
+                "idMomento" => $data->idMomento,
+                "idResponsable" => $data->idResponsable,
+                "tipo_Participacion" => $data->tipo_Participacion
+            ));
+		
+        
+		$this->response(null, 200);
+    }
+
+    /**
+     * Método que actualiza una actividad
+     */
+    public function updateActividad_put() {
+
+       
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
+
+        //Decodificamos el JSON
+        $data = json_decode($json);
+        
+        $id = $data->id;
+        $datos = array(
+            'nombre' => $data->nombre,
+            "idMomento" => $data->idMomento,
+            "idResponsable" => $data->idResponsable,
+            "tipo_Participacion" => $data->tipo_Participacion
+        );
+
+        if($id != null) {
+
+            //Consulta SQL update
+            $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
+
+        } else 
+		    $this->response($this->momentos, 402);
+
+		
 
 		$this->response($this->momentos, 200);
     }
+
+    /**
+     * Método que elimina un momento
+     */
+    public function removeActividad_delete() {
+
+		
+        $this -> M_General -> borrar("ACT_Actividades", array("idMomento", ));
+        //Eliminar por ID
+
+		$this->response(null, 200);
+    }
+
+
 	
 	//Ejemplo HTTP...
 	/*public function users_get()
