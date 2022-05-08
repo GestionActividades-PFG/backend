@@ -9,10 +9,13 @@
 				<header class="col-12">
 					<div class="col-12">
 						<?php echo '<a href="'.base_url().'main/"><img id="logo-evg" src="'.base_url().'uploads/iconos/escudo-evg.png" alt="Escudo EVG" class="img-fluid"/></a>'; ?>
-						<h3>Instalación del Sistema</h3>
+						<h3>Instalación automática del Sistema</h3>
 					</div>
 				</header>
 			</div>
+			<?php
+				header("Refresh: 3;url=". base_url() . "index.php/C_Instalacion/install");
+			?>
 			<div class="row">
 				<div class="instalacion">
 					<div class="spinner-border text-primary" role="status"></div>

@@ -137,8 +137,8 @@ $config['auth_source'] = 'ldap';
 | requests etc), set to TRUE;
 |
 */
-$config['allow_auth_and_keys'] = true;
-$config['strict_api_and_auth'] = true; // force the use of both api and auth before a valid api request is made
+$config['allow_auth_and_keys'] = false;
+$config['strict_api_and_auth'] = false; // force the use of both api and auth before a valid api request is made
 
 /*
 |--------------------------------------------------------------------------
@@ -602,7 +602,7 @@ $config['allow_any_cors_domain'] = true;
 | e.g. $config['allowed_origins'] = ['http://www.example.com', 'https://spa.example.com']
 |
 */
-$config['allowed_cors_origins'] = ["http://localhost:4200"];
+$config['allowed_cors_origins'] = ["http://localhost:4200", "http://localhost"];
 
 /*
 |--------------------------------------------------------------------------

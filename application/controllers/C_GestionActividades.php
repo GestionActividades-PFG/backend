@@ -13,6 +13,8 @@ require APPPATH . 'libraries/RestServer/RestController.php';
  * 
  * Clase que contiene todos los métodos necesario para la aplicación de Gestión de Actividades.
  * 
+ * Esta clase no contiene las vistas de CodeIgniter, se accede a los métodos mediante AJAX.
+ * 
  * @author Sergio Matamoros Delgado
  */
 class C_GestionActividades extends RestController 
@@ -30,25 +32,42 @@ class C_GestionActividades extends RestController
 
 		$data['google_login_url'] = $this -> google -> get_login_url();
 
-        if($this->session->userdata('sess_logged_in') == 0 || !$idUsuario=$this->M_General->obtenerIdUsuario($_SESSION['email']))
+        if($this->session->userdata('sess_logged_in') == 0 || !$this->M_General->obtenerIdUsuario($_SESSION['email']))
 		{
             //Decir al cliente que tiene que reedirigir al login
-            $this->response(null, 200);
+            $this->response(false, 200, false);
 		}
-		else
-		{
-        	$acceso = false;
-
-			$aplicaciones = $this -> M_General -> seleccionar('Aplicaciones a', 'distinct(a.url), a.nombre, a.icono', "idUsuario=".$idUsuario,['Aplicaciones_Perfiles ap','Perfiles_Usuarios pu'], ['a.idAplicacion= ap.idAplicacion','pu.idPerfil=ap.idPerfil'], ['join','join']);
-			foreach($aplicaciones as $valor)
-				if( $valor['nombre'] == 'GestionEVG' || $valor['nombre'] == 'AdministracionEVG' )
-					$acceso = true;
-
-            //Acceso fallido
-			if(!$acceso)
-				redirect('Grid');
-		}
+        $this->response(true, 200, true);
 	}
+
+    /**
+     * Método que hace re-check
+     */
+    public function index_get() {}
+
+
+	/**
+	 * logout
+	 * 
+	 * Función que permite cerrar sesión.
+     * 
+     * (CAMBIAR)
+	 *
+	 * @return void
+	 */
+	public function logout_get()
+	{
+		session_destroy();
+		unset($_SESSION['access_token']);
+		$session_data = array
+		(
+			'sess_logged_in' => 0
+		);
+		$this -> session -> set_userdata($session_data);
+
+        $this->response($session_data, 200, false);
+	}
+
 
 	
     /**
@@ -141,9 +160,15 @@ class C_GestionActividades extends RestController
 
         $idMomento = $this->input->get("idMomento");
 
+        $nombreMomento = "
+            SELECT ACT_Momentos.nombre FROM ACT_Actividades LEFT JOIN ACT_Momentos
+            ON ACT_Actividades.idMomento = ACT_Momentos.idMomento
+            WHERE ACT_Actividades.idMomento = 1
+            GROUP BY act_momentos.nombre";
+
         $actividades = array(
             "idMomento" => $idMomento,
-            "nombre" => "No hay nombre",
+            "nombre" => $this -> db -> query($nombreMomento)->result()[0]->nombre,
             "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento))
         );
 
