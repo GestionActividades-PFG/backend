@@ -156,19 +156,23 @@ class C_GestionActividades extends RestController
      */
     public function getActividades_get() {
 
-        $campo = ["idMomento", "nombre"];
+        $campo = ["idActividad", "nombre"];
 
         $idMomento = $this->input->get("idMomento");
 
-        $nombreMomento = "
-            SELECT ACT_Momentos.nombre FROM ACT_Actividades LEFT JOIN ACT_Momentos
-            ON ACT_Actividades.idMomento = ACT_Momentos.idMomento
-            WHERE ACT_Actividades.idMomento = 1
-            GROUP BY act_momentos.nombre";
-
+        $nombreMomento = $this->M_General->seleccionar(
+            "ACT_Actividades", //Tabla
+            "ACT_Momentos.nombre", //Campos
+            "ACT_Actividades.idMomento = $idMomento", //Condición
+            ["ACT_Momentos"], //Tabla relación
+            ["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
+            ['left'], //Tipo relación
+            "ACT_Momentos.nombre" //Agrupar
+        );
+            
         $actividades = array(
             "idMomento" => $idMomento,
-            "nombre" => $this -> db -> query($nombreMomento)->result()[0]->nombre,
+            "nombre" => $nombreMomento[0]["nombre"],
             "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento))
         );
 

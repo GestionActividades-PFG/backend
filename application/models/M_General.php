@@ -120,7 +120,7 @@ class M_General extends CI_Model
 	 *  
 	 * @return void
 	 */
-	public function seleccionar($tabla, $campos, $condicion = null,$tabla_relacion = null, $relacion = null, $tipo_relacion = ['join'], $ordenacion = null)
+	public function seleccionar($tabla, $campos, $condicion = null,$tabla_relacion = null, $relacion = null, $tipo_relacion = ['join'], $agrupacion = null, $ordenacion = null)
 	{
 		$this -> bd -> select($campos);
 		$this -> bd -> from($tabla);
@@ -129,6 +129,8 @@ class M_General extends CI_Model
 				$this -> bd -> join($tabla_relacion[$i],$relacion[$i],$tipo_relacion[$i]);
 		if(isset($condicion))
 			$this -> bd -> where($condicion);
+		if(isset($agrupacion))
+			$this -> bd -> group_by($agrupacion);
 		if(isset($ordenacion))
 			$this -> bd -> order_by($ordenacion);
 		$query = $this -> bd -> get();
