@@ -35,7 +35,7 @@ class C_GestionActividades extends RestController
         if($this->session->userdata('sess_logged_in') == 0 || !$this->M_General->obtenerIdUsuario($_SESSION['email']))
 		{
             //Decir al cliente que tiene que reedirigir al login
-            $this->response(false, 200, false);
+            //$this->response(false, 200, false);
 		}
         $this->response(true, 200, true);
 	}
@@ -103,7 +103,9 @@ class C_GestionActividades extends RestController
         //Insertamos los datos pasados por el cliente...
         $this -> M_General -> insertar('ACT_Momentos', 
             array(
-                'nombre' => $data->nombre
+                'nombre' => $data->nombre,
+                'fechaInicio_Inscripcion' => $data->fechaInicio_Inscripcion,
+                'fechaFin_Inscripcion' => $data->fechaFin_Inscripcion
             ));
 		
         
@@ -138,8 +140,10 @@ class C_GestionActividades extends RestController
      */
     public function removeMomento_delete() {
 
+        $id = $this -> get("id");
+
 		
-        $this -> M_General -> borrar("ACT_Momentos", array("idMomento", ));
+        $this -> M_General -> borrar("ACT_Momentos", array("idMomento", $id));
         //Eliminar por ID
 
 		$this->response(null, 200);
