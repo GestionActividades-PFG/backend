@@ -10,6 +10,8 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 require_once APPPATH . 'libraries/RestServer/Format.php';
+require_once BASEPATH.'core/CodeIgniter.php'; //<-- CAMBIAR
+
 
 /**
  * CodeIgniter Rest Controller
@@ -2017,9 +2019,9 @@ class RestController extends \CI_Controller
 
             // If the origin domain is in the allowed_cors_origins list, then add the Access Control headers
             if (in_array($origin, $this->config->item('allowed_cors_origins'))) {
-                header('Access-Control-Allow-Origin: '.$origin);
+                /*header('Access-Control-Allow-Origin: '.$origin);
                 header('Access-Control-Allow-Headers: '.$allowed_headers);
-                header('Access-Control-Allow-Methods: '.$allowed_methods);
+                header('Access-Control-Allow-Methods: '.$allowed_methods);*/
             }
         }
 

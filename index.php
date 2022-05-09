@@ -313,5 +313,9 @@ switch (ENVIRONMENT)
  *
  * And away we go...
  */
-require_once BASEPATH.'core/CodeIgniter.php';
 
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: *');
+require APPPATH . 'libraries/RestServer/RestController.php';
+
+//require_once BASEPATH.'core/CodeIgniter.php';

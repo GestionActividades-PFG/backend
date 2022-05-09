@@ -35,7 +35,7 @@ class C_GestionActividades extends RestController
         if($this->session->userdata('sess_logged_in') == 0 || !$this->M_General->obtenerIdUsuario($_SESSION['email']))
 		{
             //Decir al cliente que tiene que reedirigir al login
-            //$this->response(false, 200, false);
+            $this->response(false, 200, false);
 		}
         $this->response(true, 200, true);
 	}
