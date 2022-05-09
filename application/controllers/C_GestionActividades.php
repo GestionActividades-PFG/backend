@@ -160,7 +160,6 @@ class C_GestionActividades extends RestController
 
         //Params del get
         $idMomento = $this->input->get("idMomento");
-        $getOnlyName = $this->input->get("onlyNames");
 
         $condicionMomento = null;
 
@@ -169,7 +168,7 @@ class C_GestionActividades extends RestController
         //Consultas a B.D
         $nombreMomento = $this->M_General->seleccionar(
             "ACT_Actividades", //Tabla
-            "ACT_Momentos.nombre", //Campos
+            "idActividad, ACT_Momentos.nombre", //Campos
             $condicionMomento, //Condición
             ["ACT_Momentos"], //Tabla relación
             ["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
@@ -184,10 +183,8 @@ class C_GestionActividades extends RestController
         );
 
 
-        if(!isset($getOnlyName))
-		    $this->response($actividades, 200);
+        $this->response($actividades, 200);
             
-        $this->response($nombreMomento, 200);
     }
 
     /**
