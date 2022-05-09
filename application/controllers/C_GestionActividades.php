@@ -35,7 +35,7 @@ class C_GestionActividades extends RestController
         if($this->session->userdata('sess_logged_in') == 0 || !$this->M_General->obtenerIdUsuario($_SESSION['email']))
 		{
             //Decir al cliente que tiene que reedirigir al login
-            $this->response(false, 200, false);
+            //$this->response(false, 200, false);
 		}
         $this->response(true, 200, true);
 	}
@@ -158,12 +158,19 @@ class C_GestionActividades extends RestController
 
         $campo = ["idActividad", "nombre"];
 
+        //Params del get
         $idMomento = $this->input->get("idMomento");
+        $getOnlyName = $this->input->get("onlyNames");
 
+        $condicionMomento = null;
+
+        if(isset($idMomento)) $condicionMomento = "ACT_Actividades.idMomento = $idMomento";
+
+        //Consultas a B.D
         $nombreMomento = $this->M_General->seleccionar(
             "ACT_Actividades", //Tabla
             "ACT_Momentos.nombre", //Campos
-            "ACT_Actividades.idMomento = $idMomento", //Condición
+            $condicionMomento, //Condición
             ["ACT_Momentos"], //Tabla relación
             ["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
             ['left'], //Tipo relación
@@ -176,7 +183,11 @@ class C_GestionActividades extends RestController
             "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento))
         );
 
-		$this->response($actividades, 200);
+
+        if(!isset($getOnlyName))
+		    $this->response($actividades, 200);
+            
+        $this->response($nombreMomento, 200);
     }
 
     /**
@@ -249,12 +260,61 @@ class C_GestionActividades extends RestController
 		$this->response(null, 200);
     }
 
+    /**
+     * Obtiene toda la información relativa a una actividad
+     * (Nombre, sexo, individual, momento, responsable, etcétera)
+     */
+    public function getModificacionActividad_get() {
+
+        $idMomento = $this->input->get("idMomento");
+        $idActividad = $this->input->get("idActividad");
+
+        $actividadInfo = $this->M_General->seleccionar(
+            "ACT_Actividades actividades", //Tabla
+
+            "actividades.nombre, actividades.sexo, actividades.esIndividual, actividades.numMaxParticipantes,
+                actividades.fechaInicio_Inscripcion, actividades.fechaFin_Inscripcion,
+                actividades.material, actividades.descripcion, actividades.tipo_Participacion,
+                usuarios.nombre AS 'nombreResponsable', ACT_Momentos.nombre AS 'nombreMomento'
+            ", //Campos
+
+            "actividades.idActividad = $idActividad", //Condición
+            ["ACT_Momentos", "usuarios"], //Tabla relación
+            ["actividades.idMomento = ACT_Momentos.idMomento", "actividades.idResponsable = usuarios.idUsuario"], //Relación
+            ['left', "left"], //Tipo relación
+            "ACT_Momentos.nombre" //Agrupar
+        );   
+        
+
+		$this->response($actividadInfo, 200);
+    }
+
+
+    public function setInscripcion_put() {
+
+
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
+
+        //Decodificamos el JSON
+        $data = json_decode($json);
+
+        $datos = array(
+            'fechaInicio_Inscripcion' => $data->fechaInicio_Inscripcion,
+            "fechaFin_Inscripcion" => $data->fechaFin_Inscripcion
+        );
+
+        $this -> M_General -> modificar("ACT_Actividades", $datos, $data->idActividad, "idActividad");
+
+
+		$this->response(null, 200);
+    }
 
 	
-	//Ejemplo HTTP...
+	//Ejemplo de funcionamiento de la Rest API HTTP...
 	/*public function users_get()
     {
-        // Users from a data store e.g. database
+        // Usuarios (de una bd por ejemplo)
         $users = [
             ['id' => 0, 'name' => 'John', 'email' => 'john@example.com'],
             ['id' => 1, 'name' => 'Jim', 'email' => 'jim@example.com'],
@@ -264,15 +324,15 @@ class C_GestionActividades extends RestController
 
         if ( $id === null )
         {
-            // Check if the users data store contains users
+            // Comprobamos si existen usuarios
             if ( $users )
             {
-                // Set the response and exit
+                // Mandamos la respuesta
                 $this->response( $users, 200 );
             }
             else
             {
-                // Set the response and exit
+                // Mandamos la respuesta y salimos
                 $this->response( [
                     'status' => false,
                     'message' => 'No users were found'

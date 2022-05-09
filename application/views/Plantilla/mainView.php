@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<?php
+			if(!$this->app > 0) header("Location: "+ $this->app);
 			switch ($this -> app)
 			{
 				case "1":
