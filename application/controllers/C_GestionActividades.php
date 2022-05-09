@@ -123,7 +123,7 @@ class C_GestionActividades extends RestController
         if($id != null) {
 
             //Consulta SQL update
-            $this -> M_General -> modificar("Momentos", $datos, $id, "id");
+            $this -> M_General -> modificar("ACT_Momentos", $datos, $id, "id");
 
         } else 
 		    $this->response($this->momentos, 402);
@@ -272,12 +272,12 @@ class C_GestionActividades extends RestController
             "actividades.nombre, actividades.sexo, actividades.esIndividual, actividades.numMaxParticipantes,
                 actividades.fechaInicio_Inscripcion, actividades.fechaFin_Inscripcion,
                 actividades.material, actividades.descripcion, actividades.tipo_Participacion,
-                usuarios.nombre AS 'nombreResponsable', ACT_Momentos.nombre AS 'nombreMomento'
+                Usuarios.nombre AS 'nombreResponsable', ACT_Momentos.nombre AS 'nombreMomento'
             ", //Campos
 
             "actividades.idActividad = $idActividad", //Condición
-            ["ACT_Momentos", "usuarios"], //Tabla relación
-            ["actividades.idMomento = ACT_Momentos.idMomento", "actividades.idResponsable = usuarios.idUsuario"], //Relación
+            ["ACT_Momentos", "Usuarios"], //Tabla relación
+            ["actividades.idMomento = ACT_Momentos.idMomento", "actividades.idResponsable = Usuarios.idUsuario"], //Relación
             ['left', "left"], //Tipo relación
             "ACT_Momentos.nombre" //Agrupar
         );   
