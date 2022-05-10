@@ -140,13 +140,12 @@ class C_GestionActividades extends RestController
      */
     public function removeMomento_delete() {
 
-        $id = $this -> get("id");
+        $id = $this-> input -> get("id");
 
-		
-        $this -> M_General -> borrar("ACT_Momentos", array("idMomento", $id));
         //Eliminar por ID
+        $this -> M_General -> borrar("ACT_Momentos", $id, "idMomento");
 
-		$this->response(null, 200);
+		$this->response($id, 200);
     }
 
     /**
