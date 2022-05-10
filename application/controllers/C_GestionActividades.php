@@ -81,12 +81,20 @@ class C_GestionActividades extends RestController
      */
     public function getMomentos_get() {
 
-        $campo = ["idMomento", "nombre"];
+        $idMomento = $this->input->get("idMomento");
 
-		$momentos = $this -> M_General -> seleccionar("ACT_Momentos", $campo);
+
+        $condicionMomento = null;
+        if(isset($idMomento)) $condicionMomento = "idMomento = $idMomento";
+
+        $campo = ["idMomento", "nombre", "fechaInicio_Inscripcion", "fechaFin_Inscripcion"];
+
+		$momentos = $this -> M_General -> seleccionar("ACT_Momentos", $campo, $condicionMomento);
 
 		$this->response($momentos, 200);
     }
+
+    
 
     /**
      * Método que añade un nuevo momento
