@@ -282,20 +282,25 @@ class C_GestionActividades extends RestController
         $idMomento = $this->input->get("idMomento");
         $idActividad = $this->input->get("idActividad");
 
-        $actividadInfo = $this->M_General->seleccionar(
-            "ACT_Actividades actividades", //Tabla
+        
+        $actividadInfo = array (
+            
+            "Actividad" => $this->M_General->seleccionar(
+                "ACT_Actividades actividades", //Tabla
 
-            "actividades.nombre, actividades.sexo, actividades.esIndividual, actividades.numMaxParticipantes,
-                actividades.fechaInicio_Inscripcion, actividades.fechaFin_Inscripcion,
-                actividades.material, actividades.descripcion, actividades.tipo_Participacion,
-                usuarios.nombre AS 'nombreResponsable', ACT_Momentos.nombre AS 'nombreMomento'
-            ", //Campos
+                "actividades.nombre, actividades.sexo, actividades.esIndividual, actividades.numMaxParticipantes,
+                    actividades.fechaInicio_Inscripcion, actividades.fechaFin_Inscripcion,
+                    actividades.material, actividades.descripcion, actividades.tipo_Participacion,
+                    usuarios.nombre AS 'nombreResponsable', ACT_Momentos.nombre AS 'nombreMomento'
+                ", //Campos
 
-            "actividades.idActividad = $idActividad", //Condición
-            ["ACT_Momentos", "usuarios"], //Tabla relación
-            ["actividades.idMomento = ACT_Momentos.idMomento", "actividades.idResponsable = usuarios.idUsuario"], //Relación
-            ['left', "left"], //Tipo relación
-            "ACT_Momentos.nombre" //Agrupar
+                "actividades.idActividad = $idActividad", //Condición
+                ["ACT_Momentos", "usuarios"], //Tabla relación
+                ["actividades.idMomento = ACT_Momentos.idMomento", "actividades.idResponsable = usuarios.idUsuario"], //Relación
+                ['left', "left"], //Tipo relación
+                "ACT_Momentos.nombre" //Agrupar
+            ),
+            "Responsables" => $this->M_General->seleccionar("Usuarios", "idUsuario, nombre")
         );   
         
 
