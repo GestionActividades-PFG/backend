@@ -208,7 +208,12 @@ class C_GestionActividades extends RestController
                 'nombre' => $data->nombre,
                 "idMomento" => $data->idMomento,
                 "idResponsable" => $data->idResponsable,
-                "tipo_Participacion" => $data->tipo_Participacion
+                "tipo_Participacion" => $data->tipo_Participacion,
+                "descripcion" => $data->descripcion,
+                "material" => $data->material,
+                "numParticipantes" => $data->numParticipantes,
+                "fechaInicioActividad" => $data->fechaInicioActividad,
+                "fechaFinActividad" => $data->fechaFinActividad
             ));
 		
         

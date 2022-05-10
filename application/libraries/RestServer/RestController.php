@@ -10,8 +10,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 
 require_once APPPATH . 'libraries/RestServer/Format.php';
-require_once BASEPATH.'core/CodeIgniter.php'; //<-- CAMBIAR
-
+//require_once BASEPATH.'core/CodeIgniter.php'; //<-- CAMBIAR
 
 /**
  * CodeIgniter Rest Controller
