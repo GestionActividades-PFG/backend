@@ -127,20 +127,28 @@ class C_GestionActividades extends RestController
 
 		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
        
-        $id = $this -> put('id');
-        $datos[] = $this -> put("datos");
+        $id = $this -> input -> get('idMomento');
 
-        if($id != null) {
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
 
-            //Consulta SQL update
-            $this -> M_General -> modificar("ACT_Momentos", $datos, $id, "id");
+        //Decodificamos el JSON
+        $data = json_decode($json);
 
-        } else 
-		    $this->response($this->momentos, 402);
+        $datos = array(
+            'nombre' => $data->nombre,
+            //"ultimoCelebrado" => $data->ultimoCelebrado,
+            "fechaInicio_Inscripcion" => $data->fechaInicio,
+            "fechaFin_Inscripcion" => $data->fechaFin
+        );
+
+
+        if(isset($id)) $this -> M_General -> modificar("ACT_Momentos", $datos, $id, "idMomento");
+        else $this->response($this->momentos, 401);
 
 		
 
-		$this->response($this->momentos, 200);
+		$this->response($datos, 200);
     }
 
     /**
