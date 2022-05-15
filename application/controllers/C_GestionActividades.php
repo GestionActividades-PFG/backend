@@ -222,20 +222,22 @@ class C_GestionActividades extends RestController
         $this -> M_General -> insertar('ACT_Actividades', 
             array(
                 'nombre' => $data->nombre,
+				'sexo' => $data->sexo,
+				'esIndividual' => $data->esIndividual,
                 "idMomento" => $data->idMomento,
                 "idResponsable" => $data->idResponsable,
                 "tipo_Participacion" => $data->tipo_Participacion,
                 "descripcion" => $data->descripcion,
                 "material" => $data->material,
-                "numParticipantes" => $data->numParticipantes,
-                "fechaInicioActividad" => $data->fechaInicioActividad,
-                "fechaFinActividad" => $data->fechaFinActividad
+                "numMaxParticipantes" => $data->numMaxParticipantes,
+                "fechaInicio_Actividad" => $data->fechaInicio_Actividad,
+                "fechaFin_Actividad" => $data->fechaFin_Actividad
             ));
 		
         
 		$this->response(null, 200);
     }
-
+	
     /**
      * Método que actualiza una actividad
      */
@@ -273,14 +275,15 @@ class C_GestionActividades extends RestController
      * Método que elimina un momento
      */
     public function removeActividad_delete() {
-
 		
-        $this -> M_General -> borrar("ACT_Actividades", array("idMomento", ));
+		$id = $this-> input -> get("id");
+		
+        $this -> M_General -> borrar("ACT_Actividades", $id,"idActividad");
         //Eliminar por ID
 
-		$this->response(null, 200);
+		$this->response($id, 200);
     }
-
+	
     /**
      * Obtiene toda la información relativa a una actividad
      * (Nombre, sexo, individual, momento, responsable, etcétera)
