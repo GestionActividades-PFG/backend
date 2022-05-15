@@ -3,10 +3,10 @@
 	RewriteBase /
 	RewriteCond %{REQUEST_FILENAME} !-f
 	RewriteCond %{REQUEST_FILENAME} !-d
-	RewriteRule ^(.*)$ Proyectos/TFG-EVG/evg/index.php/$1 [R=301]
+	RewriteRule ^(.*)$ backend/index.php/$1 [R=301]
 
 	RewriteEngine on
-	RewriteRule ^daw$ Proyectos/TFG-EVG/evg/$1 [L]
+	RewriteRule ^daw$ backend/$1 [L]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
