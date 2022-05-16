@@ -300,7 +300,7 @@ class C_GestionActividades extends RestController
                 "ACT_Actividades actividades", //Tabla
 
                 "actividades.nombre, actividades.sexo, actividades.esIndividual, actividades.numMaxParticipantes,
-                    actividades.fechaInicio_Inscripcion, actividades.fechaFin_Inscripcion,
+                    actividades.fechaInicio_Actividad, actividades.fechaFin_Actividad,
                     actividades.material, actividades.descripcion, actividades.tipo_Participacion,
                     Usuarios.nombre AS 'nombreResponsable', ACT_Momentos.nombre AS 'nombreMomento'
                 ", //Campos
@@ -311,13 +311,13 @@ class C_GestionActividades extends RestController
                 ['left', "left"], //Tipo relación
                 "ACT_Momentos.nombre" //Agrupar
             ),
-            "Responsables" => $this->M_General->seleccionar("Usuarios", "idUsuario, nombre")
+            "responsables" => $this->M_General->seleccionar("Usuarios", "idUsuario, nombre")
         );   
         
 
 		$this->response($actividadInfo, 200);
     }
-
+	
     /**
      * ================================
      *          Inscripciones
