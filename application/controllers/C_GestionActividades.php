@@ -122,11 +122,10 @@ class C_GestionActividades extends RestController
 
     /**
      * Método que actualiza un momento
+     * @param id INT id del momento a actualizar.
      */
     public function updateMomento_put() {
 
-		//$numeroFilas = $this -> M_General -> seleccionar($_POST['tabla'],$_POST['campo'],$_POST['campo']."='".$_POST['valor']."'");
-       
         $id = $this -> input -> get('idMomento');
 
         // Obtenemos los datos del body
@@ -287,6 +286,9 @@ class C_GestionActividades extends RestController
     /**
      * Obtiene toda la información relativa a una actividad
      * (Nombre, sexo, individual, momento, responsable, etcétera)
+     * 
+     * @param idActividad Number muestra la información de esa actividad y su responsable.
+     * Si se omite este parámetro mostrará unicamente todos los responsables.
      */
     public function getModificacionActividad_get() {
 
@@ -369,7 +371,7 @@ class C_GestionActividades extends RestController
                 $condicion, //Condición
                 ["Alumnos"], //Tabla relación
                 ["alumnsInscritos.idAlumno = Alumnos.idAlumno"], //Relación
-                ['left'], //Tipo relación
+                ['left'] //Tipo relación
                 //"ACT_Momentos.nombre" //Agrupar
             );
 
