@@ -48,7 +48,7 @@ class C_Instalacion extends CI_Controller
 	}	
 
 	public function install() {
-		$this->FileInstalation("creacionTablas");
+		$this->FileInstalation("scriptTablas");
 	}
 
 	/**
@@ -65,6 +65,8 @@ class C_Instalacion extends CI_Controller
 
 	/**
      * Método que lee línea por línea de un archivo .sql y lo ejecuta
+	 * 
+	 * (No soporta los comentarios de varias líneas '/*', se añadiran proximamente...
      * 
      * @param fileName nombre del fichero a ejecutar (sin extensión)
      * 
@@ -134,6 +136,7 @@ class C_Instalacion extends CI_Controller
 			"correo" => $this->input->post("correo")
 		);
 
+
 		$idUsuario = $this -> M_General -> insertar('Usuarios', $datos);
 
 		$idPerfilA = $this -> M_General -> seleccionar('Perfiles', 'idPerfil', "nombre='Administrador'");
@@ -141,10 +144,10 @@ class C_Instalacion extends CI_Controller
 
 		$this -> M_General -> insertar('Perfiles_Usuarios', Array('idPerfil' => $idPerfilA[0]['idPerfil'], 'idUsuario' => $idUsuario));
 		$this -> M_General -> insertar('Perfiles_Usuarios', Array('idPerfil' => $idPerfilG[0]['idPerfil'], 'idUsuario' => $idUsuario));
-		$idAplicacionA = $this -> M_General -> insertar('Aplicaciones', Array('nombre' => 'AdministracionEVG', 'descripcion' => 'Aplicación para administrar aplicaciones y perfiles', 'url' => base_url().'app/1', 'icono' => 'administracion.jpg'));
-		$idAplicacionG = $this -> M_General -> insertar('Aplicaciones', Array('nombre'=>'GestionEVG','descripcion' => 'Aplicación para gestionar datos', 'url' => base_url().'app/2', 'icono' => 'gestion.jpg'));
-		$this -> M_General -> insertar('Aplicaciones_Perfiles', Array('idPerfil' => $idPerfilA[0]['idPerfil'], 'idAplicacion' => $idAplicacionA));
-		$this -> M_General -> insertar('Aplicaciones_Perfiles', Array('idPerfil' => $idPerfilG[0]['idPerfil'], 'idAplicacion' => $idAplicacionG));
+		// $idAplicacionA = $this -> M_General -> insertar('Aplicaciones', Array('nombre' => 'AdministracionEVG', 'descripcion' => 'Aplicación para administrar aplicaciones y perfiles', 'url' => base_url().'app/1', 'icono' => 'administracion.jpg'));
+		// $idAplicacionG = $this -> M_General -> insertar('Aplicaciones', Array('nombre'=>'GestionEVG','descripcion' => 'Aplicación para gestionar datos', 'url' => base_url().'app/2', 'icono' => 'gestion.jpg'));
+		// $this -> M_General -> insertar('Aplicaciones_Perfiles', Array('idPerfil' => $idPerfilA[0]['idPerfil'], 'idAplicacion' => $idAplicacionA));
+		// $this -> M_General -> insertar('Aplicaciones_Perfiles', Array('idPerfil' => $idPerfilG[0]['idPerfil'], 'idAplicacion' => $idAplicacionG));
 
 		header("Location:".base_url()."C_GestionEVG");
 	}

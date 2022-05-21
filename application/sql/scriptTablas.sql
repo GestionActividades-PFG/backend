@@ -1,15 +1,15 @@
 /*
-	Script SQL Grupo anterior, proyecto base
+--	Script SQL Grupo anterior, proyecto base
 */
 
 
 -- START TRANSACTION;
 -- DROP DATABASE IF EXISTS Gestion_Escuela;
-CREATE DATABASE Gestion_Escuela DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
+-- CREATE DATABASE Gestion_Escuela DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
 USE Gestion_Escuela;
 
 /*
-	Script SQL Grupo anterior, proyecto base
+--	Script SQL Grupo anterior, proyecto base
 */
 
 
