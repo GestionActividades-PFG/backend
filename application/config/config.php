@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 //$config['base_url'] = 'https://app.esvirgua.com/evg';
-$config['base_url'] = 'http://localhost/backend';
+$config['base_url'] = 'http://localhost/Proyectos/TFG-EVG/evg';
 
 
 

@@ -350,30 +350,15 @@ class C_GestionActividades extends RestController
             
 
         $this->response($actividad, 200);
-		
-		
-		
-		$actividadInfo = 
-            $this->M_General->seleccionar(
-                "ACT_Individuales individuales", //Tabla
-                "actividades.nombre, individuales.idActividad, individuales.idAlumno, alumno.nombre AS nombreAlumno", //Campos
-                $condicion, //Condición
-                ["ACT_Actividades actividades", "Alumnos alumno"], //Tabla relación
-                ["individuales.idActividad = actividades.idActividad", "individuales.idAlumno = alumno.idAlumno"], //Relación
-                ['left', 'left'] //Tipo relación
-                //"ACT_Momentos.nombre" //
-            );
-			
-            
     }
+    
     /**
      * ================================
      *          INSCRIPCIONES
      * ================================
     */
 
-    public function setInscripcion_put() {
-
+    public function setInscripcionIndividual_post() {
 
         // Obtenemos los datos del body
         $json = file_get_contents('php://input');
@@ -382,11 +367,30 @@ class C_GestionActividades extends RestController
         $data = json_decode($json);
 
         $datos = array(
-            'fechaInicio_Inscripcion' => $data->fechaInicio_Inscripcion,
-            "fechaFin_Inscripcion" => $data->fechaFin_Inscripcion
+            'idActividad' => $data->idActividad,
+            "idAlumno" => $data->idAlumno
         );
 
-        $this -> M_General -> modificar("ACT_Actividades", $datos, $data->idActividad, "idActividad");
+        $this -> M_General -> insertar("ACT_Individuales", $datos);
+
+
+		$this->response(null, 200);
+    }
+
+    public function setInscripcionClase_post() {
+
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
+
+        //Decodificamos el JSON
+        $data = json_decode($json);
+
+        $datos = array(
+            "idClase" => $data->idClase,
+            'idActividad' => $data->idActividad
+        );
+
+        $this -> M_General -> insertar("ACT_Clase", $datos);
 
 
 		$this->response(null, 200);
@@ -408,6 +412,7 @@ class C_GestionActividades extends RestController
         $condicion = null;
 
         if(isset($idActividad)) $condicion = "individuales.idActividad = $idActividad";
+        if(isset($idAlumno)) $condicion = "alumno.idAlumno = $idAlumno";
 
 
         $actividadInfo = 
@@ -418,11 +423,43 @@ class C_GestionActividades extends RestController
                 ["ACT_Actividades actividades", "Alumnos alumno"], //Tabla relación
                 ["individuales.idActividad = actividades.idActividad", "individuales.idAlumno = alumno.idAlumno"], //Relación
                 ['left', 'left'] //Tipo relación
-                //"ACT_Momentos.nombre" //
             );
 
 		$this->response($actividadInfo, 200);
     }
+
+    /**
+     * Obtienes todas las inscripciones si no se le pasa un parámetro.
+     * Campos:
+        * idAlumno -> Obtiene las actividades de un alumno (prox)
+        * idActividad -> Obtiene todos los alumnos inscritos a una actividad específica
+    *   @return Array Inscripciones
+     */
+    public function getInscripcionesClase_get() {
+
+        $idTutor = $this->input->get("idTutor");
+        $idClase = $this->input->get("idClase");
+
+        
+        $condicion = null;
+
+        if(isset($idTutor)) $condicion = "idTutor = $idTutor";
+        if(isset($idClase)) $condicion = "Secciones.idSeccion = $idClase";
+
+
+        $actividadInfo = 
+            $this->M_General->seleccionar(
+                "ACT_Clase clase", //Tabla
+                "actividades.idActividad, actividades.nombre, codSeccion, Secciones.nombre AS nombreClase, idTutor", //Campos
+                $condicion, //Condición
+                ["ACT_Actividades actividades", "Secciones"], //Tabla relación
+                ["clase.idActividad = actividades.idActividad", "clase.idClase = Secciones.idSeccion"], //Relación
+                ['left', 'left'] //Tipo relación
+            );
+
+		$this->response($actividadInfo, 200);
+    }
+
 
 	
 	//Ejemplo de funcionamiento de la Rest API HTTP...
