@@ -278,6 +278,8 @@ VALUES
 COMMIT;
 
 /*------------------------------------------------------------------------------------------------------*/	
+--											ACTIVIDADES
+/*------------------------------------------------------------------------------------------------------*/	
 
 CREATE TABLE IF NOT EXISTS ACT_Momentos (
 	idMomento TINYINT unsigned NOT NULL AUTO_INCREMENT,
@@ -427,15 +429,17 @@ CREATE TABLE IF NOT EXISTS `ACT_Clase` (
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 
 	CONSTRAINT PK_ACT_Clase PRIMARY KEY (`idClase`,`idActividad`),
-	CONSTRAINT fk_ACT_Clase_idClase FOREIGN KEY (idClase) REFERENCES ACT_Inscriben_Secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE
+	CONSTRAINT fk_ACT_Clase_idClase FOREIGN KEY (idClase) REFERENCES Secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Clase_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+
 );
 
 
 /*-------------------------INSERT---------------------------------------*/
 
 /*
-	Manuela(17) --> Gestora
-	Esperanza(18),Sergio(19) , Luis(20) Y Isa(21) --> ADMIN
+--	Manuela(17) --> Gestora
+--	Esperanza(18),Sergio(19) , Luis(20) Y Isa(21) --> ADMIN
 */
 
 INSERT INTO `usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `created_at`, `updated_at`) VALUES 
@@ -677,3 +681,25 @@ INSERT INTO `aplicaciones_perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `
 ('2', '1', current_timestamp(), current_timestamp()),
 ('2', '2', current_timestamp(), current_timestamp()),
 ('2', '3', current_timestamp(), current_timestamp());
+
+
+INSERT INTO `ACT_Individuales` (`idActividad`, `idAlumno`) VALUES 
+(1,2),
+(3,4);
+
+INSERT INTO `ACT_Clase` (`idActividad`, `idClase`) VALUES 
+(1,2),
+(3,4);
+
+-- Agregamos las parejas
+
+INSERT INTO `ACT_Parejas` (`idPareja`, `idActividad`, `idAlumno`) VALUES 
+(1,4,1),
+(2,4,2),
+(3,4,3),
+(4,4,4);
+
+INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES 
+(1,2),
+(3,4);
+

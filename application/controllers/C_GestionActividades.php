@@ -353,7 +353,7 @@ class C_GestionActividades extends RestController
         * idActividad -> Obtiene todos los alumnos inscritos a una actividad específica
     *   @return Array Inscripciones
      */
-    public function getInscripciones_get() {
+    public function getInscripcionesIndividuales_get() {
 
         $idAlumno = $this->input->get("idAlumno");
         $idActividad = $this->input->get("idActividad");
@@ -361,18 +361,18 @@ class C_GestionActividades extends RestController
         
         $condicion = null;
 
-        if(isset($idActividad)) $condicion = "idActividad = $idActividad";
+        if(isset($idActividad)) $condicion = "individuales.idActividad = $idActividad";
 
 
         $actividadInfo = 
             $this->M_General->seleccionar(
-                "ACT_Inscriben_Alumnos alumnsInscritos", //Tabla
-                "nombre, idActividad, fecha_y_hora_Inscripcion", //Campos
+                "ACT_Individuales individuales", //Tabla
+                "actividades.nombre, individuales.idActividad, individuales.idAlumno, alumno.nombre AS nombreAlumno", //Campos
                 $condicion, //Condición
-                ["Alumnos"], //Tabla relación
-                ["alumnsInscritos.idAlumno = Alumnos.idAlumno"], //Relación
-                ['left'] //Tipo relación
-                //"ACT_Momentos.nombre" //Agrupar
+                ["ACT_Actividades actividades", "Alumnos alumno"], //Tabla relación
+                ["individuales.idActividad = actividades.idActividad", "individuales.idAlumno = alumno.idAlumno"], //Relación
+                ['left', 'left'] //Tipo relación
+                //"ACT_Momentos.nombre" //
             );
 
 		$this->response($actividadInfo, 200);
