@@ -320,9 +320,55 @@ class C_GestionActividades extends RestController
 		$this->response($actividadInfo, 200);
     }
 	
+	/**
+     * ================================
+     *          ACTIVIDAD
+     * ================================
+    */
+
+     /**
+     * Método que obtiene información de actividad.
+     */
+    public function getActividad_get() {
+
+        //Params del get
+        $idActividad = $this->input->get("idActividad");
+
+        $condicionActividad = null;
+
+        if(isset($idActividad)) $condicionActividad = "ACT_Actividades.idActividad = $idActividad";
+
+        //Consultas a B.D
+        $actividad = $this->M_General->seleccionar(
+            "ACT_Actividades", //Tabla
+            "idActividad,sexo,ACT_Actividades.nombre,esIndividual,numMaxParticipantes,fechaInicio_Actividad,fechaFin_Actividad,material,descripcion,Usuarios.nombre AS nombreUsuario,tipo_Participacion", //Campos
+			$condicionActividad, //Condición
+			["Usuarios"], //Tabla relación
+			["ACT_Actividades.idResponsable = Usuarios.idUsuario"], //Relación
+			['left'] //Tipo relación
+        );
+            
+
+        $this->response($actividad, 200);
+		
+		
+		
+		$actividadInfo = 
+            $this->M_General->seleccionar(
+                "ACT_Individuales individuales", //Tabla
+                "actividades.nombre, individuales.idActividad, individuales.idAlumno, alumno.nombre AS nombreAlumno", //Campos
+                $condicion, //Condición
+                ["ACT_Actividades actividades", "Alumnos alumno"], //Tabla relación
+                ["individuales.idActividad = actividades.idActividad", "individuales.idAlumno = alumno.idAlumno"], //Relación
+                ['left', 'left'] //Tipo relación
+                //"ACT_Momentos.nombre" //
+            );
+			
+            
+    }
     /**
      * ================================
-     *          Inscripciones
+     *          INSCRIPCIONES
      * ================================
     */
 
