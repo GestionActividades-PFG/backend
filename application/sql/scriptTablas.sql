@@ -435,6 +435,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Clase` (
 );
 
 
+
 /*-------------------------INSERT---------------------------------------*/
 
 /*
@@ -442,7 +443,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Clase` (
 --	Esperanza(18),Sergio(19) , Luis(20) Y Isa(21) --> ADMIN
 */
 
-INSERT INTO `usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `created_at`, `updated_at`) VALUES 
 (NULL, 'Marta Romero Ramirez', 'mromeroramirez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
 (NULL, 'Carlos Cuello Díaz', 'ccuellodiaz.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
 (NULL, 'Álvaro Espinosa Martínez', 'aespinosamartinez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
@@ -466,13 +467,13 @@ INSERT INTO `usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `create
 (NULL, 'Isabel Muñoz', 'imunoz@fundacionloyola.es', '', current_timestamp(), current_timestamp());
 
 
-INSERT INTO `etapas` (`idEtapa`, `codEtapa`, `nombre`, `idCoordinador`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Etapas` (`idEtapa`, `codEtapa`, `nombre`, `idCoordinador`, `created_at`, `updated_at`) VALUES 
 (NULL, 'ESO', 'Educación Secundaria Obligatoria', '17', current_timestamp(), current_timestamp()),
 (NULL, 'BACH', 'Bachillerato', '17', current_timestamp(), current_timestamp()),
 (NULL, 'CF', 'Ciclo Formativo', '17', current_timestamp(), current_timestamp());
 
 
-INSERT INTO `cursos` (`idCurso`, `codCurso`, `nombre`, `idEtapa`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Cursos` (`idCurso`, `codCurso`, `nombre`, `idEtapa`, `created_at`, `updated_at`) VALUES 
 (NULL, '1ESO', '1º Educación Secundaria Obligatoria', '1', current_timestamp(), current_timestamp()),
 (NULL, '2ESO', '2º Educación Secundaria Obligatoria', '1', current_timestamp(), current_timestamp()),
 (NULL, '3ESO', '3º Educación Secundaria Obligatoria', '1', current_timestamp(), current_timestamp()),
@@ -485,7 +486,7 @@ INSERT INTO `cursos` (`idCurso`, `codCurso`, `nombre`, `idEtapa`, `created_at`, 
 (NULL, '2DAW', '2º Desarrollo de Aplicaciones Web', '3', current_timestamp(), current_timestamp());
 
 
-INSERT INTO `secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurso`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurso`, `created_at`, `updated_at`) VALUES 
 (NULL, '1ESOA', '1º Educación Secundaria Obligatoria A', '1', '1', current_timestamp(), current_timestamp()),
 (NULL, '1ESOB', '1º Educación Secundaria Obligatoria B', '2', '1', current_timestamp(), current_timestamp()),
 (NULL, '1ESOC', '1º Educación Secundaria Obligatoria C', '3', '1', current_timestamp(), current_timestamp()),
@@ -504,7 +505,7 @@ INSERT INTO `secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurs
 (NULL, '2DAW', '2º Desarrollo de Aplicaciones Web', '16', '6', current_timestamp(), current_timestamp());
 
 
-INSERT INTO `perfiles_usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated_at`) VALUES 
 ('1', '21', current_timestamp(), current_timestamp()),
 ('1', '18', current_timestamp(), current_timestamp()),
 ('1', '19', current_timestamp(), current_timestamp()),
@@ -546,7 +547,7 @@ INSERT INTO `perfiles_usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated
 
 /*5 Alumnos para cada clase: 1ESOA,1ESOB,1ESOC,2ESOA,2ESOB,2ESOC,1SMR,2SMR,1DAW,2DAW*/
 
-INSERT INTO `alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`, `sexo`, `telefono`, `telefonoUrgencia`, `fechaNacimiento`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`, `sexo`, `telefono`, `telefonoUrgencia`, `fechaNacimiento`, `created_at`, `updated_at`) VALUES 
 (NULL, '235125421', 'Alfredo Domínguez Sopa', '03215625G', '1', 'adomiguezsopa.guadalupe@alumnado.fundacionloyola.net', 'm', '652145255', '655222214', '02/01/2009', current_timestamp(), current_timestamp()),
 (NULL, '021452355', 'Isabel Martínez Moreno', '03215225G', '1', 'imartinezmoreno.guadalupe@alumnado.fundacionloyola.net', 'f', '652145266', '655252563', '02/02/2009', current_timestamp(), current_timestamp()),
 (NULL, '447589654', 'Carlos Gonzalez Ramirez', '03215115G', '1', 'cgonzalezramirez.guadalupe@alumnado.fundacionloyola.net', 'm', '625352636', '653656565', '12/03/2009', current_timestamp(), current_timestamp()),
@@ -599,19 +600,19 @@ INSERT INTO `alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`
 (NULL, '252625265', 'Miguel Marredo Malavé', '02541288R', '16', 'mmarredomalave.guadalupe@alumnado.fundacionloyola.net', 'm', '652144548', '655114415', '02/11/2002', current_timestamp(), current_timestamp());
 
 
-INSERT INTO `act_momentos` (`idMomento`, `nombre`, `ultimoCelebrado`, `fechaInicio_Inscripcion`, `fechaFin_Inscripcion`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `ACT_Momentos` (`idMomento`, `nombre`, `ultimoCelebrado`, `fechaInicio_Inscripcion`, `fechaFin_Inscripcion`, `created_at`, `updated_at`) VALUES 
 (NULL, 'Navidad', NULL, '2022-10-10 23:21:30.000000', '2022-11-10 23:21:30.000000', current_timestamp(), current_timestamp()),
 (NULL, 'Semana Ingnaciana', NULL,'2022-04-09 23:21:30.000000', '2022-04-22 23:21:30.000000', current_timestamp(), current_timestamp()),
 (NULL, 'Fiestas Escolares', NULL,'2022-05-11 23:21:30.000000','2022-05-27 23:21:30.000000', current_timestamp(), current_timestamp());
 
 
-INSERT INTO `act_actividades` (`idActividad`, `sexo`, `nombre`, `esIndividual`, `idMomento`, `numMaxParticipantes`, `fechaInicio_Actividad`,
+INSERT INTO `ACT_Actividades` (`idActividad`, `sexo`, `nombre`, `esIndividual`, `idMomento`, `numMaxParticipantes`, `fechaInicio_Actividad`,
  `fechaFin_Actividad`, `material`, `descripcion`, `idResponsable`, `tipo_Participacion`, `created_at`, `updated_at`) VALUES
  (NULL, NULL, 'Consurso de Migas', 0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
  'Productos necesarios para cocinar las migas', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
- (NULL, NULL, 'Consurso de Fotografía', 0, '1', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+ (NULL, NULL, 'Consurso de Fotografía', 1, '1', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
  NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
@@ -619,19 +620,19 @@ INSERT INTO `act_actividades` (`idActividad`, `sexo`, `nombre`, `esIndividual`, 
  'Productos necesarios para cocinar la tortilla', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
-   (NULL, NULL, 'Consurso de Fotografía', 0, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+   (NULL, NULL, 'Consurso de Fotografía', 1, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
  NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
-  (NULL, 'MX', 'Futbol',1, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+  (NULL, 'MX', 'Futbol',0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-   (NULL, 'MX', 'Futbol',1, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+   (NULL, 'MX', 'Futbol',0, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'MX', 'Futbol',1, '3', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+    (NULL, 'MX', 'Futbol',0, '3', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
@@ -669,12 +670,12 @@ NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivo
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp());
  
  
- INSERT INTO `aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
+ INSERT INTO `Aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
 (NULL, 'AdministracionEVG', 'Administración de EVG', ' app/1', 'administracion.jpg', current_timestamp(), current_timestamp()),
 (NULL, 'GestionEVG ', 'Administración de EVG', ' app/2', 'gestion.jpg', current_timestamp(), current_timestamp()),
 (NULL, 'Gestion Aplicaciones', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
 
-INSERT INTO `aplicaciones_perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `updated_at`) VALUES 
+INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `updated_at`) VALUES 
 ('1', '1', current_timestamp(), current_timestamp()),
 ('1', '2', current_timestamp(), current_timestamp()),
 ('1', '3', current_timestamp(), current_timestamp()),
