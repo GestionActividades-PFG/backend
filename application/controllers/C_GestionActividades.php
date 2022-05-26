@@ -418,10 +418,10 @@ class C_GestionActividades extends RestController
         $actividadInfo = 
             $this->M_General->seleccionar(
                 "ACT_Individuales individuales", //Tabla
-                "actividades.nombre, individuales.idActividad, individuales.idAlumno, alumno.nombre AS nombreAlumno", //Campos
+                "alumno.nombre AS nombreAlumno,seccion.codSeccion as nombreSeccion", //Campos
                 $condicion, //Condición
-                ["ACT_Actividades actividades", "Alumnos alumno"], //Tabla relación
-                ["individuales.idActividad = actividades.idActividad", "individuales.idAlumno = alumno.idAlumno"], //Relación
+                ["Alumnos alumno", "Secciones seccion"], //Tabla relación
+                ["individuales.idAlumno = alumno.idAlumno", "alumno.idSeccion = seccion.idSeccion"], //Relación
                 ['left', 'left'] //Tipo relación
             );
 
@@ -431,30 +431,30 @@ class C_GestionActividades extends RestController
     /**
      * Obtienes todas las inscripciones si no se le pasa un parámetro.
      * Campos:
-        * idAlumno -> Obtiene las actividades de un alumno (prox)
-        * idActividad -> Obtiene todos los alumnos inscritos a una actividad específica
+        * idClase -> Obtiene las actividades de una clase (prox)
+        * idActividad -> Obtiene todos las clases inscritas a una actividad específica
     *   @return Array Inscripciones
      */
     public function getInscripcionesClase_get() {
 
-        $idTutor = $this->input->get("idTutor");
+        $idActividad = $this->input->get("idActividad");
         $idClase = $this->input->get("idClase");
 
         
         $condicion = null;
 
-        if(isset($idTutor)) $condicion = "idTutor = $idTutor";
+        if(isset($idActividad)) $condicion = "clase.idActividad = $idActividad";
         if(isset($idClase)) $condicion = "Secciones.idSeccion = $idClase";
 
 
         $actividadInfo = 
             $this->M_General->seleccionar(
                 "ACT_Clase clase", //Tabla
-                "actividades.idActividad, actividades.nombre, codSeccion, Secciones.nombre AS nombreClase, idTutor", //Campos
+                "Secciones.codSeccion", //Campos
                 $condicion, //Condición
-                ["ACT_Actividades actividades", "Secciones"], //Tabla relación
-                ["clase.idActividad = actividades.idActividad", "clase.idClase = Secciones.idSeccion"], //Relación
-                ['left', 'left'] //Tipo relación
+                ["Secciones"], //Tabla relación
+                ["clase.idClase = Secciones.idSeccion"], //Relación
+                ['left'] //Tipo relación
             );
 
 		$this->response($actividadInfo, 200);
