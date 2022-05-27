@@ -152,17 +152,18 @@ class M_General extends CI_Model
 	{
 		$this -> bd -> select('idUsuario');
 		$this -> bd -> from('Usuarios');
-		$this -> bd -> where('correo='.$this->bd->escape($correo));
+		$this -> bd -> where('correo='.$this->bd->escape("$correo")); //Sí, este era el error...
 		$query = $this -> bd -> get();
 		if($query -> num_rows() > 0) 
 		{
 			$rows = $query -> result_array();
 			$idUsuario = $rows[0]['idUsuario'];
+
+			$query -> free_result();
+			
+			return $idUsuario;
 		}
-		else
-			return false;
-		$query -> free_result();
-		return $idUsuario;
+		return false;
 	}
 }
 

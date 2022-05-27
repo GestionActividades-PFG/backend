@@ -6,6 +6,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 use chriskacerguis\RestServer\RestController;
 
 require APPPATH . 'libraries/RestServer/RestController.php';
+require_once APPPATH . '/libraries/JWT/JWTGenerator.php';
+
 
 
 /**
@@ -29,6 +31,7 @@ class C_GestionActividades extends RestController
 		$this -> load -> model('M_General');
 		$this -> load -> library('google');
 		$this -> load -> library('excel');
+        $this -> load -> helper('cookie');
 
 		$data['google_login_url'] = $this -> google -> get_login_url();
 
@@ -37,14 +40,61 @@ class C_GestionActividades extends RestController
             //Decir al cliente que tiene que reedirigir al login
             //$this->response(false, 200, false);
 		}
+         
         $this->response(true, 200, true);
 	}
-
     /**
      * Método que hace re-check
      */
-    public function index_get() {}
+    public function index_get() {
+        //Check Role (comprobamos si tienes permisos para acceder al recurso)
+        $this -> jwt = new CreatorJwt();
 
+        // session_start();
+        $email = $this->session->userdata("email");
+        $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
+        
+        //JWT
+        $tokenData['id'] = $idUsuario;
+        $tokenData['role'] = 'gestor';
+        $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
+
+        $this->jwt->GenerateToken($tokenData);
+        $this->response(true, 200);
+    }
+
+    
+    /**
+     * Método para DEBUG
+     */
+    public function token_get() {
+        $token = $this->input->get("token");
+        $this->jwt = new CreatorJwt();
+
+        $decode = $this->jwt->DecodeToken($token);
+
+        $this->response($decode, 200);
+
+    }
+
+
+    /*************Use for token then fetch the data**************/
+         
+    public function GetTokenData()
+    {
+        $received_Token = $this->input->request_headers('Authorization');
+        try
+        {
+            $jwtData = $this->objOfJwt->DecodeToken($received_Token['Token']);
+            echo json_encode($jwtData);
+        }
+        catch (Exception $e)
+        {
+            http_response_code('401');
+            echo json_encode(array( "status" => false, "message" => $e->getMessage()));
+            exit;
+        }
+    }
 
 	/**
 	 * logout
