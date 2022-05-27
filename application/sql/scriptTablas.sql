@@ -357,7 +357,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Actividades_Etapas` (
 	CONSTRAINT fk_ACT_Actividades_Etapas_idActividad FOREIGN KEY ACT_Actividades_Etapas(idEtapa) REFERENCES Etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
+/*
 CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Secciones` (
 	`idActividad` TINYINT unsigned NOT NULL,
 	`idSeccion` SMALLINT UNSIGNED NOT NULL,
@@ -382,11 +382,12 @@ CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Alumnos` (
 	CONSTRAINT fk_ACT_Inscriben_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES Alumnos(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_ACT_Inscriben_Alumnos_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
+*/
 
 CREATE TABLE IF NOT EXISTS `ACT_Individuales` (
 	`idAlumno` INT unsigned NOT NULL,
 	`idActividad` TINYINT unsigned NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 
@@ -400,6 +401,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Parejas` (
 	`idPareja` INT unsigned NOT NULL,
 	`idAlumno` INT unsigned NOT NULL,
 	`idActividad` TINYINT unsigned NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 
@@ -425,6 +427,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
 CREATE TABLE IF NOT EXISTS `ACT_Clase` (
 	`idClase` SMALLINT unsigned NOT NULL,
 	`idActividad` TINYINT unsigned NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 
@@ -685,8 +688,8 @@ INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `
 
 
 INSERT INTO `ACT_Individuales` (`idActividad`, `idAlumno`) VALUES 
-(1,2),
-(3,4);
+(2,2),
+(4,4);
 
 INSERT INTO `ACT_Clase` (`idActividad`, `idClase`) VALUES 
 (1,2),
