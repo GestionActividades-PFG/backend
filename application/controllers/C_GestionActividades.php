@@ -292,34 +292,35 @@ class C_GestionActividades extends RestController
      */
     public function updateActividad_put() {
 
+		$id = $this -> input -> get('idActividad');
        
         // Obtenemos los datos del body
         $json = file_get_contents('php://input');
 
         //Decodificamos el JSON
         $data = json_decode($json);
-        
-        $id = $data->id;
+
         $datos = array(
-            'nombre' => $data->nombre,
-            "idMomento" => $data->idMomento,
-            "idResponsable" => $data->idResponsable,
-            "tipo_Participacion" => $data->tipo_Participacion
+			'nombre' => $data[0]->nombre,
+			'sexo' => $data[0]->sexo,
+			'esIndividual' => $data[0]->esIndividual,
+			"idResponsable" => $data[0]->idResponsable,
+			"tipo_Participacion" => $data[0]->tipo_Participacion,
+			"descripcion" => $data[0]->descripcion,
+			"material" => $data[0]->material,
+			"numMaxParticipantes" => $data[0]->numMaxParticipantes,
+			"fechaInicio_Actividad" => $data[0]->fechaInicio_Actividad,
+			"fechaFin_Actividad" => $data[0]->fechaFin_Actividad
         );
 
-        if($id != null) {
-
-            //Consulta SQL update
-            $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
-
-        } else 
-		    $this->response($this->momentos, 402);
+        if(isset($id)) $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
+        else $this->response($this->actividad, 401);
 
 		
 
-		$this->response($this->momentos, 200);
+		$this->response($datos, 200);
     }
-
+	
     /**
      * Método que elimina un momento
      */
@@ -391,7 +392,7 @@ class C_GestionActividades extends RestController
         //Consultas a B.D
         $actividad = $this->M_General->seleccionar(
             "ACT_Actividades", //Tabla
-            "idActividad,sexo,ACT_Actividades.nombre,esIndividual,numMaxParticipantes,fechaInicio_Actividad,fechaFin_Actividad,material,descripcion,Usuarios.nombre AS nombreUsuario,tipo_Participacion", //Campos
+            "idActividad,sexo,ACT_Actividades.nombre,esIndividual,numMaxParticipantes,fechaInicio_Actividad,fechaFin_Actividad,material,descripcion,idResponsable,Usuarios.nombre AS nombreUsuario,tipo_Participacion", //Campos
 			$condicionActividad, //Condición
 			["Usuarios"], //Tabla relación
 			["ACT_Actividades.idResponsable = Usuarios.idUsuario"], //Relación
