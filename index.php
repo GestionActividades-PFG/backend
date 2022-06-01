@@ -317,6 +317,7 @@ switch (ENVIRONMENT)
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: *');
 header('Access-Control-Allow-Methods: *');
+header("Access-Control-Expose-Headers: *");
 require APPPATH . 'libraries/RestServer/RestController.php';
 
 //require_once BASEPATH.'core/CodeIgniter.php';

@@ -59,8 +59,8 @@ class C_GestionActividades extends RestController
         $tokenData['role'] = 'gestor';
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
-        $this->jwt->GenerateToken($tokenData);
-        $this->response(true, 200);
+        $jwt = $this->jwt->GenerateToken($tokenData);
+        $this->response($jwt, 200);
     }
 
     
