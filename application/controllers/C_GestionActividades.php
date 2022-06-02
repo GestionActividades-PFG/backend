@@ -405,7 +405,7 @@ class C_GestionActividades extends RestController
     
     /**
      * ================================
-     *          INSCRIPCIONES
+     *          INSCRIPCIONES INDIVIDUALES
      * ================================
     */
 	
@@ -484,25 +484,20 @@ class C_GestionActividades extends RestController
             
     }
 	
-    public function setInscripcionClase_post() {
+	/**
+     * Método que elimina un inscripcion de alumno
+     */
+    public function removeInscripcionAlumno_delete() {
 
-        // Obtenemos los datos del body
-        $json = file_get_contents('php://input');
+        $id = $this-> input -> get("id");
 
-        //Decodificamos el JSON
-        $data = json_decode($json);
+        //Eliminar por ID
+        $this -> M_General -> borrar("act_inscriben_alumnos", $id, "idMomento");
 
-        $datos = array(
-            "idSeccion" => $data->idSeccion,
-            'idActividad' => $data->idActividad
-        );
-
-        $this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
-
-
-		$this->response(null, 200);
+		$this->response($id, 200);
     }
-
+	
+	
     /**
      * Obtienes todas las inscripciones si no se le pasa un parámetro.
      * Campos:
@@ -535,6 +530,32 @@ class C_GestionActividades extends RestController
 		$this->response($actividadInfo, 200);
     }
 
+
+/**
+ * ================================
+ *          INSCRIPCIONES CLASE
+ * ================================
+*/
+
+    public function setInscripcionClase_post() {
+
+        // Obtenemos los datos del body
+        $json = file_get_contents('php://input');
+
+        //Decodificamos el JSON
+        $data = json_decode($json);
+
+        $datos = array(
+            "idSeccion" => $data->idSeccion,
+            'idActividad' => $data->idActividad
+        );
+
+        $this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
+
+
+		$this->response(null, 200);
+    }
+	
     /**
      * Obtienes todas las inscripciones si no se le pasa un parámetro.
      * Campos:
