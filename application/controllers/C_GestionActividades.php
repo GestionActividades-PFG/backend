@@ -79,7 +79,7 @@ class C_GestionActividades extends RestController
         $tokenData['id'] = $idUsuario;
         $tokenData['role'] = $role;
         $tokenData['iat'] = time(); //Issued At
-        $tokenData['exp'] = $tokenData["iat"] + 20;
+        $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
         $tokenData["tutorCurso"] = $tutorCurso;
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
