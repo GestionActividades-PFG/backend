@@ -1,6 +1,4 @@
 <?php
-
-
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 use chriskacerguis\RestServer\RestController;
@@ -42,9 +40,12 @@ class C_GestionActividades extends RestController
 		}
          
         $this->response(true, 200, true);
-	}
+    }
+
+    
+
     /**
-     * Método que hace re-check
+     * Método que hace re-check y envía el token JWT.
      */
     public function index_get() {
         //Check Role (comprobamos si tienes permisos para acceder al recurso)
@@ -53,17 +54,41 @@ class C_GestionActividades extends RestController
         // session_start();
         $email = $this->session->userdata("email");
         $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
+
+        //Obtenemos el rango del usuario...
+        $role = $this->M_General->seleccionar(
+            "Perfiles_Usuarios pu", //Tabla
+            "nombre", //Campos
+            "pu.idUsuario = $idUsuario", //Condición
+            ["Perfiles p"], //Tabla relación
+            ["pu.idPerfil = p.idPerfil"], //Relación
+            ['left'] //Tipo relación
+        );
+
+        //Obtenemos si es tutor de algún curso...
+        $tutorCurso = $this->M_General->seleccionar(
+            "Usuarios u", //Tabla
+            "codSeccion", //Campos
+            "u.idUsuario = $idUsuario", //Condición
+            ["Secciones c"], //Tabla relación
+            ["u.idUsuario = c.idTutor"], //Relación
+            ['left'] //Tipo relación
+        );
         
-        //JWT
+        //JWT, controla la expiration y el iat
         $tokenData['id'] = $idUsuario;
-        $tokenData['role'] = 'gestor';
+        $tokenData['role'] = $role;
+        $tokenData['iat'] = time(); //Issued At
+        $tokenData['exp'] = $tokenData["iat"] + 20;
+        $tokenData["tutorCurso"] = $tutorCurso;
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
         $jwt = $this->jwt->GenerateToken($tokenData);
+
         $this->response($jwt, 200);
     }
 
-    
+   
     /**
      * Método para DEBUG
      */

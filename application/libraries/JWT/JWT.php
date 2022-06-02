@@ -66,63 +66,99 @@ class JWT
     {
         $timestamp = is_null(static::$timestamp) ? time() : static::$timestamp;
         if (empty($key)) {
-            throw new InvalidArgumentException('Key may not be empty');
+            $payload = array(
+                "errno" => 1040,
+                "message" => 'Key may not be empty'
+            );
         }
         $tks = explode('.', $jwt);
         if (count($tks) != 3) {
-            throw new UnexpectedValueException('Wrong number of segments');
+            $payload = array(
+                "errno" => 1046,
+                "message" => 'Wrong number of segments'
+            );
         }
         list($headb64, $bodyb64, $cryptob64) = $tks;
         if (null === ($header = static::jsonDecode(static::urlsafeB64Decode($headb64)))) {
-            throw new UnexpectedValueException('Invalid header encoding');
+            $payload = array(
+                "errno" => 1030,
+                "message" => 'Invalid header encoding'
+            );
         }
         if (null === $payload = static::jsonDecode(static::urlsafeB64Decode($bodyb64))) {
-            throw new UnexpectedValueException('Invalid claims encoding');
+            $payload = array(
+                "errno" => 1031,
+                "message" => 'Invalid claims encoding');
         }
         if (false === ($sig = static::urlsafeB64Decode($cryptob64))) {
-            throw new UnexpectedValueException('Invalid signature encoding');
+            $payload = array(
+                "errno" => 1010,
+                "message" => 'Invalid signature encoding');
         }
         if (empty($header->alg)) {
-            throw new UnexpectedValueException('Empty algorithm');
+            $payload = array(
+                "errno" => 1048,
+                "message" => 'Empty algorithm'
+            );
         }
         if (empty(static::$supported_algs[$header->alg])) {
-            throw new UnexpectedValueException('Algorithm not supported');
+            $payload = array(
+                "errno" => 1032,
+                "message" => 'Algorithm not supported'
+            );
         }
         if (!in_array($header->alg, $allowed_algs)) {
-            throw new UnexpectedValueException('Algorithm not allowed');
+            $payload = array(
+                "errno" => 1033,
+                "message" => 'Algorithm not allowed'
+            );
         }
         if (is_array($key) || $key instanceof \ArrayAccess) {
             if (isset($header->kid)) {
                 if (!isset($key[$header->kid])) {
-                    throw new UnexpectedValueException('"kid" invalid, unable to lookup correct key');
+                    $payload = array(
+                        "errno" => 1034,
+                        "message" => '"kid" invalid, unable to lookup correct key'
+                    );
                 }
                 $key = $key[$header->kid];
             } else {
-                throw new UnexpectedValueException('"kid" empty, unable to lookup correct key');
+                $payload = array(
+                    "errno" => 1035,
+                    "message" => '"kid" empty, unable to lookup correct key'
+                );
             }
         }
         // Check the signature
         if (!static::verify("$headb64.$bodyb64", $sig, $key, $header->alg)) {
-            throw new UnexpectedValueException('Signature verification failed');
+            $payload = array(
+                "errno" => 4024,
+                "message" => 'The signature is not valid'
+            );
         }
         // Check if the nbf if it is defined. This is the time that the
         // token can actually be used. If it's not yet that time, abort.
         if (isset($payload->nbf) && $payload->nbf > ($timestamp + static::$leeway)) {
-            throw new UnexpectedValueException(
-                'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf)
+            $payload = array(
+                "errno" => 1000,
+                "message" => 'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->nbf)
             );
         }
         // Check that this token has been created before 'now'. This prevents
         // using tokens that have been created for later use (and haven't
         // correctly used the nbf claim).
         if (isset($payload->iat) && $payload->iat > ($timestamp + static::$leeway)) {
-            throw new UnexpectedValueException(
-                'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat)
+            $payload = array(
+                "errno" => 1050,
+                "message" => 'Cannot handle token prior to ' . date(DateTime::ISO8601, $payload->iat)
             );
         }
         // Check if this token has expired.
         if (isset($payload->exp) && ($timestamp - static::$leeway) >= $payload->exp) {
-            throw new UnexpectedValueException('Expired token');
+            $payload = array(
+                "errno" => 1052,
+                "message" => 'Expired token'
+            );
         }
         return $payload;
     }

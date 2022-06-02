@@ -497,7 +497,7 @@ class C_GestionEVG extends CI_Controller
 		$datos["codCurso"] = $_POST["codCurso"];
 		$datos["nombre"] = $_POST["nombre"];
 		if(!empty($_POST['idCursoColegio']))
-			$datos["idCursoColegio"] = $_POST["idCursoColegio"];
+			$datos["idCurso"] = $_POST["idCursoColegio"];
 
 		$this -> M_General -> insertar('Cursos',$datos);
 
@@ -530,7 +530,7 @@ class C_GestionEVG extends CI_Controller
 	 */
 	public  function modificarCursoForm($idCurso)
 	{
-		$this -> datosCurso = $this -> M_General -> seleccionar('Cursos','idCursoColegio, codCurso, nombre, idEtapa','idCurso='.$idCurso);
+		$this -> datosCurso = $this -> M_General -> seleccionar('Cursos','idCurso, codCurso, nombre, idEtapa','idCurso='.$idCurso);
 		$this -> load -> view("C_Cursos/V_ModificarCurso", Array('idCurso' => $idCurso));
 	}
 	
@@ -547,7 +547,7 @@ class C_GestionEVG extends CI_Controller
 	{
 		$datos["codCurso"] = $_POST["codCurso"];
 		$datos["nombre"] = $_POST["nombre"];
-		$datos["idCursoColegio"] = $_POST["idCursoColegio"];
+		$datos["idCurso"] = $_POST["idCursoColegio"];
 
 		$this -> M_General -> modificar('Cursos',$datos,$idCurso,'idCurso');
 
@@ -565,7 +565,7 @@ class C_GestionEVG extends CI_Controller
 
 	public function asignarEtapaCursoForm($idCurso)
 	{
-		$codCurso = $this -> M_General -> seleccionar('Cursos','idCursoColegio, codCurso, nombre, idEtapa','idCurso='.$idCurso);
+		$codCurso = $this -> M_General -> seleccionar('Cursos','idCurso, codCurso, nombre, idEtapa','idCurso='.$idCurso);
 		$idEtapa = $codCurso[0]['idEtapa'];
 		$codCurso = $codCurso[0]['codCurso'];
 
