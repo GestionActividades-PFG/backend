@@ -433,7 +433,34 @@ class C_GestionActividades extends RestController
      *          INSCRIPCIONES
      * ================================
     */
+	
+	/**
+     * Método que obtiene todos los Alumnos corespondientes para añadirlos al Select.
+     */
+    public function getAlumnos_get() {
 
+        //Params del get
+        $idSeccion = $this->input->get("idSeccion");
+
+        $condicionSeccion = null;
+
+        if(isset($idSeccion)) $condicionSeccion = "alumnos.idSeccion = $idSeccion";
+
+        //Consultas a B.D
+        $nombreAlumno = $this->M_General->seleccionar(
+            "alumnos", //Tabla
+            "idAlumno,nombre", //Campos
+            $condicionSeccion, //Condición
+        );
+            
+		$this->response($nombreAlumno, 200);
+        
+            
+    }
+	
+	/**
+     * Inscribir Alumnos a Actividades.
+     */
     public function setInscripcionIndividual_post() {
 
         // Obtenemos los datos del body
@@ -447,12 +474,41 @@ class C_GestionActividades extends RestController
             "idAlumno" => $data->idAlumno
         );
 
-        $this -> M_General -> insertar("ACT_Individuales", $datos);
+        $this -> M_General -> insertar("ACT_Inscriben_Alumnos", $datos);
 
 
 		$this->response(null, 200);
     }
+	
+	/**
+     * Método que obtiene todos los Alumnos inscritos a una Actividad Individual, mostrando solo los de su tutoria.
+     */
+    public function getAlumnosInscritosTutoria_get() {
 
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+        $idSeccion = $this->input->get("idSeccion");
+
+       $condicionActividad = null;
+	   $condicionSeccion = null;
+	   
+		if(isset($idActividad) and isset($idSeccion)) $condicion = "act_inscriben_alumnos.idActividad = $idActividad and secciones.idSeccion = $idSeccion";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "act_inscriben_alumnos", //Tabla
+            "alumnos.nombre,secciones.codSeccion", //Campos
+			$condicion, //Condición
+			["alumnos","secciones"], //Tabla relación
+			["act_inscriben_alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
+			['left','left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);
+        
+            
+    }
+	
     public function setInscripcionClase_post() {
 
         // Obtenemos los datos del body
@@ -462,11 +518,11 @@ class C_GestionActividades extends RestController
         $data = json_decode($json);
 
         $datos = array(
-            "idClase" => $data->idClase,
+            "idSeccion" => $data->idSeccion,
             'idActividad' => $data->idActividad
         );
 
-        $this -> M_General -> insertar("ACT_Clase", $datos);
+        $this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
 
 
 		$this->response(null, 200);

@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS ACT_Momentos (
 
 CREATE TABLE IF NOT EXISTS `ACT_Actividades` (
 	`idActividad` TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`sexo` CHAR(2) NULL default NULL check(sexo = 'M' OR sexo = 'F' OR sexo = 'MX'),
+	`sexo` CHAR(2) NOT NULL default 'NP' check(sexo = 'M' OR sexo = 'F' OR sexo = 'MX' OR sexo = 'NP'),
 	`nombre` VARCHAR(60) NOT NULL,
 	`esIndividual` BIT NOT NULL,
 	`idMomento` TINYINT unsigned NOT NULL,
@@ -313,6 +313,84 @@ CREATE TABLE IF NOT EXISTS `ACT_Actividades` (
 	CONSTRAINT fk_ACT_Actividades_idResponsable FOREIGN KEY (idResponsable) REFERENCES Usuarios(idUsuario) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS `ACT_Individuales` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_ACT_Individuales PRIMARY KEY (`idActividad`),
+	CONSTRAINT fk_ACT_Individuales_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `ACT_Parejas` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_ACT_Parejas PRIMARY KEY (`idActividad`),
+	CONSTRAINT fk_ACT_Parejas_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `ACT_Clase` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_ACT_Clase PRIMARY KEY (`idActividad`),
+	CONSTRAINT fk_ACT_Clase_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+
+);
+
+CREATE TABLE IF NOT EXISTS `ACT_Actividades_Etapas` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	`idEtapa` TINYINT unsigned NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+	
+	CONSTRAINT PK_ACT_idActividad_idEtapa PRIMARY KEY (`idActividad`, `idEtapa`),
+	CONSTRAINT fk_ACT_Actividades_Etapas_idAlumno FOREIGN KEY ACT_Actividades_Etapas(idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Actividades_Etapas_idActividad FOREIGN KEY ACT_Actividades_Etapas(idEtapa) REFERENCES Etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Secciones` (
+	`idActividad` TINYINT unsigned NOT NULL,
+	`idSeccion` SMALLINT UNSIGNED NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+	
+	CONSTRAINT PK_ACT_Inscriben_Secciones PRIMARY KEY (`idActividad`, `idSeccion`),
+	CONSTRAINT fk_ACT_Inscriben_Secciones_idSeccion FOREIGN KEY (idSeccion) REFERENCES Secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Inscriben_Secciones_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Clase(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Alumnos` (
+	`idAlumno` INT unsigned NOT NULL,
+	`idActividad` TINYINT unsigned NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_ACT_Inscriben_Alumnos PRIMARY KEY (`idAlumno`, `idActividad`),
+	CONSTRAINT fk_ACT_Inscriben_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES Alumnos(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Inscriben_Alumnos_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Individuales(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+/*
+CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
+	`idAlumno` INT unsigned NOT NULL,
+	`idPareja` INT unsigned NOT NULL,
+	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+
+	CONSTRAINT PK_ACT_Parejas_Alumnos PRIMARY KEY (`idAlumno`,`idPareja`),
+	CONSTRAINT fk_ACT_Parejas_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES ACT_Parejas(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT fk_ACT_Parejas_Alumnos_idPareja FOREIGN KEY (idPareja) REFERENCES ACT_Parejas(idPareja) ON DELETE CASCADE ON UPDATE CASCADE
+);
+*/
+
 CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Actividad` (
 	`idEstadisticaAlumno` TINYINT unsigned NOT NULL AUTO_INCREMENT,
 	`idActividad` TINYINT unsigned NOT NULL,
@@ -329,7 +407,6 @@ CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Actividad` (
 	CONSTRAINT fk_ACT_Estadisticas_Actividades_idMomento FOREIGN KEY (idMomento) REFERENCES ACT_Momentos(idMomento) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-
 CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Totales` (
 	`idEstadisticaTotal` TINYINT unsigned NOT NULL AUTO_INCREMENT,
 	`idEtapa` TINYINT unsigned NOT NULL,
@@ -343,101 +420,6 @@ CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Totales` (
 	CONSTRAINT fk_ACT_Estadisticas_Totales_idMomento FOREIGN KEY (idMomento) REFERENCES ACT_Momentos(idMomento) ON DELETE CASCADE ON UPDATE CASCADE,
 	CONSTRAINT fk_ACT_Estadisticas_Totales_idEtapa FOREIGN KEY (idEtapa) REFERENCES Etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-
-
-CREATE TABLE IF NOT EXISTS `ACT_Actividades_Etapas` (
-	`idActividad` TINYINT unsigned NOT NULL,
-	`idEtapa` TINYINT unsigned NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-	
-	CONSTRAINT PK_ACT_idActividad_idEtapa PRIMARY KEY (`idActividad`, `idEtapa`),
-	CONSTRAINT fk_ACT_Actividades_Etapas_idAlumno FOREIGN KEY ACT_Actividades_Etapas(idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Actividades_Etapas_idActividad FOREIGN KEY ACT_Actividades_Etapas(idEtapa) REFERENCES Etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-/*
-CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Secciones` (
-	`idActividad` TINYINT unsigned NOT NULL,
-	`idSeccion` SMALLINT UNSIGNED NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-	
-	CONSTRAINT PK_ACT_Inscriben_Secciones PRIMARY KEY (`idActividad`, `idSeccion`),
-	CONSTRAINT fk_ACT_Inscriben_Secciones_idSeccion FOREIGN KEY (idSeccion) REFERENCES Secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Inscriben_Secciones_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Alumnos` (
-	`idAlumno` INT unsigned NOT NULL,
-	`idActividad` TINYINT unsigned NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_ACT_Inscriben_Alumnos PRIMARY KEY (`idAlumno`, `idActividad`),
-	CONSTRAINT fk_ACT_Inscriben_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES Alumnos(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Inscriben_Alumnos_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
-);
-*/
-
-CREATE TABLE IF NOT EXISTS `ACT_Individuales` (
-	`idAlumno` INT unsigned NOT NULL,
-	`idActividad` TINYINT unsigned NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_ACT_Individuales PRIMARY KEY (`idAlumno`, `idActividad`),
-	CONSTRAINT fk_ACT_Individuales_idAlumno FOREIGN KEY (idAlumno) REFERENCES Alumnos(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Individuales_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS `ACT_Parejas` (
-	`idPareja` INT unsigned NOT NULL,
-	`idAlumno` INT unsigned NOT NULL,
-	`idActividad` TINYINT unsigned NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_ACT_Parejas PRIMARY KEY (`idPareja`, `idAlumno`, `idActividad`),
-	CONSTRAINT fk_ACT_Parejas_idAlumno FOREIGN KEY (idAlumno) REFERENCES Alumnos(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Parejas_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
-	`idAlumno` INT unsigned NOT NULL,
-	`idPareja` INT unsigned NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_ACT_Parejas_Alumnos PRIMARY KEY (`idAlumno`,`idPareja`),
-	CONSTRAINT fk_ACT_Parejas_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES ACT_Parejas(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Parejas_Alumnos_idPareja FOREIGN KEY (idPareja) REFERENCES ACT_Parejas(idPareja) ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-
-CREATE TABLE IF NOT EXISTS `ACT_Clase` (
-	`idClase` SMALLINT unsigned NOT NULL,
-	`idActividad` TINYINT unsigned NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_ACT_Clase PRIMARY KEY (`idClase`,`idActividad`),
-	CONSTRAINT fk_ACT_Clase_idClase FOREIGN KEY (idClase) REFERENCES Secciones(idSeccion) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Clase_idActividad FOREIGN KEY (idActividad) REFERENCES ACT_Actividades(idActividad) ON DELETE CASCADE ON UPDATE CASCADE
-
-);
-
-
 
 /*-------------------------INSERT---------------------------------------*/
 
@@ -548,6 +530,25 @@ INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated
 ('4', '15', current_timestamp(), current_timestamp()),
 ('4', '16', current_timestamp(), current_timestamp());
 
+ -- Definimos ubicación de las Aplicacaiones
+ 
+ INSERT INTO `Aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
+(NULL, 'AdministracionEVG', 'Administración de EVG', ' app/1', 'administracion.jpg', current_timestamp(), current_timestamp()),
+(NULL, 'GestionEVG ', 'Administración de EVG', ' app/2', 'gestion.jpg', current_timestamp(), current_timestamp()),
+(NULL, 'Gestion Aplicaciones', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
+
+
+-- Asignamos permisos a los perfiles
+
+INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `updated_at`) VALUES 
+('1', '1', current_timestamp(), current_timestamp()),
+('1', '2', current_timestamp(), current_timestamp()),
+('1', '3', current_timestamp(), current_timestamp()),
+('2', '1', current_timestamp(), current_timestamp()),
+('2', '2', current_timestamp(), current_timestamp()),
+('2', '3', current_timestamp(), current_timestamp());
+
+
 /*5 Alumnos para cada clase: 1ESOA,1ESOB,1ESOC,2ESOA,2ESOB,2ESOC,1SMR,2SMR,1DAW,2DAW*/
 
 INSERT INTO `Alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`, `sexo`, `telefono`, `telefonoUrgencia`, `fechaNacimiento`, `created_at`, `updated_at`) VALUES 
@@ -611,19 +612,19 @@ INSERT INTO `ACT_Momentos` (`idMomento`, `nombre`, `ultimoCelebrado`, `fechaInic
 
 INSERT INTO `ACT_Actividades` (`idActividad`, `sexo`, `nombre`, `esIndividual`, `idMomento`, `numMaxParticipantes`, `fechaInicio_Actividad`,
  `fechaFin_Actividad`, `material`, `descripcion`, `idResponsable`, `tipo_Participacion`, `created_at`, `updated_at`) VALUES
- (NULL, NULL, 'Consurso de Migas', 0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+ (NULL, 'NP', 'Consurso de Migas', 0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
  'Productos necesarios para cocinar las migas', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
- (NULL, NULL, 'Consurso de Fotografía', 1, '1', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+ (NULL, 'NP', 'Consurso de Fotografía', 1, '1', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
  NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
- (NULL, NULL, 'Consurso de Tortilla', 0, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+ (NULL, 'NP', 'Consurso de Tortilla', 0, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
  'Productos necesarios para cocinar la tortilla', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
-   (NULL, NULL, 'Consurso de Fotografía', 1, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+   (NULL, 'NP', 'Consurso de Fotografía', 1, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
  NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
@@ -655,55 +656,131 @@ NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivo
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'F', 'Balonmano',1, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+     (NULL, 'F', 'Carrera',1, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'F', 'Balonmano',1, '3', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+      (NULL, 'F', 'Balonmano',0, '3', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'MX', 'Tenis',1, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+      (NULL, 'MX', 'Tenis',0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp()),
-       (NULL, 'MX', 'Tenis',1, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+       (NULL, 'MX', 'Tenis',0, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp());
  
  
- INSERT INTO `Aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
-(NULL, 'AdministracionEVG', 'Administración de EVG', ' app/1', 'administracion.jpg', current_timestamp(), current_timestamp()),
-(NULL, 'GestionEVG ', 'Administración de EVG', ' app/2', 'gestion.jpg', current_timestamp(), current_timestamp()),
-(NULL, 'Gestion Aplicaciones', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
+ -- Definimos el tipo de Actividad (Individuales,Clase o de Pareja)
 
-INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `updated_at`) VALUES 
-('1', '1', current_timestamp(), current_timestamp()),
-('1', '2', current_timestamp(), current_timestamp()),
-('1', '3', current_timestamp(), current_timestamp()),
-('2', '1', current_timestamp(), current_timestamp()),
-('2', '2', current_timestamp(), current_timestamp()),
-('2', '3', current_timestamp(), current_timestamp());
+INSERT INTO `ACT_Individuales` (`idActividad`) VALUES 
+(2),
+(4),
+(8),
+(9),
+(10),
+(11),
+(12);
+
+INSERT INTO `ACT_Clase` (`idActividad`) VALUES 
+(1),
+(3),
+(5),
+(6),
+(7);
+
+INSERT INTO `ACT_Parejas` (`idActividad`) VALUES 
+(13),
+(14),
+(15);
+ 
+  -- Asignamos Actividades a las Etapas
+ 
+ INSERT INTO `ACT_Actividades_Etapas` (`idActividad`, `idEtapa`) VALUES 
+(1,1),
+(3,1),
+(5,3),
+(6,3),
+(7,3),
+(2,1),
+(4,1),
+(8,1),
+(9,3),
+(10,3),
+(11,3),
+(12,2),
+(13,2),
+(14,2),
+(15,2);
+ 
 
 
-INSERT INTO `ACT_Individuales` (`idActividad`, `idAlumno`) VALUES 
-(2,2),
-(4,4);
-
-INSERT INTO `ACT_Clase` (`idActividad`, `idClase`) VALUES 
-(1,2),
-(3,4);
-
--- Agregamos las parejas
-
-INSERT INTO `ACT_Parejas` (`idPareja`, `idActividad`, `idAlumno`) VALUES 
-(1,4,1),
-(2,4,2),
-(3,4,3),
-(4,4,4);
+/*
+-- Agregamos parejas
 
 INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES 
 (1,2),
 (3,4);
+*/
 
+ -- Inscripciones por Clase
+ 
+ INSERT INTO `ACT_Inscriben_Secciones` (`idActividad`, `idSeccion`) VALUES 
+(1,2),
+(3,2),
+(5,12),
+(6,12),
+(7,2),
+(1,12),
+(3,12),
+(5,16),
+(6,16),
+(7,14),
+(1,16),
+(3,16),
+(5,15),
+(6,14),
+(7,10);
+
+ -- Inscripciones Individuales
+ 
+ INSERT INTO `ACT_Inscriben_Alumnos` (`idActividad`, `idAlumno`) VALUES 
+(2,1),
+(2,5),
+(2,16),
+(2,18),
+(2,11),
+(4,11),
+(4,12),
+(4,2),
+(4,3),
+(4,5),
+(8,12),
+(8,17),
+(8,19),
+(8,20),
+(8,22),
+(9,1),
+(9,2),
+(9,8),
+(9,9),
+(9,27),
+(10,28),
+(10,22),
+(10,21),
+(10,20),
+(10,25),
+(11,16),
+(11,26),
+(11,28),
+(11,3),
+(11,30),
+(12,31),
+(12,32),
+(12,22),
+(12,7),
+(12,28);
+ 
