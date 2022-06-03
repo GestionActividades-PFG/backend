@@ -469,13 +469,13 @@ class C_GestionActividades extends RestController
         //Decodificamos el JSON
         $data = json_decode($json);
 
-        $datos = array(
-            'idActividad' => $data->idActividad,
-            "idAlumno" => $data->idAlumno
-        );
-
-        $this -> M_General -> insertar("ACT_Inscriben_Alumnos", $datos);
-
+		foreach ($data->idAlumno as $idAlumno){
+			$datos = array(
+				'idActividad' => $data->idActividad,
+				"idAlumno" => $idAlumno
+			);
+			$this -> M_General -> insertar("ACT_Inscriben_Alumnos", $datos);
+		}
 
 		$this->response(null, 200);
     }
@@ -497,7 +497,7 @@ class C_GestionActividades extends RestController
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
             "ACT_Inscriben_Alumnos", //Tabla
-            "alumnos.nombre,secciones.codSeccion", //Campos
+            "alumnos.idAlumno,alumnos.nombre,secciones.codSeccion", //Campos
 			$condicion, //Condición
 			["Alumnos","secciones"], //Tabla relación
 			["ACT_Inscriben_Alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
