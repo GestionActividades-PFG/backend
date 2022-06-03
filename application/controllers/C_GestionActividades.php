@@ -492,15 +492,15 @@ class C_GestionActividades extends RestController
        $condicionActividad = null;
 	   $condicionSeccion = null;
 	   
-		if(isset($idActividad) and isset($idSeccion)) $condicion = "act_inscriben_alumnos.idActividad = $idActividad and secciones.idSeccion = $idSeccion";
+		if(isset($idActividad) and isset($idSeccion)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and secciones.idSeccion = $idSeccion";
 
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
-            "act_inscriben_alumnos", //Tabla
+            "ACT_Inscriben_Alumnos", //Tabla
             "alumnos.nombre,secciones.codSeccion", //Campos
 			$condicion, //Condición
-			["alumnos","secciones"], //Tabla relación
-			["act_inscriben_alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
+			["Alumnos","secciones"], //Tabla relación
+			["ACT_Inscriben_Alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
 			['left','left'] //Tipo relación
         );
             
@@ -514,12 +514,13 @@ class C_GestionActividades extends RestController
      */
     public function removeInscripcionAlumno_delete() {
 
-        $id = $this-> input -> get("id");
+        $idActividad = $this-> input -> get("idActividad");
+        $idAlumno = $this-> input -> get("idAlumno");
 
         //Eliminar por ID
-        $this -> M_General -> borrar("act_inscriben_alumnos", $id, "idMomento");
+        $this -> M_General -> borrarCompuesta("ACT_Inscriben_Alumnos", $idAlumno, $idActividad, "idAlumno" , "idActividad");
 
-		$this->response($id, 200);
+		$this->response(true, 200);
     }
 	
 	
@@ -556,11 +557,11 @@ class C_GestionActividades extends RestController
     }
 
 
-/**
- * ================================
- *          INSCRIPCIONES CLASE
- * ================================
-*/
+    /**
+     * ====================================
+     *          INSCRIPCIONES CLASE
+     * ====================================
+    */
 
     public function setInscripcionClase_post() {
 
@@ -579,6 +580,20 @@ class C_GestionActividades extends RestController
 
 
 		$this->response(null, 200);
+    }
+
+    /**
+     * Método que elimina un inscripcion de alumno
+     */
+    public function removeInscripcionClase_delete() {
+
+        $idActividad = $this-> input -> get("idActividad");
+        $idSeccion = $this-> input -> get("idSeccion");
+
+        //Eliminar por ID
+        $this -> M_General -> borrarCompuesta("ACT_Inscriben_Secciones", $idSeccion, $idActividad, "idSeccion" , "idActividad");
+
+		$this->response(true, 200);
     }
 	
     /**
@@ -611,6 +626,46 @@ class C_GestionActividades extends RestController
             );
 
 		$this->response($actividadInfo, 200);
+    }
+
+    /**
+     * Obtienes todas las inscripciones si no se le pasa un parámetro.
+     * Campos:
+        * tipoInscripcion -> 'c' Clase, 'i' Individual
+        * idAlumno -> Id del alumno a insertar a la actividad
+        * idClase -> Id de la clase a insertar
+        * idActividad -> Obtiene todos los alumnos inscritos a una actividad específica
+    *   @return Array Inscripciones
+     */
+    public function altaInscripcionIndividual_post() {
+
+        $idAlumno = $this->input->get("idAlumno");
+        $idActividad = $this->input->get("idActividad");
+        $idClase = $this->input->get("idClase");
+        $tipoInscripcion = $this->input->get("tipoInscripcion");
+        
+        $condicion = null;
+        
+        if(!isset($tipoInscripcion)) $this->response(null, 400);
+        if(isset($idActividad)) $condicion = "individuales.idActividad = $idActividad";
+        if(isset($idAlumno)) $condicion = "alumno.idAlumno = $idAlumno";
+
+        $datos = null;
+        
+        if($tipoInscripcion == "C")
+            $datos = array(
+                ""
+            );
+        else if($tipoInscripcion =="I")
+            $datos = array(
+                ""
+            );
+
+
+        $this -> M_General -> insertar("ACT_Clase", $datos);
+
+
+		$this->response(null, 200);
     }
 
 
