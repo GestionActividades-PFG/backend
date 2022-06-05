@@ -7,15 +7,13 @@ class CreatorJwt
 
     /*************This function generate token private key**************/ 
 
-    PRIVATE $key = "CAMBIAR_CLAVE_PONER_MAS_DE_20_CARACTERES"; 
+    PRIVATE $key = "1234567890abcdefghijklmnñopqrstuvwxyzABCDEFGHIJKLMNÑOPQRSTUVWXYZ**^evg.es^*&*fundacionloyola.es"; 
     /**
      * @param data Datos a añadir en el JWT.
      */
     public function GenerateToken($data)
     {          
-        $jwt = JWT::encode($data, $this->key);
-        header("Authorization: bearer " . $jwt);
-        return $jwt;
+        return JWT::encode($data, $this->key);
     }
     
 

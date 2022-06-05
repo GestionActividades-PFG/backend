@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 19;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -668,7 +668,65 @@ class C_GestionActividades extends RestController
 		$this->response(null, 200);
     }
 
+    /**
+	 * Generar PDF
+	 * 
+	 * Genera un pdf, con los datos pasados al método por medio de BODY.
+     * 
+	 * @return void
+	 */
+	public function generarPDF_get()
+	{
+		include_once('application/TFPDF/tfpdf.php');
 
+		$datos = $this -> M_General -> seleccionar('Secciones s','s.nombre, u.correo', null, ['Usuarios u'], ['s.idTutor=u.idUsuario'], ['left']);
+		
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos", //Tabla
+            "alumnos.nombre,secciones.codSeccion", //Campos
+			$condicion, //Condición
+			["Alumnos","secciones"], //Tabla relación
+			["ACT_Inscriben_Alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
+			['left','left'] //Tipo relación
+        );
+        
+        //echo $inscritos;
+
+        $pdf = new TFPDF('P', 'mm', 'A4'); /*Crea el objeto FPDPF*/
+        $pdf -> SetTitle('Listado de Inscritos a');
+        $pdf -> SetDrawColor(0, 0, 0); /*Color de los Bordes*/
+        $pdf -> SetTextColor(0, 0, 0); /*Color del Texto*/
+        $pdf -> AddPage(); /*Añade una página*/
+        $pdf -> AddFont('DejaVu','','DejaVuSans-Bold.ttf',true); /*Establece el estilo de letra*/
+        $pdf -> SetFont('DejaVu','',7); /*Establece el estilo de letra*/
+        $pdf -> Cell(0, 10, 'LISTADO DE INSCRITOS - ' . date('d/m/Y'), 0, 0, 'R'); /*Encabezado del PDF*/
+        $pdf -> Image(base_url().'uploads/iconos/escudo-evg.png', 10, 10, 45); /*Logo EVG*/
+        $pdf -> SetMargins(10, 10, 40); /*Establecer márgenes*/
+        $pdf -> Ln(20); /*Salto de linea*/
+
+        $pdf -> Cell(95, 10, 'SECCIÓN', 1, 0, 'C'); /*$pdf->Cell(ancho, alto, valor a escribir, borde, salto de linea, 'alineamiento');*/
+        $pdf -> Cell(95, 10, 'TUTOR', 1, 1, 'C');
+		if(!empty($inscritos)) 
+		{
+			
+			
+
+			foreach ($inscritos as $indice => $valor) 
+			{
+				$pdf -> Cell(95, 10, $indice, 1, 0, 'C');
+				if (!empty($valor))
+					$pdf -> Cell(95, 10, $valor, 1, 1, 'C');
+				else
+					$pdf -> Cell(95, 10, '-', 1, 1, 'C');
+			}
+		}
+		else
+		{
+			$pdf->Cell(95,10, "Todavía no hay datos...", 1, 1, 'C');
+		}
+        //Redireccionamos a la URL para el pdf
+        $this->response($pdf -> Output("I"), 200);
+	}
 	
 	//Ejemplo de funcionamiento de la Rest API HTTP...
 	/*public function users_get()
