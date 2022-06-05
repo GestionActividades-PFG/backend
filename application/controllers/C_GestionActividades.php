@@ -467,7 +467,7 @@ class C_GestionActividades extends RestController
     public function getAlumnosCoordinador_get() {
 
         //Params del get
-        $idEtapa = $this->input->get(idEtapa);
+        $idEtapa = $this->input->get("idEtapa");
 
         $condicionEtapa = null;
 
