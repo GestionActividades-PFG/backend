@@ -429,9 +429,9 @@ class C_GestionActividades extends RestController
     }
     
     /**
-     * ================================
+     * ===========================================
      *          INSCRIPCIONES INDIVIDUALES
-     * ================================
+     * ===========================================
     */
 	
 	/**
@@ -453,8 +453,7 @@ class C_GestionActividades extends RestController
 			$condicionSeccion, //Condición
 			["Secciones"], //Tabla relación
 			["Alumnos.idSeccion = Secciones.idSeccion"], //Relación
-			['left'], //Tipo relación
-			"Alumnos.nombre" //Ordernación
+			['left'] //Tipo relación
 			
         );
 		         
@@ -481,8 +480,7 @@ class C_GestionActividades extends RestController
 			$condicionEtapa, //Condición
 			["Secciones","Cursos"], //Tabla relación
 			["Alumnos.idSeccion = Secciones.idSeccion","Cursos.idCurso=Secciones.idCurso"], //Relación
-			['left','left'], //Tipo relación
-			"Alumnos.nombre" //Ordernación
+			['left','left'] //Tipo relación
 			
         );
 		         
@@ -533,8 +531,7 @@ class C_GestionActividades extends RestController
 			$condicion, //Condición
 			["Alumnos","Secciones"], //Tabla relación
 			["ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno","Alumnos.idSeccion = Secciones.idSeccion"], //Relación
-			['left','left'], //Tipo relación
-			"Alumnos.nombre " //Ordernación
+			['left','left'] //Tipo relación
         );
             
 		$this->response($inscritos, 200);
@@ -562,8 +559,7 @@ class C_GestionActividades extends RestController
 			$condicion, //Condición
 			["Alumnos","Secciones","Cursos"], //Tabla relación
 			["ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno","Alumnos.idSeccion = Secciones.idSeccion","Secciones.idCurso=Cursos.idCurso"], //Relación
-			['left','left','left'], //Tipo relación
-			"Alumnos.nombre and Secciones.codSeccion" //Ordernación
+			['left','left','left'] //Tipo relación
         );
             
 		$this->response($inscritos, 200);
