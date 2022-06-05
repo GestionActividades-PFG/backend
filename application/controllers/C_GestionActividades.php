@@ -429,32 +429,63 @@ class C_GestionActividades extends RestController
     }
     
     /**
-     * ================================
+     * ===========================================
      *          INSCRIPCIONES INDIVIDUALES
-     * ================================
+     * ===========================================
     */
 	
 	/**
-     * Método que obtiene todos los Alumnos corespondientes para añadirlos al Select.
+     * Método que obtiene todos los Alumnos corespondientes al tutor para añadirlos al Select.
      */
-    public function getAlumnos_get() {
+    public function getAlumnosTutor_get() {
 
         //Params del get
-        $idSeccion = $this->input->get("idSeccion");
+        $codSeccion = $this->input->get("codSeccion");
 
         $condicionSeccion = null;
 
-        if(isset($idSeccion)) $condicionSeccion = "alumnos.idSeccion = $idSeccion";
+        if(isset($codSeccion)) $condicionSeccion = "Secciones.codSeccion = $codSeccion";
 
         //Consultas a B.D
-        $nombreAlumno = $this->M_General->seleccionar(
-            "alumnos", //Tabla
-            "idAlumno,nombre", //Campos
-            $condicionSeccion, //Condición
+        $nombresAlumnos = $this->M_General->seleccionar(
+            "Alumnos", //Tabla
+            "Alumnos.idAlumno,Alumnos.nombre", //Campos
+			$condicionSeccion, //Condición
+			["Secciones"], //Tabla relación
+			["Alumnos.idSeccion = Secciones.idSeccion"], //Relación
+			['left'] //Tipo relación
+			
         );
+		         
+		$this->response($nombresAlumnos, 200);      
             
-		$this->response($nombreAlumno, 200);
-        
+    }
+		
+	/**
+     * Método que obtiene todos los Alumnos corespondientes al coordinador para añadirlos al Select.
+     */
+    public function getAlumnosCoordinador_get() {
+
+        //Params del get
+        $idEtapa = $this->input->get(idEtapa);
+
+        $condicionEtapa = null;
+
+        if(isset($idEtapa)) $condicionEtapa = "Cursos.idEtapa = $idEtapa";
+
+        //Consultas a B.D
+        $nombresAlumnos = $this->M_General->seleccionar(
+            "Alumnos", //Tabla
+            "Alumnos.idAlumno,Alumnos.nombre", //Campos
+			$condicionEtapa, //Condición
+			["Secciones","Cursos"], //Tabla relación
+			["Alumnos.idSeccion = Secciones.idSeccion","Cursos.idCurso=Secciones.idCurso"], //Relación
+			['left','left'] //Tipo relación
+			
+        );
+		         
+		$this->response($nombresAlumnos, 200);      
+		
             
     }
 	
@@ -487,26 +518,52 @@ class C_GestionActividades extends RestController
 
         //Params del get
 		$idActividad = $this->input->get("idActividad");
-        $idSeccion = $this->input->get("idSeccion");
+        $codSeccion = $this->input->get("codSeccion");
 
-       $condicionActividad = null;
-	   $condicionSeccion = null;
+	   $condicion = null;
 	   
-		if(isset($idActividad) and isset($idSeccion)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and secciones.idSeccion = $idSeccion";
+		if(isset($idActividad) and isset($codSeccion)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Secciones.codSeccion = $codSeccion";
 
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
             "ACT_Inscriben_Alumnos", //Tabla
-            "alumnos.idAlumno,alumnos.nombre,secciones.codSeccion", //Campos
+            "Alumnos.idAlumno,Alumnos.nombre,Secciones.codSeccion", //Campos
 			$condicion, //Condición
-			["Alumnos","secciones"], //Tabla relación
-			["ACT_Inscriben_Alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
+			["Alumnos","Secciones"], //Tabla relación
+			["ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno","Alumnos.idSeccion = Secciones.idSeccion"], //Relación
 			['left','left'] //Tipo relación
         );
             
 		$this->response($inscritos, 200);
         
             
+    }
+	
+	/**
+     * Método que obtiene todos los Alumnos inscritos a una Actividad Individual, mostrando solo los de su cooridinación.
+     */
+    public function getAlumnosInscritosCoordinador_get() {
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+        $idEtapa = $this->input->get("idEtapa");
+
+	   $condicion = null;
+	   
+		if(isset($idActividad) and isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos", //Tabla
+            "Alumnos.idAlumno,Alumnos.nombre,Secciones.codSeccion", //Campos
+			$condicion, //Condición
+			["Alumnos","Secciones","Cursos"], //Tabla relación
+			["ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno","Alumnos.idSeccion = Secciones.idSeccion","Secciones.idCurso=Cursos.idCurso"], //Relación
+			['left','left','left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);
+        
     }
 	
 	/**
