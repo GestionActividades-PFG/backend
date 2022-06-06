@@ -424,8 +424,9 @@ CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Totales` (
 /*-------------------------INSERT---------------------------------------*/
 
 /*
---	Manuela(17) --> Gestora
---	Esperanza(18),Sergio(19) , Luis(20) Y Isa(21) --> ADMIN
+--	coordinador eso(21)-->COORDINADOR ESO  y ISA(23)-->COORDINADORA CF
+--	Esperanza(18),Sergio(19) , Luis(20), Isa(23) y Manu(24) --> ADMIN
+-- 	tutor 1esob(22) --> TUTOR 1ESOB
 */
 
 INSERT INTO `Usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `created_at`, `updated_at`) VALUES 
@@ -449,13 +450,16 @@ INSERT INTO `Usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `create
 (NULL, 'Esperanza Rodríguez Martínez', 'erodriguezmartinez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
 (NULL, 'Sergio Matamoros Delgado', 'smatamorosdelgado.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
 (NULL, 'Luis Marzal de la Concepción', 'lmarzalconcepcion.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
-(NULL, 'Isabel Muñoz', 'imunoz@fundacionloyola.es', '', current_timestamp(), current_timestamp());
+(NULL, 'coordinador eso', 'gacoordinador@gmail.com', '', current_timestamp(), current_timestamp()),
+(NULL, 'tutor 1esob', 'gatutor1esob@gmail.com', '', current_timestamp(), current_timestamp()),
+(NULL, 'Isabel Muñoz', 'imunoz@fundacionloyola.es', '', current_timestamp(), current_timestamp()),
+(NULL, 'Manuel Solis Gomez', 'msolisgomez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp());
 
 
 INSERT INTO `Etapas` (`idEtapa`, `codEtapa`, `nombre`, `idCoordinador`, `created_at`, `updated_at`) VALUES 
-(NULL, 'ESO', 'Educación Secundaria Obligatoria', '17', current_timestamp(), current_timestamp()),
+(NULL, 'ESO', 'Educación Secundaria Obligatoria', '21', current_timestamp(), current_timestamp()),
 (NULL, 'BACH', 'Bachillerato', '17', current_timestamp(), current_timestamp()),
-(NULL, 'CF', 'Ciclo Formativo', '17', current_timestamp(), current_timestamp());
+(NULL, 'CF', 'Ciclo Formativo', '23', current_timestamp(), current_timestamp());
 
 
 INSERT INTO `Cursos` (`idCurso`, `codCurso`, `nombre`, `idEtapa`, `created_at`, `updated_at`) VALUES 
@@ -473,7 +477,7 @@ INSERT INTO `Cursos` (`idCurso`, `codCurso`, `nombre`, `idEtapa`, `created_at`, 
 
 INSERT INTO `Secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurso`, `created_at`, `updated_at`) VALUES 
 (NULL, '1ESOA', '1º Educación Secundaria Obligatoria A', '1', '1', current_timestamp(), current_timestamp()),
-(NULL, '1ESOB', '1º Educación Secundaria Obligatoria B', '2', '1', current_timestamp(), current_timestamp()),
+(NULL, '1ESOB', '1º Educación Secundaria Obligatoria B', '22', '1', current_timestamp(), current_timestamp()),
 (NULL, '1ESOC', '1º Educación Secundaria Obligatoria C', '3', '1', current_timestamp(), current_timestamp()),
 (NULL, '2ESOA', '2º Educación Secundaria Obligatoria A', '4', '2', current_timestamp(), current_timestamp()),
 (NULL, '2ESOB', '2º Educación Secundaria Obligatoria B', '5', '2', current_timestamp(), current_timestamp()),
@@ -491,12 +495,19 @@ INSERT INTO `Secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurs
 
 
 INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated_at`) VALUES 
-('1', '21', current_timestamp(), current_timestamp()),
+('2', '24', current_timestamp(), current_timestamp()),
+('3', '24', current_timestamp(), current_timestamp()),
+('2', '23', current_timestamp(), current_timestamp()),
+('3', '23', current_timestamp(), current_timestamp()),
 ('1', '18', current_timestamp(), current_timestamp()),
 ('1', '19', current_timestamp(), current_timestamp()),
 ('1', '20', current_timestamp(), current_timestamp()),
 ('2', '17', current_timestamp(), current_timestamp()),
 ('3', '17', current_timestamp(), current_timestamp()),
+('2', '21', current_timestamp(), current_timestamp()),
+('3', '21', current_timestamp(), current_timestamp()),
+('4', '22', current_timestamp(), current_timestamp()),
+('3', '22', current_timestamp(), current_timestamp()),
 ('3', '1', current_timestamp(), current_timestamp()),
 ('3', '2', current_timestamp(), current_timestamp()),
 ('3', '3', current_timestamp(), current_timestamp()),
@@ -546,6 +557,8 @@ INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `
 ('1', '3', current_timestamp(), current_timestamp()),
 ('2', '1', current_timestamp(), current_timestamp()),
 ('2', '2', current_timestamp(), current_timestamp()),
+('3', '3', current_timestamp(), current_timestamp()),
+('4', '3', current_timestamp(), current_timestamp()),
 ('2', '3', current_timestamp(), current_timestamp());
 
 
