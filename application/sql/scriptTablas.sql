@@ -379,15 +379,15 @@ CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Alumnos` (
 
 /*
 CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
-	`idAlumno` INT unsigned NOT NULL,
-	`idPareja` INT unsigned NOT NULL,
-	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
-
-	CONSTRAINT PK_ACT_Parejas_Alumnos PRIMARY KEY (`idAlumno`,`idPareja`),
-	CONSTRAINT fk_ACT_Parejas_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES ACT_Parejas(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
-	CONSTRAINT fk_ACT_Parejas_Alumnos_idPareja FOREIGN KEY (idPareja) REFERENCES ACT_Parejas(idPareja) ON DELETE CASCADE ON UPDATE CASCADE
+--	`idAlumno` INT unsigned NOT NULL,
+--	`idPareja` INT unsigned NOT NULL,
+--	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+--	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+--	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
+--
+--	CONSTRAINT PK_ACT_Parejas_Alumnos PRIMARY KEY (`idAlumno`,`idPareja`),
+--	CONSTRAINT fk_ACT_Parejas_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES ACT_Parejas(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
+--	CONSTRAINT fk_ACT_Parejas_Alumnos_idPareja FOREIGN KEY (idPareja) REFERENCES ACT_Parejas(idPareja) ON DELETE CASCADE ON UPDATE CASCADE
 );
 */
 
@@ -697,7 +697,7 @@ INSERT INTO `ACT_Parejas` (`idActividad`) VALUES
 (14),
 (15);
  
-  -- Asignamos Actividades a las Etapas
+-- Asignamos Actividades a las Etapas
  
  INSERT INTO `ACT_Actividades_Etapas` (`idActividad`, `idEtapa`) VALUES 
 (1,1),

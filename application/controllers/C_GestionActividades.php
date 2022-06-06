@@ -80,7 +80,7 @@ class C_GestionActividades extends RestController
         $tokenData['role'] = $role;
         $tokenData['iat'] = time(); //Issued At
         $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
-        $tokenData["tutorCurso"] = $tutorCurso;
+        $tokenData["tutorCurso"] = $tutorCurso[0];
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
         $jwt = $this->jwt->GenerateToken($tokenData);
@@ -550,7 +550,7 @@ class C_GestionActividades extends RestController
 
 	   $condicion = null;
 	   
-		if(isset($idActividad) and isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
+		if(isset($idActividad) && isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
 
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
