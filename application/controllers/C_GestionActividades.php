@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 24;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 16;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -64,15 +64,15 @@ class C_GestionActividades extends RestController
             ["pu.idPerfil = p.idPerfil"], //Relación
             ['left'] //Tipo relación
         );
-
+        
         //Obtenemos si es tutor de algún curso...
         $tutorCurso = $this->M_General->seleccionar(
-            "Usuarios u", //Tabla
+            "act_inscriben_alumnos aia", //Tabla
             "codSeccion", //Campos
-            "u.idUsuario = $idUsuario", //Condición
-            ["Secciones c"], //Tabla relación
-            ["u.idUsuario = c.idTutor"], //Relación
-            ['left'] //Tipo relación
+            "s.idTutor = $idUsuario", //Condición
+            ["Alumnos al", "Secciones s"], //Tabla relación
+            ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
+            ['left', 'left'] //Tipo relación
         );
         
         //JWT, controla la expiration y el iat
