@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 22;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 21;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -64,15 +64,15 @@ class C_GestionActividades extends RestController
             ["pu.idPerfil = p.idPerfil"], //Relación
             ['left'] //Tipo relación
         );
-
+        
         //Obtenemos si es tutor de algún curso...
         $tutorCurso = $this->M_General->seleccionar(
-            "Usuarios u", //Tabla
+            "act_inscriben_alumnos aia", //Tabla
             "codSeccion", //Campos
-            "u.idUsuario = $idUsuario", //Condición
-            ["Secciones c"], //Tabla relación
-            ["u.idUsuario = c.idTutor"], //Relación
-            ['left'] //Tipo relación
+            "s.idTutor = $idUsuario", //Condición
+            ["Alumnos al", "Secciones s"], //Tabla relación
+            ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
+            ['left', 'left'] //Tipo relación
         );
         
         //JWT, controla la expiration y el iat
@@ -80,7 +80,7 @@ class C_GestionActividades extends RestController
         $tokenData['role'] = $role;
         $tokenData['iat'] = time(); //Issued At
         $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
-        $tokenData["tutorCurso"] = $tutorCurso;
+        $tokenData["tutorCurso"] = $tutorCurso[0];
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
         $jwt = $this->jwt->GenerateToken($tokenData);
@@ -244,6 +244,22 @@ class C_GestionActividades extends RestController
      * ================================
     */
 
+
+	/**
+     * Método que obtiene las etapas
+     */
+    public function getEtapas_get() {
+
+        //Consultas a B.D
+        $etapas = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa,codEtapa"//Campos
+        );
+
+        $this->response($etapas, 200);
+           
+    }
+	
      /**
      * Método que obtiene todas las actividades disponibles.
      */
@@ -306,10 +322,22 @@ class C_GestionActividades extends RestController
                 "numMaxParticipantes" => $data->numMaxParticipantes,
                 "fechaInicio_Actividad" => $data->fechaInicio_Actividad,
                 "fechaFin_Actividad" => $data->fechaFin_Actividad
-            ));
+            ));	
 		
-        
+		//HAY QUE OBTENER EL IDACTIVIDAD DE LA CONSULTA ANTERIOR, PARA USARLO EN LA SIGUIENTE (PUESTO A CAPÓN EL 25)
+		
+		//Insertamos la actividad junto con las etapas seleccionadas a Act_Actividades_Etapas
+		foreach ($data->idEtapa as $idEtapa){
+			$datos = array(
+				'idActividad' => 25,
+				"idEtapa" => $idEtapa
+			);
+			$this -> M_General -> insertar("Act_Actividades_Etapas", $datos);
+		}	
+
 		$this->response(null, 200);
+		
+		
     }
 	
     /**
@@ -550,7 +578,7 @@ class C_GestionActividades extends RestController
 
 	   $condicion = null;
 	   
-		if(isset($idActividad) and isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
+		if(isset($idActividad) && isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
 
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
