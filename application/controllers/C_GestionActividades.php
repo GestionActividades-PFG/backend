@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 19;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 6;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -686,14 +686,15 @@ class C_GestionActividades extends RestController
 
         //Decodificamos el JSON
         $data = json_decode($json);
+        
 
-        $datos = array(
-            "idSeccion" => $data->idSeccion,
-            'idActividad' => $data->idActividad
-        );
-
-        $this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
-
+        foreach ($data as $idSeccion){
+			$datos = array(
+				'idActividad' => $idSeccion->idActividad,
+				"idSeccion" => $idSeccion->idSeccion
+			);
+			$this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
+		}
 
 		$this->response(null, 200);
     }
