@@ -15,7 +15,7 @@ require_once APPPATH . '/libraries/JWT/JWTGenerator.php';
  * 
  * Esta clase no contiene las vistas de CodeIgniter, se accede a los métodos mediante AJAX.
  * 
- * @author Sergio Matamoros Delgado
+ * @author Sergio Matamoros Delgado, Esperanza Rodríguez Martinez
  */
 class C_GestionActividades extends RestController 
 {
@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 21;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 19;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -243,24 +243,8 @@ class C_GestionActividades extends RestController
      *          ACTIVIDADES
      * ================================
     */
-
-
-	/**
-     * Método que obtiene las etapas
-     */
-    public function getEtapas_get() {
-
-        //Consultas a B.D
-        $etapas = $this->M_General->seleccionar(
-            "Etapas", //Tabla
-            "idEtapa,codEtapa"//Campos
-        );
-
-        $this->response($etapas, 200);
-           
-    }
 	
-     /**
+    /**
      * Método que obtiene todas las actividades disponibles.
      */
     public function getActividades_get() {
@@ -284,11 +268,18 @@ class C_GestionActividades extends RestController
             ['left'], //Tipo relación
             "ACT_Momentos.nombre" //Agrupar
         );
+
+        //Consultas a B.D
+        $etapas = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa, codEtapa"//Campos
+        );
             
         $actividades = array(
             "id" => $idMomento,
             "nombre" => $nombreMomento[0]["nombre"],
-            "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento))
+            "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento)),
+            "etapas" => $etapas
         );
 
 
@@ -308,8 +299,8 @@ class C_GestionActividades extends RestController
         $data = json_decode($json);
 
 
-        //Insertamos los datos pasados por el cliente...
-        $this -> M_General -> insertar('ACT_Actividades', 
+        //Insertamos los datos pasados por el cliente y recogemos el id de la actividad...
+        $idActividad = $this -> M_General -> insertar('ACT_Actividades', 
             array(
                 'nombre' => $data->nombre,
 				'sexo' => $data->sexo,
@@ -322,22 +313,19 @@ class C_GestionActividades extends RestController
                 "numMaxParticipantes" => $data->numMaxParticipantes,
                 "fechaInicio_Actividad" => $data->fechaInicio_Actividad,
                 "fechaFin_Actividad" => $data->fechaFin_Actividad
-            ));	
-		
-		//HAY QUE OBTENER EL IDACTIVIDAD DE LA CONSULTA ANTERIOR, PARA USARLO EN LA SIGUIENTE (PUESTO A CAPÓN EL 25)
+            ));
+            
 		
 		//Insertamos la actividad junto con las etapas seleccionadas a Act_Actividades_Etapas
 		foreach ($data->idEtapa as $idEtapa){
 			$datos = array(
-				'idActividad' => 25,
+				'idActividad' => $idActividad,
 				"idEtapa" => $idEtapa
 			);
-			$this -> M_General -> insertar("Act_Actividades_Etapas", $datos);
+			$this -> M_General -> insertar("ACT_Actividades_Etapas", $datos);
 		}	
 
 		$this->response(null, 200);
-		
-		
     }
 	
     /**
@@ -353,20 +341,39 @@ class C_GestionActividades extends RestController
         //Decodificamos el JSON
         $data = json_decode($json);
 
-        $datos = array(
-			'nombre' => $data[0]->nombre,
-			'sexo' => $data[0]->sexo,
-			'esIndividual' => $data[0]->esIndividual,
-			"idResponsable" => $data[0]->idResponsable,
-			"tipo_Participacion" => $data[0]->tipo_Participacion,
-			"descripcion" => $data[0]->descripcion,
-			"material" => $data[0]->material,
-			"numMaxParticipantes" => $data[0]->numMaxParticipantes,
-			"fechaInicio_Actividad" => $data[0]->fechaInicio_Actividad,
-			"fechaFin_Actividad" => $data[0]->fechaFin_Actividad
-        );
+        if(isset($id)) {
 
-        if(isset($id)) $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
+            $datos = array(
+                'nombre' => $data[0]->nombre,
+                'sexo' => $data[0]->sexo,
+                'esIndividual' => $data[0]->esIndividual,
+                "idResponsable" => $data[0]->idResponsable,
+                "tipo_Participacion" => $data[0]->tipo_Participacion,
+                "descripcion" => $data[0]->descripcion,
+                "material" => $data[0]->material,
+                "numMaxParticipantes" => $data[0]->numMaxParticipantes,
+                "fechaInicio_Actividad" => $data[0]->fechaInicio_Actividad,
+                "fechaFin_Actividad" => $data[0]->fechaFin_Actividad
+            );
+
+            $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
+
+
+            //Limpiamos las etapas
+            $this -> M_General -> borrar("ACT_Actividades_Etapas", $id,"idActividad");
+            
+            //Iteramos sobre cada etapa e insertamos los nuevos registros.
+            foreach ($data[0]->idEtapa as $key => $etapa) {
+                $etapas = array(
+                    "idActividad" => $id,
+                    "idEtapa" => $etapa->item_id
+                );
+    
+                $this -> M_General -> insertar("ACT_Actividades_Etapas", $etapas);
+            }
+
+
+        }
         else $this->response($this->actividad, 401);
 
 		
@@ -417,7 +424,11 @@ class C_GestionActividades extends RestController
                 ['left', "left"], //Tipo relación
                 "ACT_Momentos.nombre" //Agrupar
             ),
-            "responsables" => $this->M_General->seleccionar("Usuarios", "idUsuario, nombre")
+            "responsables" => $this->M_General->seleccionar("Usuarios", "idUsuario, nombre"),
+            "etapas" => $this->M_General->seleccionar(
+                "Etapas", //Tabla
+                "idEtapa,codEtapa"//Campos
+            )
         );   
         
 
@@ -445,15 +456,35 @@ class C_GestionActividades extends RestController
         //Consultas a B.D
         $actividad = $this->M_General->seleccionar(
             "ACT_Actividades", //Tabla
-            "idActividad,sexo,ACT_Actividades.nombre,esIndividual,numMaxParticipantes,fechaInicio_Actividad,fechaFin_Actividad,material,descripcion,idResponsable,Usuarios.nombre AS nombreUsuario,tipo_Participacion", //Campos
+            "ACT_Actividades.idActividad,sexo,ACT_Actividades.nombre,esIndividual,numMaxParticipantes,fechaInicio_Actividad,fechaFin_Actividad,material,descripcion,idResponsable,Usuarios.nombre AS nombreUsuario,tipo_Participacion, codEtapa", //Campos
 			$condicionActividad, //Condición
-			["Usuarios"], //Tabla relación
-			["ACT_Actividades.idResponsable = Usuarios.idUsuario"], //Relación
-			['left'] //Tipo relación
+			["Usuarios", "ACT_Actividades_Etapas actEtapas", "Etapas"], //Tabla relación
+			["ACT_Actividades.idResponsable = Usuarios.idUsuario", "ACT_Actividades.idActividad = actEtapas.idActividad", "actEtapas.idEtapa = Etapas.idEtapa"], //Relación
+			['left', 'left', 'left'] //Tipo relación
         );
-            
 
-        $this->response($actividad, 200);
+        $etapasActividad = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "Etapas.codEtapa, Etapas.idEtapa", //Campos
+			$condicionActividad, //Condición
+			["ACT_Actividades_Etapas actEtapas", "ACT_Actividades"], //Tabla relación
+			["actEtapas.idEtapa = Etapas.idEtapa", "ACT_Actividades.idActividad = actEtapas.idActividad"], //Relación
+			['left', 'left'] //Tipo relación
+        );
+
+        $etapasTotales = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa,codEtapa"//Campos
+        );
+
+        //Formamos el array de actividades...
+        $arrayActividad = array(
+            "actividad" => $actividad[0],
+            "etapaActividad" => $etapasActividad,
+            "etapasTotales" => $etapasTotales
+        );
+
+        $this->response($arrayActividad, 200);
     }
     
     /**

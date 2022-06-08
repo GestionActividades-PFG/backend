@@ -39,7 +39,7 @@ class M_General extends CI_Model
 	 * @param string $tabla Nombre de la tabla en la base de datos.
 	 * @param mixed $datos  Datos para añadir a la base de datos.
 	 * 
-	 * @return void
+	 * @return InsertedID or ERROR.
 	 */
 
 	public function insertar($tabla,$datos)
