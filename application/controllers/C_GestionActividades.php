@@ -67,7 +67,7 @@ class C_GestionActividades extends RestController
         
         //Obtenemos si es tutor de algún curso...
         $tutorCurso = $this->M_General->seleccionar(
-            "act_inscriben_alumnos aia", //Tabla
+            "ACT_Inscriben_Alumnos aia", //Tabla
             "codSeccion", //Campos
             "s.idTutor = $idUsuario", //Condición
             ["Alumnos al", "Secciones s"], //Tabla relación
@@ -266,7 +266,7 @@ class C_GestionActividades extends RestController
             ["ACT_Momentos"], //Tabla relación
             ["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
             ['left'], //Tipo relación
-            "ACT_Momentos.nombre" //Agrupar
+            "ACT_Momentos.nombre, idActividad" //Agrupar
         );
 
         //Consultas a B.D
@@ -686,13 +686,28 @@ class C_GestionActividades extends RestController
 
         //Decodificamos el JSON
         $data = json_decode($json);
-        
 
-        foreach ($data as $idSeccion){
-			$datos = array(
-				'idActividad' => $idSeccion->idActividad,
-				"idSeccion" => $idSeccion->idSeccion
-			);
+        //Viene un código de sección, sacar el id e insertar.
+        
+        //idActividad:1, idSeccion:['1ESOB','2ESOA','2ESOC']
+
+        
+        foreach($data as $idSeccion) {
+
+            $ide = $idSeccion->idSeccion;
+
+            
+            $codSeccion = $this->M_General->seleccionar(
+                "Secciones", //Tabla
+                "idSeccion", //Campos
+                "codSeccion = '$ide'", //Condición
+            );
+            
+            $datos = array(
+                'idActividad' => $idSeccion->idActividad,
+                "idSeccion" => $codSeccion[0]["idSeccion"],
+            );
+
 			$this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
 		}
 
@@ -707,8 +722,14 @@ class C_GestionActividades extends RestController
         $idActividad = $this-> input -> get("idActividad");
         $idSeccion = $this-> input -> get("idSeccion");
 
+        $codSeccion = $this->M_General->seleccionar(
+            "Secciones", //Tabla
+            "idSeccion", //Campos
+            "codSeccion = '$idSeccion'", //Condición
+        );
+
         //Eliminar por ID
-        $this -> M_General -> borrarCompuesta("ACT_Inscriben_Secciones", $idSeccion, $idActividad, "idSeccion" , "idActividad");
+        $this -> M_General -> borrarCompuesta("ACT_Inscriben_Secciones", $codSeccion[0]["idSeccion"], $idActividad, "idSeccion" , "idActividad");
 
 		$this->response(true, 200);
     }
