@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 6;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 22;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -714,6 +714,62 @@ class C_GestionActividades extends RestController
 		$this->response(null, 200);
     }
 
+	/**
+     * Método que obtener la clase del tutor si la clase está inscrita a la actividad.
+     */
+    public function getClaseInscritaTutoria_get() {
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+        $codSeccion = $this->input->get("codSeccion");
+
+	   $condicion = null;
+	   
+		if(isset($idActividad) and isset($codSeccion)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Secciones.codSeccion = $codSeccion";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Secciones", //Tabla
+            "Secciones.codSeccion AS nombre", //Campos
+			$condicion, //Condición
+			["Secciones"], //Tabla relación
+			["ACT_Inscriben_Secciones.idSeccion = Secciones.idSeccion"], //Relación
+			['left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);        
+            
+    }
+	
+	/**
+     * Método que obtener las clases inscritas a la actividad correspondiente a la etapa del coordinador.
+     */
+    public function getClasesInscritasCoordinador_get() {
+
+		$this->response($inscritos, 200); 
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+        $idEtapa = $this->input->get("idEtapa");
+
+	   $condicion = null;
+	   
+		if(isset($idActividad) && isset($idEtapa)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Secciones", //Tabla
+            "Secciones.codSeccion AS nombre", //Campos
+			$condicion, //Condición
+			["Secciones","Cursos"], //Tabla relación
+			["ACT_Inscriben_Secciones.idSeccion = Secciones.idSeccion","Cursos.idCurso = Secciones.idCurso"], //Relación
+			['left','left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);		
+            
+    }
+	
     /**
      * Método que elimina un inscripcion de alumno
      */
