@@ -274,7 +274,8 @@ VALUES
 	('Administrador', 'Administrador'),
 	('Gestor', 'Gestor'),
 	('Profesor', 'Profesor'),
-	('Tutor', 'Tutor');
+	('Tutor', 'Tutor'),
+	('Coordinador', 'Coordinador');
 COMMIT;
 
 /*-------------------------------------------------------------------------------------------------------*/	
@@ -496,15 +497,19 @@ INSERT INTO `Secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurs
 
 INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated_at`) VALUES 
 ('2', '24', current_timestamp(), current_timestamp()),
+('5', '24', current_timestamp(), current_timestamp()),
 ('3', '24', current_timestamp(), current_timestamp()),
 ('2', '23', current_timestamp(), current_timestamp()),
+('5', '23', current_timestamp(), current_timestamp()),
 ('3', '23', current_timestamp(), current_timestamp()),
 ('1', '18', current_timestamp(), current_timestamp()),
 ('1', '19', current_timestamp(), current_timestamp()),
 ('1', '20', current_timestamp(), current_timestamp()),
 ('2', '17', current_timestamp(), current_timestamp()),
+('5', '17', current_timestamp(), current_timestamp()),
 ('3', '17', current_timestamp(), current_timestamp()),
 ('2', '21', current_timestamp(), current_timestamp()),
+('5', '21', current_timestamp(), current_timestamp()),
 ('3', '21', current_timestamp(), current_timestamp()),
 ('4', '22', current_timestamp(), current_timestamp()),
 ('3', '22', current_timestamp(), current_timestamp()),
