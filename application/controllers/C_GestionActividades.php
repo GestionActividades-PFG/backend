@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 22;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 6;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -689,22 +689,17 @@ class C_GestionActividades extends RestController
 
         //Viene un código de sección, sacar el id e insertar.
         
-        //idActividad:1, idSeccion:['1ESOB','2ESOA','2ESOC']
-
+        $arraySecciones = $data->idSeccion;
         
-        foreach($data as $idSeccion) {
+        foreach($arraySecciones as $dato) {
 
-            $ide = $idSeccion->idSeccion;
-
-            
             $codSeccion = $this->M_General->seleccionar(
                 "Secciones", //Tabla
                 "idSeccion", //Campos
-                "codSeccion = '$ide'", //Condición
+                "codSeccion = '$dato'", //Condición
             );
-            
             $datos = array(
-                'idActividad' => $idSeccion->idActividad,
+                'idActividad' => $data->idActividad,
                 "idSeccion" => $codSeccion[0]["idSeccion"],
             );
 
@@ -746,13 +741,11 @@ class C_GestionActividades extends RestController
      */
     public function getClasesInscritasCoordinador_get() {
 
-		$this->response($inscritos, 200); 
-
         //Params del get
 		$idActividad = $this->input->get("idActividad");
         $idEtapa = $this->input->get("idEtapa");
 
-	   $condicion = null;
+	    $condicion = null;
 	   
 		if(isset($idActividad) && isset($idEtapa)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
 
