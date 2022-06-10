@@ -614,7 +614,21 @@ INSERT INTO `Alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`
 (NULL, '010407080', 'Lourdes Serrano Ramos', '65327895L', '16', 'lserranoramos.guadalupe@alumnado.fundacionloyola.net', 'f', '652010203', '655114412', '03/03/2002', current_timestamp(), current_timestamp()),
 (NULL, '157584946', 'Lorezon Esturrica Moreno', '362514178L', '16', 'lesturricamoreno.guadalupe@alumnado.fundacionloyola.net', 'm', '652140506', '655114413', '07/07/2002', current_timestamp(), current_timestamp()),
 (NULL, '262651452', 'Macarena Fonseca Sopa', '45217896R', '16', 'mfonsecasopa.guadalupe@alumnado.fundacionloyola.net', 'f', '652989878', '655114414', '04/01/2002', current_timestamp(), current_timestamp()),
-(NULL, '252625265', 'Miguel Marredo Malavé', '02541288R', '16', 'mmarredomalave.guadalupe@alumnado.fundacionloyola.net', 'm', '652144548', '655114415', '02/11/2002', current_timestamp(), current_timestamp());
+(NULL, '252625265', 'Miguel Marredo Malavé', '02541288R', '16', 'mmarredomalave.guadalupe@alumnado.fundacionloyola.net', 'm', '652144548', '655114415', '02/11/2002', current_timestamp(), current_timestamp()),
+(NULL, '235125121', 'alumno1', '03215625G', '2', 'alumno1.guadalupe@alumnado.fundacionloyola.net', 'm', '652145155', '655221214', '02/01/2009', current_timestamp(), current_timestamp()),
+(NULL, '021452155', 'alumno2', '03212225G', '2', 'alumno2.guadalupe@alumnado.fundacionloyola.net', 'f', '652145166', '655251563', '02/02/2009', current_timestamp(), current_timestamp()),
+(NULL, '447581154', 'alumno3', '03215215G', '2', 'alumno3.guadalupe@alumnado.fundacionloyola.net', 'm', '625351136', '653633565', '12/03/2009', current_timestamp(), current_timestamp()),
+(NULL, '471511588', 'alumno4', '03222235G', '2', 'alumno4.guadalupe@alumnado.fundacionloyola.net', 'f', '652411652', '651451544', '22/04/2009', current_timestamp(), current_timestamp()),
+(NULL, '374511163', 'alumno5', '01215625A', '2', 'alumno5.guadalupe@alumnado.fundacionloyola.net', 'm', '652652223', '659575948', '04/05/2009', current_timestamp(), current_timestamp()),
+(NULL, '235111421', 'alumno6', '03215621G', '2', 'alumno6.guadalupe@alumnado.fundacionloyola.net', 'm', '652145215', '655277214', '02/01/2009', current_timestamp(), current_timestamp()),
+(NULL, '021452115', 'alumno7', '03215211G', '2', 'alumno7.guadalupe@alumnado.fundacionloyola.net', 'f', '652142266', '655277563', '02/02/2009', current_timestamp(), current_timestamp()),
+(NULL, '447589114', 'alumno8', '03215111G', '2', 'alumno8.guadalupe@alumnado.fundacionloyola.net', 'm', '625352626', '653776565', '12/03/2009', current_timestamp(), current_timestamp()),
+(NULL, '471563118', 'alumno9', '03215131G', '2', 'alumno9.guadalupe@alumnado.fundacionloyola.net', 'f', '652452222', '651771544', '22/04/2009', current_timestamp(), current_timestamp()),
+(NULL, '374569113', 'alumno10', '03215825A', '2', 'alumno10.guadalupe@alumnado.fundacionloyola.net', 'm', '652654923', '659229948', '04/05/2009', current_timestamp(), current_timestamp()),
+(NULL, '235112212', 'alumno11', '03212221G', '2', 'alumno11.guadalupe@alumnado.fundacionloyola.net', 'm', '652145225', '655227214', '02/01/2009', current_timestamp(), current_timestamp()),
+(NULL, '021422115', 'alumno12', '03215221G', '2', 'alumno12.guadalupe@alumnado.fundacionloyola.net', 'f', '652142222', '652227563', '02/02/2009', current_timestamp(), current_timestamp()),
+(NULL, '447522114', 'alumno13', '03212211G', '2', 'alumno13.guadalupe@alumnado.fundacionloyola.net', 'm', '625352622', '653776522', '12/03/2009', current_timestamp(), current_timestamp()),
+(NULL, '471522118', 'alumno15', '03222131G', '2', 'alumno15.guadalupe@alumnado.fundacionloyola.net', 'f', '652252222', '651771522', '22/04/2009', current_timestamp(), current_timestamp());
 
 
 INSERT INTO `ACT_Momentos` (`idMomento`, `nombre`, `ultimoCelebrado`, `fechaInicio_Inscripcion`, `fechaFin_Inscripcion`, `created_at`, `updated_at`) VALUES 
@@ -665,7 +679,7 @@ NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivo
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'F', 'Balonmano',1, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+     (NULL, 'F', 'Balonmano',1, '1', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
@@ -673,15 +687,15 @@ NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivo
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'F', 'Balonmano',0, '3', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+      (NULL, 'F', 'Balonmano',0, '3', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'MX', 'Tenis',0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+      (NULL, 'MX', 'Tenis',0, '1', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp()),
-       (NULL, 'MX', 'Tenis',0, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+       (NULL, 'MX', 'Tenis',0, '2', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp());
@@ -795,5 +809,11 @@ INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES
 (12,32),
 (12,22),
 (12,7),
-(12,28);
+(12,28),
+(9,55),
+(9,56),
+(9,57),
+(9,58),
+(9,59),
+(9,60);
  
