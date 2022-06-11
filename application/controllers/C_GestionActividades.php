@@ -770,6 +770,33 @@ class C_GestionActividades extends RestController
 		$this->response($inscritos, 200);		
             
     }
+
+    /**
+     * Método que obtiene todos las Clases corespondientes al coordinador para añadirlos al Select.
+     */
+    public function getClasesCoordinador_get() {
+
+        //Params del get
+        $idEtapa = $this->input->get("idEtapa");
+
+        $condicionEtapa = null;
+
+        if(isset($idEtapa)) $condicionEtapa = "Cursos.idEtapa = $idEtapa";
+
+        //Consultas a B.D
+        $nombresAlumnos = $this->M_General->seleccionar(
+            "Secciones", //Tabla
+            " Secciones.idSeccion,Secciones.codSeccion", //Campos
+			$condicionEtapa, //Condición
+			["Cursos"], //Tabla relación
+			["Cursos.idCurso=Secciones.idCurso"], //Relación
+			['left'] //Tipo relación
+			
+        );
+		         
+		$this->response($nombresAlumnos, 200);      
+		
+    }
 	
     /**
      * Método que elimina un inscripcion de alumno
