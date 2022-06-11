@@ -74,13 +74,21 @@ class C_GestionActividades extends RestController
             ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
             ['left', 'left'] //Tipo relación
         );
-        
+		
+		//Obtenemos idEtapa del coordinador iniciado
+        $coordinadorEtapa = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa", //Campos
+            "Etapas.idCoordinador = $idUsuario" //Condición
+        );
+		        
         //JWT, controla la expiration y el iat
         $tokenData['id'] = $idUsuario;
         $tokenData['role'] = $role;
         $tokenData['iat'] = time(); //Issued At
         $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
         $tokenData["tutorCurso"] = $tutorCurso[0];
+		$tokenData["coordinadorEtapa"] = $coordinadorEtapa[0];
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
         $jwt = $this->jwt->GenerateToken($tokenData);
