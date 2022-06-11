@@ -454,7 +454,8 @@ INSERT INTO `Usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `create
 (NULL, 'coordinador eso', 'gacoordinador@gmail.com', '', current_timestamp(), current_timestamp()),
 (NULL, 'tutor 1esob', 'gatutor1esob@gmail.com', '', current_timestamp(), current_timestamp()),
 (NULL, 'Isabel Muñoz', 'imunoz@fundacionloyola.es', '', current_timestamp(), current_timestamp()),
-(NULL, 'Manuel Solis Gomez', 'msolisgomez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp());
+(NULL, 'Manuel Solis Gomez', 'msolisgomez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
+(NULL, 'profesor', 'gasoloprofesor@gmail.com', '', current_timestamp(), current_timestamp());
 
 
 INSERT INTO `Etapas` (`idEtapa`, `codEtapa`, `nombre`, `idCoordinador`, `created_at`, `updated_at`) VALUES 
@@ -544,14 +545,15 @@ INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated
 ('4', '13', current_timestamp(), current_timestamp()),
 ('4', '14', current_timestamp(), current_timestamp()),
 ('4', '15', current_timestamp(), current_timestamp()),
-('4', '16', current_timestamp(), current_timestamp());
+('4', '16', current_timestamp(), current_timestamp()),
+('3', '25', current_timestamp(), current_timestamp());
 
  -- Definimos ubicación de las Aplicacaiones
  
  INSERT INTO `Aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
 (NULL, 'AdministracionEVG', 'Administración de EVG', ' app/1', 'administracion.jpg', current_timestamp(), current_timestamp()),
 (NULL, 'GestionEVG ', 'Administración de EVG', ' app/2', 'gestion.jpg', current_timestamp(), current_timestamp()),
-(NULL, 'Gestion Aplicaciones', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
+(NULL, 'Gestion Actividades', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
 
 
 -- Asignamos permisos a los perfiles
