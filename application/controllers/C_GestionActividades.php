@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 6;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 21;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -74,13 +74,21 @@ class C_GestionActividades extends RestController
             ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
             ['left', 'left'] //Tipo relación
         );
-        
+		
+		//Obtenemos idEtapa del coordinador iniciado
+        $coordinadorEtapa = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa", //Campos
+            "Etapas.idCoordinador = $idUsuario" //Condición
+        );
+		        
         //JWT, controla la expiration y el iat
         $tokenData['id'] = $idUsuario;
         $tokenData['role'] = $role;
         $tokenData['iat'] = time(); //Issued At
         $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
         $tokenData["tutorCurso"] = $tutorCurso[0];
+		$tokenData["coordinadorEtapa"] = $coordinadorEtapa[0];
         $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
 
         $jwt = $this->jwt->GenerateToken($tokenData);
@@ -782,6 +790,33 @@ class C_GestionActividades extends RestController
             
 		$this->response($inscritos, 200);		
             
+    }
+
+    /**
+     * Método que obtiene todos las Clases corespondientes al coordinador para añadirlos al Select.
+     */
+    public function getClasesCoordinador_get() {
+
+        //Params del get
+        $idEtapa = $this->input->get("idEtapa");
+
+        $condicionEtapa = null;
+
+        if(isset($idEtapa)) $condicionEtapa = "Cursos.idEtapa = $idEtapa";
+
+        //Consultas a B.D
+        $nombresAlumnos = $this->M_General->seleccionar(
+            "Secciones", //Tabla
+            " Secciones.idSeccion,Secciones.codSeccion", //Campos
+			$condicionEtapa, //Condición
+			["Cursos"], //Tabla relación
+			["Cursos.idCurso=Secciones.idCurso"], //Relación
+			['left'] //Tipo relación
+			
+        );
+		         
+		$this->response($nombresAlumnos, 200);      
+		
     }
 	
     /**
