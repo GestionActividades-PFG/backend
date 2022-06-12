@@ -111,7 +111,7 @@ class M_General extends CI_Model
 	 * Función que permite realizar consulta que recupera datos de la base de datos.
 	 *
 	 * @param  string $tabla Nombre de la tabla en la base de datos.
-	 * @param  string $campos Nombre de los campos de la base de datos.
+	 * @param  string $campos Nombre de los campos de la base de datos (permite DISTINCT).
 	 * @param  mixed $condicion Parametro para con la condicion de la consulta (equivalente WHERE).
 	 * @param  array|null $tabla_relacion Nombre de la tablas con la que quieres asociar tablas (Por defecto: null).
 	 * @param  array|null $relacion Nombre del los campos con los que quieres realizar la relacion (Por defecto: null).
@@ -122,7 +122,15 @@ class M_General extends CI_Model
 	 */
 	public function seleccionar($tabla, $campos, $condicion = null,$tabla_relacion = null, $relacion = null, $tipo_relacion = ['join'], $agrupacion = null, $ordenacion = null)
 	{
-		$this -> bd -> select($campos);
+		$campo = $campos;
+
+		if(substr($campos,0,8) == "DISTINCT") {
+			$this->bd->distinct();
+			$campo = substr($campos,8);
+		}
+
+		$this -> bd -> select($campo);
+
 		$this -> bd -> from($tabla);
 		if(isset($relacion) && isset($tabla_relacion) && sizeof($tabla_relacion) == sizeof($relacion) && sizeof($tabla_relacion) == sizeof($tipo_relacion))
 			for($i = 0; $i < sizeof($tabla_relacion); $i++)

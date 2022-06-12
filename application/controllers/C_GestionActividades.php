@@ -495,29 +495,50 @@ class C_GestionActividades extends RestController
 	
 	/**
      * Método que obtiene todos los Alumnos corespondientes al tutor para añadirlos al Select.
+     * Si se omite el parametro codSeccion, devolverá todos los alumnos...
      */
     public function getAlumnosTutor_get() {
 
         //Params del get
         $codSeccion = $this->input->get("codSeccion");
+        $codActividad = $this->input->get("codActividad");
+
+        if(!isset($codSeccion) || !isset($codActividad)) $this->response(null, 400);
 
         $condicionSeccion = null;
 
-        if(isset($codSeccion)) $condicionSeccion = "Secciones.codSeccion = $codSeccion";
 
-        //Consultas a B.D
+        $alumnosInscritos = "";
+
+        //Recorremos la tabla en busca de alumnos inscritos...
+        $alumnosInscritosQuery = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos", //Tabla
+            "DISTINCT ACT_Inscriben_Alumnos.idAlumno", //Campos
+			"Secciones.codSeccion = $codSeccion AND ACT_Inscriben_Alumnos.idActividad = $codActividad", //Condición
+			["Alumnos", "Secciones"], //Tabla relación
+			["Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno", "Alumnos.idSeccion = Secciones.idSeccion"], //Relación
+			['left', 'left'] //Tipo relación
+        );
+
+        foreach ($alumnosInscritosQuery as $key => $value) $alumnosInscritos .= "$value[idAlumno],";
+
+        //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
+        $alumns = substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1);
+
+        $condicionSeccion = "secciones.codSeccion = $codSeccion AND alumnos.idAlumno NOT IN ($alumns)";
+        
+        //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
             "Alumnos", //Tabla
-            "Alumnos.idAlumno,Alumnos.nombre", //Campos
+            "DISTINCT Alumnos.idAlumno,Alumnos.nombre", //Campos
 			$condicionSeccion, //Condición
-			["Secciones"], //Tabla relación
-			["Alumnos.idSeccion = Secciones.idSeccion"], //Relación
-			['left'] //Tipo relación
+			["Secciones", "ACT_Inscriben_Alumnos"], //Tabla relación
+			["Alumnos.idSeccion = Secciones.idSeccion", "Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno"], //Relación
+			['left', 'left'] //Tipo relación
 			
         );
-		         
+
 		$this->response($nombresAlumnos, 200);      
-            
     }
 		
 	/**
@@ -718,9 +739,9 @@ class C_GestionActividades extends RestController
 		$idActividad = $this->input->get("idActividad");
         $codSeccion = $this->input->get("codSeccion");
 
-	   $condicion = null;
+	    $condicion = null;
 	   
-		if(isset($idActividad) and isset($codSeccion)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Secciones.codSeccion = $codSeccion";
+		if(isset($idActividad) && isset($codSeccion)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Secciones.codSeccion = $codSeccion";
 
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
