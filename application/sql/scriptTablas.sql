@@ -640,69 +640,73 @@ INSERT INTO `Alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`
 
 INSERT INTO `ACT_Momentos` (`idMomento`, `nombre`, `ultimoCelebrado`, `fechaInicio_Inscripcion`, `fechaFin_Inscripcion`, `created_at`, `updated_at`) VALUES 
 (NULL, 'Navidad', NULL, '2022-10-10 23:21:30.000000', '2022-11-10 23:21:30.000000', current_timestamp(), current_timestamp()),
-(NULL, 'Semana Ingnaciana', NULL,'2022-04-09 23:21:30.000000', '2022-04-22 23:21:30.000000', current_timestamp(), current_timestamp()),
+(NULL, 'Semana Ignaciana', NULL,'2022-04-09 23:21:30.000000', '2022-04-22 23:21:30.000000', current_timestamp(), current_timestamp()),
 (NULL, 'Fiestas Escolares', NULL,'2022-05-11 23:21:30.000000','2022-05-27 23:21:30.000000', current_timestamp(), current_timestamp());
 
 
 INSERT INTO `ACT_Actividades` (`idActividad`, `sexo`, `nombre`, `esIndividual`, `idMomento`, `numMaxParticipantes`, `fechaInicio_Actividad`,
  `fechaFin_Actividad`, `material`, `descripcion`, `idResponsable`, `tipo_Participacion`, `created_at`, `updated_at`) VALUES
- (NULL, 'NP', 'Consurso de Migas', 0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+ (NULL, 'NP', 'Consurso de Migas', 0, '1', NULL, '2022-05-18 23:21:30.000000', '2022-05-25 23:21:30.000000', 
  'Productos necesarios para cocinar las migas', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
- (NULL, 'NP', 'Consurso de Fotografía', 1, '1', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+ (NULL, 'NP', 'Consurso de Fotografía', 1, '1', NULL, '2022-05-18 23:21:30.000000','2022-05-15 23:21:30.000000', 
  NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
- (NULL, 'NP', 'Consurso de Tortilla', 0, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+ (NULL, 'NP', 'Consurso de Tortilla', 0, '2', NULL, '2022-05-19 23:21:30.000000','2022-07-15 23:21:30.000000', 
  'Productos necesarios para cocinar la tortilla', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
-   (NULL, 'NP', 'Consurso de Fotografía', 1, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+   (NULL, 'NP', 'Consurso de Fotografía', 1, '2', NULL, '2022-05-18 23:21:30.000000','2022-07-15 23:21:30.000000', 
  NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
-  (NULL, 'MX', 'Futbol',0, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+  (NULL, 'MX', 'Futbol',0, '1', NULL, '2022-06-10 23:21:30.000000', '2022-07-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-   (NULL, 'MX', 'Futbol',0, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+   (NULL, 'MX', 'Futbol',0, '2', NULL, '2022-06-10 23:21:30.000000', '2022-07-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'MX', 'Futbol',0, '3', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+    (NULL, 'MX', 'Futbol',0, '3', NULL, '2022-06-10 23:21:30.000000','2022-07-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'M', 'Baloncesto',1, '1', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+    (NULL, 'M', 'Baloncesto',1, '1', NULL, '2022-06-11 23:21:30.000000', '2022-07-11 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'M', 'Baloncesto',1, '2', NULL, '2022-05-10 23:21:30.000000','2022-05-15 23:21:30.000000', 
+    (NULL, 'M', 'Baloncesto',1, '2', NULL, '2022-06-12 23:21:30.000000','2022-07-14 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'M', 'Baloncesto',1, '3', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+     (NULL, 'M', 'Baloncesto',1, '3', NULL, '2022-05-15 23:21:30.000000', '2022-06-25 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'F', 'Balonmano',1, '1', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+     (NULL, 'F', 'Balonmano',1, '1', 2, '2022-04-10 23:21:30.000000', '2022-06-21 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'F', 'Carrera',1, '2', NULL, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+     (NULL, 'F', 'Carrera',1, '2', NULL, '2022-05-20 23:21:30.000000', '2022-07-16 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'F', 'Balonmano',0, '3', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+      (NULL, 'F', 'Balonmano',1, '3', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'MX', 'Tenis',0, '1', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+      (NULL, 'MX', 'Tenis',1, '1', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp()),
-       (NULL, 'MX', 'Tenis',0, '2', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
+       (NULL, 'MX', 'Tenis',1, '2', 2, '2022-06-10 23:21:30.000000', '2022-06-23 23:21:30.000000', 
+NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
+ Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
+ desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp()),
+        (NULL, 'MX', 'Balonmano',1, '2', 2, '2022-06-10 23:21:30.000000', '2022-07-22 23:21:30.000000', 
 NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
  Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
  desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp());
@@ -717,7 +721,11 @@ INSERT INTO `ACT_Individuales` (`idActividad`) VALUES
 (9),
 (10),
 (11),
-(12);
+(12),
+(13),
+(14),
+(15),
+(16);
 
 INSERT INTO `ACT_Clase` (`idActividad`) VALUES 
 (1),
@@ -725,17 +733,14 @@ INSERT INTO `ACT_Clase` (`idActividad`) VALUES
 (5),
 (6),
 (7);
-
-INSERT INTO `ACT_Parejas` (`idActividad`) VALUES 
-(13),
-(14),
-(15);
  
 -- Asignamos Actividades a las Etapas
  
  INSERT INTO `ACT_Actividades_Etapas` (`idActividad`, `idEtapa`) VALUES 
 (1,1),
+(1,3),
 (3,1),
+(14,1),
 (5,3),
 (6,3),
 (7,3),
@@ -746,9 +751,11 @@ INSERT INTO `ACT_Parejas` (`idActividad`) VALUES
 (10,3),
 (11,3),
 (12,2),
-(13,2),
-(14,2),
-(15,2);
+(13,3),
+(14,3),
+(15,2),
+(16,1),
+(16,3);
  
 
 
@@ -777,7 +784,10 @@ INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES
 (3,16),
 (5,15),
 (6,14),
-(7,10);
+(7,10),
+(1,1),
+(1,14),
+(1,15);
 
  -- Inscripciones Individuales
  
@@ -822,5 +832,35 @@ INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES
 (9,57),
 (9,58),
 (9,59),
-(9,60);
+(9,60),
+(13,31),
+(13,32),
+(13,41),
+(13,42),
+(13,46),
+(13,47),
+(14,31),
+(14,32),
+(14,41),
+(14,42),
+(14,46),
+(14,47),
+(14,1),
+(14,2),
+(14,6),
+(14,7),
+(14,16),
+(14,17),
+(16,31),
+(16,32),
+(16,41),
+(16,42),
+(16,46),
+(16,47),
+(16,1),
+(16,2),
+(16,6),
+(16,7),
+(16,16),
+(16,17);
  
