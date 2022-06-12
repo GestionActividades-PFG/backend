@@ -254,9 +254,117 @@ class C_GestionActividades extends RestController
     */
 	
     /**
-     * Método que obtiene todas las actividades disponibles.
+     * Método que obtiene todas las actividades disponibles según el momento seleccionado y la etapa del tutor iniciado.
      */
-    public function getActividades_get() {
+    public function getActividadesTutor_get() {
+
+        $campos = ["ACT_Actividades.idActividad", "ACT_Actividades.nombre"];
+
+        //Params del get
+        $idMomento = $this->input->get("idMomento");
+        $codSeccion = $this->input->get("codSeccion");
+
+        $condicionMomento = null;
+
+        if(isset($idMomento)) $condicionMomento = "ACT_Actividades.idMomento = $idMomento";
+
+        $condicionEtapa = null;
+
+        if(isset($codSeccion)) $condicionEtapa = " and Secciones.codSeccion = $codSeccion";
+
+        //Consultas a B.D
+        $nombreMomento = $this->M_General->seleccionar(
+            "ACT_Actividades", //Tabla
+            "idActividad, ACT_Momentos.nombre", //Campos
+            $condicionMomento, //Condición
+            ["ACT_Momentos"], //Tabla relación
+            ["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
+            ['left'], //Tipo relación
+            "ACT_Momentos.nombre, idActividad" //Agrupar
+        );
+
+        //Consultas a B.D
+        $etapas = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa, codEtapa"//Campos
+        );
+            
+        $actividades = array(
+            "id" => $idMomento,
+            "nombre" => $nombreMomento[0]["nombre"],
+            "actividades" => $this -> M_General -> seleccionar(
+                "ACT_Actividades", //Tabla
+                 $campos, //Campos
+                 $condicionMomento.$condicionEtapa, //Condición
+                 ["Act_Actividades_Etapas","Etapas","Cursos","Secciones"], //Tabla relación
+                 ["ACT_Actividades.idActividad=Act_Actividades_Etapas.idActividad","Act_Actividades_Etapas.idEtapa=Etapas.idEtapa","Etapas.idEtapa=Cursos.idEtapa","Secciones.idCurso=Cursos.idCurso"], //Relación
+                 ['left','left','left','left'] //Tipo relación
+                ),
+            "etapas" => $etapas
+        );
+
+        $this->response($actividades, 200);
+            
+    }
+
+    /**
+     * Método que obtiene todas las actividades disponibles según el momento seleccionado y la etapa del coordinador iniciado.
+     */
+    public function getActividadesCoordiandor_get() {
+
+        $campos = ["ACT_Actividades.idActividad", "ACT_Actividades.nombre"];
+
+        //Params del get
+        $idMomento = $this->input->get("idMomento");
+        $idEtapa = $this->input->get("idEtapa");
+
+        $condicionMomento = null;
+
+        if(isset($idMomento)) $condicionMomento = "ACT_Actividades.idMomento = $idMomento";
+
+        $condicionEtapa = null;
+
+        if(isset($idEtapa)) $condicionEtapa = " and Act_Actividades_Etapas.idEtapa = $idEtapa";
+
+        //Consultas a B.D
+        $nombreMomento = $this->M_General->seleccionar(
+            "ACT_Actividades", //Tabla
+            "idActividad, ACT_Momentos.nombre", //Campos
+            $condicionMomento, //Condición
+            ["ACT_Momentos"], //Tabla relación
+            ["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
+            ['left'], //Tipo relación
+            "ACT_Momentos.nombre, idActividad" //Agrupar
+        );
+
+        //Consultas a B.D
+        $etapas = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa, codEtapa"//Campos
+        );
+            
+        $actividades = array(
+            "id" => $idMomento,
+            "nombre" => $nombreMomento[0]["nombre"],
+            "actividades" => $this -> M_General -> seleccionar(
+                "ACT_Actividades", //Tabla
+                 $campos, //Campos
+                 $condicionMomento.$condicionEtapa, //Condición
+                 ["Act_Actividades_Etapas"], //Tabla relación
+                 ["ACT_Actividades.idActividad=Act_Actividades_Etapas.idActividad"], //Relación
+                 ['left'] //Tipo relación
+                ),
+            "etapas" => $etapas
+        );
+
+        $this->response($actividades, 200);
+
+    }
+
+    /**
+     * Método que obtiene todas las actividades disponibles según el momento seleccionado y su plazo de inscripción terminado, para los profesores.
+     */
+    public function getActividadesProfesor_get() {
 
         $campo = ["idActividad", "nombre"];
 
@@ -283,17 +391,23 @@ class C_GestionActividades extends RestController
             "Etapas", //Tabla
             "idEtapa, codEtapa"//Campos
         );
+
+        $fecha = "'".date("Y-m-d H:i:s")."'";
             
         $actividades = array(
             "id" => $idMomento,
             "nombre" => $nombreMomento[0]["nombre"],
-            "actividades" => $this -> M_General -> seleccionar("ACT_Actividades", $campo, array("idMomento" => $idMomento)),
+            "actividades" => $this -> M_General -> seleccionar(
+                "ACT_Actividades",
+                 $campo,
+                 $condicionMomento." and fechaFin_Actividad< ".$fecha ),
             "etapas" => $etapas
         );
 
 
         $this->response($actividades, 200);
-            
+
+
     }
 
     /**
@@ -599,6 +713,32 @@ class C_GestionActividades extends RestController
 
 		$this->response(null, 200);
     }
+
+    /**
+     * Método que obtiene todos los Alumnos inscritos a una Actividad Individual, para cuando el plazo de la actividad se termine.
+     */
+    public function getAlumnosInscritos_get() {
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+
+	   $condicion = null;
+	   
+		if(isset($idActividad)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad ";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos", //Tabla
+            "Alumnos.idAlumno,Alumnos.nombre,Secciones.codSeccion", //Campos
+			$condicion, //Condición
+			["Alumnos","Secciones"], //Tabla relación
+			["ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno","Alumnos.idSeccion = Secciones.idSeccion"], //Relación
+			['left','left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);
+        
+    }
 	
 	/**
      * Método que obtiene todos los Alumnos inscritos a una Actividad Individual, mostrando solo los de su tutoria.
@@ -654,7 +794,8 @@ class C_GestionActividades extends RestController
 		$this->response($inscritos, 200);
         
     }
-	
+
+    	
 	/**
      * Método que elimina un inscripcion de alumno
      */
@@ -737,6 +878,32 @@ class C_GestionActividades extends RestController
 		}
 
 		$this->response(null, 200);
+    }
+
+    /**
+     * Método que obtiene todas las clases inscritas a una Actividad de Clase, para cuando el plazo de la actividad se termine.
+     */
+    public function getClasesInscrita_get() {
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+
+	    $condicion = null;
+	   
+		if(isset($idActividad)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad ";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Secciones", //Tabla
+            "Secciones.codSeccion AS nombre", //Campos
+			$condicion, //Condición
+			["Secciones"], //Tabla relación
+			["ACT_Inscriben_Secciones.idSeccion = Secciones.idSeccion"], //Relación
+			['left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);        
+            
     }
 
 	/**
