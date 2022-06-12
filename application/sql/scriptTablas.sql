@@ -425,9 +425,10 @@ CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Totales` (
 /*-------------------------INSERT---------------------------------------*/
 
 /*
---	coordinador eso(21)-->COORDINADOR ESO  y ISA(23)-->COORDINADORA CF
---	Esperanza(18),Sergio(19) , Luis(20), Isa(23) y Manu(24) --> ADMIN
--- 	tutor 1esob(22) --> TUTOR 1ESOB
+--  Coordinador eso(21) --> COORDINADOR ESO  y ISA(23)-->COORDINADORA CF
+--  Esperanza(18),Sergio(19) , Luis(20), Isa(23) y Manu(24) --> ADMIN
+--  Tutor 1esob(22) --> TUTOR 1ESOB
+--  solo profesor (25)
 */
 
 INSERT INTO `Usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `created_at`, `updated_at`) VALUES 

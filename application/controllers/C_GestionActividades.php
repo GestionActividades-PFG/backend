@@ -16,6 +16,7 @@ require_once APPPATH . '/libraries/JWT/JWTGenerator.php';
  * Esta clase no contiene las vistas de CodeIgniter, se accede a los métodos mediante AJAX.
  * 
  * @author Sergio Matamoros Delgado, Esperanza Rodríguez Martinez
+ * @license CC BY-NC-SA 4.0 (Attribution-NonCommercial-ShareAlike 4.0 International)
  */
 class C_GestionActividades extends RestController 
 {
