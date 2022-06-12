@@ -53,7 +53,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 21;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 19;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -531,7 +531,7 @@ class C_GestionActividades extends RestController
         foreach ($alumnosInscritosQuery as $key => $value) $alumnosInscritos .= "$value[idAlumno],";
 
         //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
-        $alumns = substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1);
+        $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
 
         $condicionSeccion = "secciones.codSeccion = $codSeccion AND alumnos.idAlumno NOT IN ($alumns)";
         
