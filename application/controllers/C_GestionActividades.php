@@ -296,8 +296,8 @@ class C_GestionActividades extends RestController
                 "ACT_Actividades", //Tabla
                  $campos, //Campos
                  $condicionMomento.$condicionEtapa, //Condición
-                 ["Act_Actividades_Etapas","Etapas","Cursos","Secciones"], //Tabla relación
-                 ["ACT_Actividades.idActividad=Act_Actividades_Etapas.idActividad","Act_Actividades_Etapas.idEtapa=Etapas.idEtapa","Etapas.idEtapa=Cursos.idEtapa","Secciones.idCurso=Cursos.idCurso"], //Relación
+                 ["ACT_Actividades_Etapas","Etapas","Cursos","Secciones"], //Tabla relación
+                 ["ACT_Actividades.idActividad=ACT_Actividades_Etapas.idActividad","ACT_Actividades_Etapas.idEtapa=Etapas.idEtapa","Etapas.idEtapa=Cursos.idEtapa","Secciones.idCurso=Cursos.idCurso"], //Relación
                  ['left','left','left','left'] //Tipo relación
                 ),
             "etapas" => $etapas
@@ -312,8 +312,6 @@ class C_GestionActividades extends RestController
      */
     public function getActividadesCoordiandor_get() {
 
-        $campos = ["ACT_Actividades.idActividad", "ACT_Actividades.nombre"];
-
         //Params del get
         $idMomento = $this->input->get("idMomento");
         $idEtapa = $this->input->get("idEtapa");
@@ -324,7 +322,7 @@ class C_GestionActividades extends RestController
 
         $condicionEtapa = null;
 
-        if(isset($idEtapa)) $condicionEtapa = " and Act_Actividades_Etapas.idEtapa = $idEtapa";
+        if(isset($idEtapa)) $condicionEtapa = " and ACT_Actividades_Etapas.idEtapa = $idEtapa";
 
         //Consultas a B.D
         $nombreMomento = $this->M_General->seleccionar(
@@ -347,12 +345,13 @@ class C_GestionActividades extends RestController
             "id" => $idMomento,
             "nombre" => $nombreMomento[0]["nombre"],
             "actividades" => $this -> M_General -> seleccionar(
-                "ACT_Actividades", //Tabla
-                 $campos, //Campos
-                 $condicionMomento.$condicionEtapa, //Condición
-                 ["Act_Actividades_Etapas"], //Tabla relación
-                 ["ACT_Actividades.idActividad=Act_Actividades_Etapas.idActividad"], //Relación
-                 ['left'] //Tipo relación
+                    "ACT_Actividades", //Tabla
+                    ["ACT_Actividades.idActividad", "ACT_Actividades.nombre"], //Campos
+                    $condicionMomento . $condicionEtapa, //Condición
+                    ["ACT_Actividades_Etapas"], //Tabla relación
+                    ["ACT_Actividades.idActividad=ACT_Actividades_Etapas.idActividad"], //Relación
+                    ['left'], //Tipo relación
+                    "ACT_Actividades.nombre"
                 ),
             "etapas" => $etapas
         );
@@ -437,6 +436,9 @@ class C_GestionActividades extends RestController
                 "fechaInicio_Actividad" => $data->fechaInicio_Actividad,
                 "fechaFin_Actividad" => $data->fechaFin_Actividad
             ));
+
+        if($data->esIndividual == 0) $this -> M_General -> insertar("ACT_Clase", array("idActividad" => $idActividad));
+        else $this -> M_General -> insertar("ACT_Individuales", array("idActividad" => $idActividad));
             
 		
 		//Insertamos la actividad junto con las etapas seleccionadas a Act_Actividades_Etapas
@@ -511,8 +513,13 @@ class C_GestionActividades extends RestController
 		
 		$id = $this-> input -> get("id");
 		
+
+        //Se borran las tablas "sobrantes" (por bug con el borrado en cascada 🎁)
+        $this -> M_General -> borrar("ACT_Actividades_Etapas", $id,"idActividad");
+        $this -> M_General -> borrar("ACT_Individuales", $id,"idActividad");
+        $this -> M_General -> borrar("ACT_Clase", $id,"idActividad");
+
         $this -> M_General -> borrar("ACT_Actividades", $id,"idActividad");
-        //Eliminar por ID
 
 		$this->response($id, 200);
     }
@@ -705,7 +712,7 @@ class C_GestionActividades extends RestController
 
 		foreach ($data->idAlumno as $idAlumno){
 			$datos = array(
-				'idActividad' => $data->idActividad,
+				'idActividad' => (int)$data->idActividad,
 				"idAlumno" => $idAlumno
 			);
 			$this -> M_General -> insertar("ACT_Inscriben_Alumnos", $datos);
@@ -858,22 +865,21 @@ class C_GestionActividades extends RestController
         //Decodificamos el JSON
         $data = json_decode($json);
 
-        //Viene un código de sección, sacar el id e insertar.
-        
         $arraySecciones = $data->idSeccion;
-        
-        foreach($arraySecciones as $dato) {
 
+        foreach($arraySecciones as $dato) {
+            
             $codSeccion = $this->M_General->seleccionar(
                 "Secciones", //Tabla
                 "idSeccion", //Campos
                 "codSeccion = '$dato'", //Condición
             );
             $datos = array(
-                'idActividad' => $data->idActividad,
-                "idSeccion" => $codSeccion[0]["idSeccion"],
+                'idActividad' => (int)$data->idActividad,
+                "idSeccion" => (int)$codSeccion[0]["idSeccion"],
             );
 
+            //Referenciamos la clase con la actividad.
 			$this -> M_General -> insertar("ACT_Inscriben_Secciones", $datos);
 		}
 
