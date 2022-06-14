@@ -54,7 +54,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 21;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 22;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -618,11 +618,21 @@ class C_GestionActividades extends RestController
             "idEtapa,codEtapa"//Campos
         );
 
+        $fechaFinMomento = $this->M_General->seleccionar(
+            "ACT_Momentos", //Tabla
+            "ACT_Momentos.fechaFin_Inscripcion",//Campos
+            $condicionActividad, //Condición
+            [ "ACT_Actividades"], //Tabla relación
+			["ACT_Actividades.idMomento = ACT_Momentos.idMomento"], //Relación
+			['left'] //Tipo relación
+        );
+
         //Formamos el array de actividades...
         $arrayActividad = array(
             "actividad" => $actividad[0],
             "etapaActividad" => $etapasActividad,
-            "etapasTotales" => $etapasTotales
+            "etapasTotales" => $etapasTotales,
+            "fechaFinMomento" => $fechaFinMomento,
         );
 
         $this->response($arrayActividad, 200);
