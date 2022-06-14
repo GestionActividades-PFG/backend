@@ -6,7 +6,7 @@
 -- START TRANSACTION;
 -- DROP DATABASE IF EXISTS Gestion_Escuela;
 -- CREATE DATABASE Gestion_Escuela DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
-USE Gestion_Escuela;
+-- USE Gestion_Escuela;
 
 /*
 --	Script SQL Grupo anterior, proyecto base
@@ -379,7 +379,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Inscriben_Alumnos` (
 );
 
 /*
-CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
+-- CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
 --	`idAlumno` INT unsigned NOT NULL,
 --	`idPareja` INT unsigned NOT NULL,
 --	`fecha_y_hora_Inscripcion` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -389,7 +389,7 @@ CREATE TABLE IF NOT EXISTS `ACT_Parejas_Alumnos` (
 --	CONSTRAINT PK_ACT_Parejas_Alumnos PRIMARY KEY (`idAlumno`,`idPareja`),
 --	CONSTRAINT fk_ACT_Parejas_Alumnos_idAlumno FOREIGN KEY (idAlumno) REFERENCES ACT_Parejas(idAlumno) ON DELETE CASCADE ON UPDATE CASCADE,
 --	CONSTRAINT fk_ACT_Parejas_Alumnos_idPareja FOREIGN KEY (idPareja) REFERENCES ACT_Parejas(idPareja) ON DELETE CASCADE ON UPDATE CASCADE
-);
+-- );
 */
 
 CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Actividad` (
@@ -554,7 +554,7 @@ INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated
  INSERT INTO `Aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
 (NULL, 'AdministracionEVG', 'Administración de EVG', ' app/1', 'administracion.jpg', current_timestamp(), current_timestamp()),
 (NULL, 'GestionEVG ', 'Administración de EVG', ' app/2', 'gestion.jpg', current_timestamp(), current_timestamp()),
-(NULL, 'Gestion Actividades', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
+(NULL, 'Gestion Actividades', 'Administración de EVG', ' https://04.2daw.esvirgua.com/ActividadesEVG_FRONT', NULL, current_timestamp(), current_timestamp());
 
 
 -- Asignamos permisos a los perfiles
@@ -763,9 +763,9 @@ INSERT INTO `ACT_Clase` (`idActividad`) VALUES
 /*
 -- Agregamos parejas
 
-INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES 
-(1,2),
-(3,4);
+-- INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES 
+-- (1,2),
+-- (3,4);
 */
 
  -- Inscripciones por Clase

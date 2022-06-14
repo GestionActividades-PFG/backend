@@ -54,7 +54,7 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 19;//$this -> M_General -> obtenerIdUsuario($email);
+        $idUsuario = 21;//$this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -351,7 +351,7 @@ class C_GestionActividades extends RestController
                     ["ACT_Actividades_Etapas"], //Tabla relación
                     ["ACT_Actividades.idActividad=ACT_Actividades_Etapas.idActividad"], //Relación
                     ['left'], //Tipo relación
-                    "ACT_Actividades.nombre"
+                    "ACT_Actividades.nombre, ACT_Actividades.idActividad"
                 ),
             "etapas" => $etapas
         );
@@ -481,6 +481,14 @@ class C_GestionActividades extends RestController
                 "fechaFin_Actividad" => $data[0]->fechaFin_Actividad
             );
 
+            //Limpiamos las tablas
+            $this -> M_General -> borrar("ACT_Clase", $id,"idActividad");
+            $this -> M_General -> borrar("ACT_Individuales", $id,"idActividad");
+
+            if($data[0]->esIndividual == 0) $this -> M_General -> insertar("ACT_Clase", array("idActividad" => $id));
+            else $this -> M_General -> insertar("ACT_Individuales", array("idActividad" => $id));
+            
+
             $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
 
 
@@ -552,7 +560,10 @@ class C_GestionActividades extends RestController
                 ["ACT_Momentos", "Usuarios"], //Tabla relación
                 ["actividades.idMomento = ACT_Momentos.idMomento", "actividades.idResponsable = Usuarios.idUsuario"], //Relación
                 ['left', "left"], //Tipo relación
-                "ACT_Momentos.nombre" //Agrupar
+                "actividades.nombre, actividades.sexo, actividades.esIndividual, actividades.numMaxParticipantes,
+                actividades.fechaInicio_Actividad, actividades.fechaFin_Actividad,
+                actividades.material, actividades.descripcion, actividades.tipo_Participacion,
+                Usuarios.nombre, ACT_Momentos.nombre" //Agrupar
             ),
             "responsables" => $this->M_General->seleccionar("Usuarios", "idUsuario, nombre"),
             "etapas" => $this->M_General->seleccionar(
@@ -655,7 +666,7 @@ class C_GestionActividades extends RestController
         //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
         $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
 
-        $condicionSeccion = "secciones.codSeccion = $codSeccion AND alumnos.idAlumno NOT IN ($alumns)";
+        $condicionSeccion = "Secciones.codSeccion = $codSeccion AND alumnos.idAlumno NOT IN ($alumns)";
         
         //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
@@ -678,22 +689,43 @@ class C_GestionActividades extends RestController
 
         //Params del get
         $idEtapa = $this->input->get("idEtapa");
+        $idActividad = $this->input->get("codActividad");
 
-        $condicionEtapa = null;
+        if(!isset($idEtapa)) $this->response(null, 400);
 
-        if(isset($idEtapa)) $condicionEtapa = "Cursos.idEtapa = $idEtapa";
+        $condicionSeccion = null;
 
-        //Consultas a B.D
+        $alumnosInscritos = "";
+
+        //Recorremos la tabla en busca de alumnos inscritos...
+        $alumnosInscritosQuery = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos", //Tabla
+            "DISTINCT ACT_Inscriben_Alumnos.idAlumno", //Campos
+			"ACT_Inscriben_Alumnos.idActividad = $idActividad", //Condición
+			["Alumnos", "Secciones"], //Tabla relación
+			["Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno", "Alumnos.idSeccion = Secciones.idSeccion"], //Relación
+			['left', 'left'] //Tipo relación
+        );
+
+        
+        foreach ($alumnosInscritosQuery as $key => $value) $alumnosInscritos .= "$value[idAlumno],";
+        
+        //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
+        $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
+        
+        $condicionSeccion = "Secciones.idSeccion = $idEtapa AND alumnos.idAlumno NOT IN ($alumns)";
+        
+        //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
             "Alumnos", //Tabla
-            "Alumnos.idAlumno,Alumnos.nombre", //Campos
-			$condicionEtapa, //Condición
-			["Secciones","Cursos"], //Tabla relación
-			["Alumnos.idSeccion = Secciones.idSeccion","Cursos.idCurso=Secciones.idCurso"], //Relación
-			['left','left'] //Tipo relación
+            "DISTINCT Alumnos.idAlumno,Alumnos.nombre", //Campos
+			$condicionSeccion, //Condición
+			["Secciones", "ACT_Inscriben_Alumnos"], //Tabla relación
+			["Alumnos.idSeccion = Secciones.idSeccion", "Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno"], //Relación
+			['left', 'left'] //Tipo relación
 			
         );
-		         
+        
 		$this->response($nombresAlumnos, 200);      
 		
             
@@ -781,12 +813,12 @@ class C_GestionActividades extends RestController
     public function getAlumnosInscritosCoordinador_get() {
 
         //Params del get
-		$idActividad = $this->input->get("idActividad");
-        $idEtapa = $this->input->get("idEtapa");
+		$idActividad = (int)$this->input->get("idActividad");
+        $idEtapa = (int)$this->input->get("idEtapa");
 
-	   $condicion = null;
+	    $condicion = null;
 	   
-		if(isset($idActividad) && isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
+	    if(isset($idActividad) && isset($idEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Cursos.idEtapa = $idEtapa";
 
         //Consultas a B.D
         $inscritos = $this->M_General->seleccionar(
