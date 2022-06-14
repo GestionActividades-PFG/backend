@@ -313,7 +313,7 @@ class C_GestionActividades extends RestController
     public function getActividadesCoordiandor_get() {
 
         //Params del get
-        $idMomento = $this->input->get("idMomento");
+        $idMomento = (int)$this->input->get("idMomento");
         $idEtapa = $this->input->get("idEtapa");
 
         $condicionMomento = null;
@@ -322,7 +322,7 @@ class C_GestionActividades extends RestController
 
         $condicionEtapa = null;
 
-        if(isset($idEtapa)) $condicionEtapa = " and ACT_Actividades_Etapas.idEtapa = $idEtapa";
+        if(isset($idEtapa)) $condicionEtapa = " AND ACT_Actividades_Etapas.idEtapa = $idEtapa";
 
         //Consultas a B.D
         $nombreMomento = $this->M_General->seleccionar(
@@ -666,7 +666,7 @@ class C_GestionActividades extends RestController
         //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
         $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
 
-        $condicionSeccion = "Secciones.codSeccion = $codSeccion AND alumnos.idAlumno NOT IN ($alumns)";
+        $condicionSeccion = "Secciones.codSeccion = $codSeccion AND Alumnos.idAlumno NOT IN ($alumns)";
         
         //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
@@ -713,7 +713,7 @@ class C_GestionActividades extends RestController
         //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
         $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
         
-        $condicionSeccion = "Secciones.idSeccion = $idEtapa AND alumnos.idAlumno NOT IN ($alumns)";
+        $condicionSeccion = "Secciones.idSeccion = $idEtapa AND Alumnos.idAlumno NOT IN ($alumns)";
         
         //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
