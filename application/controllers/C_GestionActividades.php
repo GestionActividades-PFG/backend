@@ -56,51 +56,62 @@ class C_GestionActividades extends RestController
         $email = $this->session->userdata("email");
 
         //Si estamos en debug cargamos por la id que nos pasen...
-        if($this->config->item('debug')) {
-            
-            $idUsuario = (int)$this->input->get("userID");
-            
-        } 
-        else $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
+        if($this->config->item('debug') != null) {
 
-        //Obtenemos el rango del usuario...
-        $role = $this->M_General->seleccionar(
-            "Perfiles_Usuarios pu", //Tabla
-            "nombre", //Campos
-            "pu.idUsuario = $idUsuario", //Condición
-            ["Perfiles p"], //Tabla relación
-            ["pu.idPerfil = p.idPerfil"], //Relación
-            ['left'] //Tipo relación
-        );
+            if($this->config->item('debug')) {
+            
+                $idUsuario = (int)$this->input->get("userID");
+                
+            } 
+            else $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
+    
+            //Obtenemos el rango del usuario...
+            $role = $this->M_General->seleccionar(
+                "Perfiles_Usuarios pu", //Tabla
+                "nombre", //Campos
+                "pu.idUsuario = $idUsuario", //Condición
+                ["Perfiles p"], //Tabla relación
+                ["pu.idPerfil = p.idPerfil"], //Relación
+                ['left'] //Tipo relación
+            );
+            
+            //Obtenemos si es tutor de algún curso...
+            $tutorCurso = $this->M_General->seleccionar(
+                "ACT_Inscriben_Alumnos aia", //Tabla
+                "codSeccion", //Campos
+                "s.idTutor = $idUsuario", //Condición
+                ["Alumnos al", "Secciones s"], //Tabla relación
+                ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
+                ['left', 'left'] //Tipo relación
+            );
+            
+            //Obtenemos idEtapa del coordinador iniciado
+            $coordinadorEtapa = $this->M_General->seleccionar(
+                "Etapas", //Tabla
+                "idEtapa", //Campos
+                "Etapas.idCoordinador = $idUsuario" //Condición
+            );
+                    
+            //JWT, controla la expiration y el iat
+            $tokenData['id'] = $idUsuario;
+            $tokenData['role'] = $role;
+            $tokenData['iat'] = time(); //Issued At
+            $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
+            $tokenData["tutorCurso"] = $tutorCurso[0];
+            $tokenData["coordinadorEtapa"] = $coordinadorEtapa[0];
+            $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
+    
+            $jwt = $this->jwt->GenerateToken($tokenData);
+    
+
+        } else {
+            $textoError["errorNum"] = 1029;
+            $textoError["mensaje"] = "<b>Archivo de config.php incompleto. Necesitas agregar el tipo de debug de la aplicación [AU-1029-INDX].</b>";
+
+            $this->response($textoError, 200);
+        }
+
         
-        //Obtenemos si es tutor de algún curso...
-        $tutorCurso = $this->M_General->seleccionar(
-            "ACT_Inscriben_Alumnos aia", //Tabla
-            "codSeccion", //Campos
-            "s.idTutor = $idUsuario", //Condición
-            ["Alumnos al", "Secciones s"], //Tabla relación
-            ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
-            ['left', 'left'] //Tipo relación
-        );
-		
-		//Obtenemos idEtapa del coordinador iniciado
-        $coordinadorEtapa = $this->M_General->seleccionar(
-            "Etapas", //Tabla
-            "idEtapa", //Campos
-            "Etapas.idCoordinador = $idUsuario" //Condición
-        );
-		        
-        //JWT, controla la expiration y el iat
-        $tokenData['id'] = $idUsuario;
-        $tokenData['role'] = $role;
-        $tokenData['iat'] = time(); //Issued At
-        $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
-        $tokenData["tutorCurso"] = $tutorCurso[0];
-		$tokenData["coordinadorEtapa"] = $coordinadorEtapa[0];
-        $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
-
-        $jwt = $this->jwt->GenerateToken($tokenData);
-
         $this->response($jwt, 200);
     }
 
