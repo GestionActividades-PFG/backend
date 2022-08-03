@@ -54,7 +54,14 @@ class C_GestionActividades extends RestController
 
         // session_start();
         $email = $this->session->userdata("email");
-        $idUsuario = 22;//$this -> M_General -> obtenerIdUsuario($email);
+
+        //Si estamos en debug cargamos por la id que nos pasen...
+        if($this->config->item('debug')) {
+            
+            $idUsuario = (int)$this->input->get("userID");
+            
+        } 
+        else $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
 
         //Obtenemos el rango del usuario...
         $role = $this->M_General->seleccionar(
@@ -1023,7 +1030,7 @@ class C_GestionActividades extends RestController
         //Consultas a B.D
         $nombresAlumnos = $this->M_General->seleccionar(
             "Secciones", //Tabla
-            " Secciones.idSeccion,Secciones.codSeccion", //Campos
+            "Secciones.idSeccion,Secciones.codSeccion", //Campos
 			$condicionEtapa, //Condición
 			["Cursos"], //Tabla relación
 			["Cursos.idCurso=Secciones.idCurso"], //Relación
