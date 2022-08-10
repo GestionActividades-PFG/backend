@@ -65,6 +65,8 @@ class C_GestionActividades extends RestController
             } 
             else $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
     
+            $idUsuario = 22;
+
             //Obtenemos el rango del usuario...
             $role = $this->M_General->seleccionar(
                 "Perfiles_Usuarios pu", //Tabla
