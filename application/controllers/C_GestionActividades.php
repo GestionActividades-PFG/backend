@@ -65,8 +65,6 @@ class C_GestionActividades extends RestController
             } 
             else $idUsuario = $this -> M_General -> obtenerIdUsuario($email);
     
-            $idUsuario = 22;
-
             //Obtenemos el rango del usuario...
             $role = $this->M_General->seleccionar(
                 "Perfiles_Usuarios pu", //Tabla
@@ -114,6 +112,34 @@ class C_GestionActividades extends RestController
         }
 
         
+        //Obtenemos si es tutor de algún curso...
+        $tutorCurso = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos aia", //Tabla
+            "codSeccion", //Campos
+            "s.idTutor = $idUsuario", //Condición
+            ["Alumnos al", "Secciones s"], //Tabla relación
+            ["aia.idAlumno = al.idAlumno", "al.idSeccion = s.idSeccion"], //Relación
+            ['left', 'left'] //Tipo relación
+        );
+		
+		//Obtenemos idEtapa del coordinador iniciado
+        $coordinadorEtapa = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "idEtapa", //Campos
+            "Etapas.idCoordinador = $idUsuario" //Condición
+        );
+		        
+        //JWT, controla la expiration y el iat
+        $tokenData['id'] = $idUsuario;
+        $tokenData['role'] = $role;
+        $tokenData['iat'] = time(); //Issued At
+        $tokenData['exp'] = $tokenData["iat"] + 60 * 60 * 1;
+        $tokenData["tutorCurso"] = $tutorCurso[0];
+		$tokenData["coordinadorEtapa"] = $coordinadorEtapa[0];
+        $tokenData['timeStamp'] = Date('Y-m-d h:i:s');
+
+        $jwt = $this->jwt->GenerateToken($tokenData);
+
         $this->response($jwt, 200);
     }
 
@@ -333,7 +359,7 @@ class C_GestionActividades extends RestController
     public function getActividadesCoordiandor_get() {
 
         //Params del get
-        $idMomento = (int)$this->input->get("idMomento");
+        $idMomento = $this->input->get("idMomento");
         $idEtapa = $this->input->get("idEtapa");
 
         $condicionMomento = null;
@@ -342,7 +368,7 @@ class C_GestionActividades extends RestController
 
         $condicionEtapa = null;
 
-        if(isset($idEtapa)) $condicionEtapa = " AND ACT_Actividades_Etapas.idEtapa = $idEtapa";
+        if(isset($idEtapa)) $condicionEtapa = " and ACT_Actividades_Etapas.idEtapa = $idEtapa";
 
         //Consultas a B.D
         $nombreMomento = $this->M_General->seleccionar(
@@ -657,6 +683,32 @@ class C_GestionActividades extends RestController
 
         $this->response($arrayActividad, 200);
     }
+		
+	/**
+     * Método que obtener todas las Secciones corespondientes al coordinador para añadirlos al Select.
+     */
+    public function getSeccionesCoordinador_get() {
+
+        //Params del get
+        $idEtapa = $this->input->get("idEtapa");
+
+        if(!isset($idEtapa)) $this->response(null, 400);
+		
+		$condicionSeccion = "Cursos.idEtapa = $idEtapa";
+		
+        //Recorremos la tabla en busca de alumnos inscritos...
+        $nombresSecciones = $this->M_General->seleccionar(
+            "Secciones", //Tabla
+            "Secciones.codSeccion", //Campos
+			$condicionSeccion, //Condición
+			["Cursos"], //Tabla relación
+			["Cursos.idCurso = Secciones.idCurso"], //Relación
+			['left'] //Tipo relación
+        );
+        
+		$this->response($nombresSecciones, 200);      
+		 
+    }
     
     /**
      * ===========================================
@@ -674,42 +726,22 @@ class C_GestionActividades extends RestController
         $codSeccion = $this->input->get("codSeccion");
         $codActividad = $this->input->get("codActividad");
 
-        if(!isset($codSeccion) || !isset($codActividad)) $this->response(null, 400);
+       if(!isset($codSeccion)) $this->response(null, 400);
 
-        $condicionSeccion = null;
-
-
-        $alumnosInscritos = "";
+        $condicionSeccion = "Secciones.codSeccion = $codSeccion and Alumnos.idAlumno NOT IN (SELECT ACT_Inscriben_Alumnos.idAlumno from ACT_Inscriben_Alumnos where ACT_Inscriben_Alumnos.idActividad = $codActividad)";
 
         //Recorremos la tabla en busca de alumnos inscritos...
-        $alumnosInscritosQuery = $this->M_General->seleccionar(
-            "ACT_Inscriben_Alumnos", //Tabla
-            "DISTINCT ACT_Inscriben_Alumnos.idAlumno", //Campos
-			"Secciones.codSeccion = $codSeccion AND ACT_Inscriben_Alumnos.idActividad = $codActividad", //Condición
-			["Alumnos", "Secciones"], //Tabla relación
-			["Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno", "Alumnos.idSeccion = Secciones.idSeccion"], //Relación
-			['left', 'left'] //Tipo relación
-        );
-
-        foreach ($alumnosInscritosQuery as $key => $value) $alumnosInscritos .= "$value[idAlumno],";
-
-        //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
-        $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
-
-        $condicionSeccion = "Secciones.codSeccion = $codSeccion AND Alumnos.idAlumno NOT IN ($alumns)";
-        
-        //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
             "Alumnos", //Tabla
-            "DISTINCT Alumnos.idAlumno,Alumnos.nombre", //Campos
+            "Alumnos.idAlumno,Alumnos.nombre", //Campos
 			$condicionSeccion, //Condición
-			["Secciones", "ACT_Inscriben_Alumnos"], //Tabla relación
-			["Alumnos.idSeccion = Secciones.idSeccion", "Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno"], //Relación
-			['left', 'left'] //Tipo relación
-			
+			["Secciones"], //Tabla relación
+			["Alumnos.idSeccion = Secciones.idSeccion"], //Relación
+			['left'] //Tipo relación
         );
-
-		$this->response($nombresAlumnos, 200);      
+        
+		$this->response($nombresAlumnos, 200);   	
+		   
     }
 		
 	/**
@@ -723,42 +755,20 @@ class C_GestionActividades extends RestController
 
         if(!isset($idEtapa)) $this->response(null, 400);
 
-        $condicionSeccion = null;
-
-        $alumnosInscritos = "";
+        $condicion = "Cursos.idEtapa = $idEtapa and Alumnos.idAlumno NOT IN (SELECT ACT_Inscriben_Alumnos.idAlumno from ACT_Inscriben_Alumnos where ACT_Inscriben_Alumnos.idActividad = $idActividad)";
 
         //Recorremos la tabla en busca de alumnos inscritos...
-        $alumnosInscritosQuery = $this->M_General->seleccionar(
-            "ACT_Inscriben_Alumnos", //Tabla
-            "DISTINCT ACT_Inscriben_Alumnos.idAlumno", //Campos
-			"ACT_Inscriben_Alumnos.idActividad = $idActividad", //Condición
-			["Alumnos", "Secciones"], //Tabla relación
-			["Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno", "Alumnos.idSeccion = Secciones.idSeccion"], //Relación
-			['left', 'left'] //Tipo relación
-        );
-
-        
-        foreach ($alumnosInscritosQuery as $key => $value) $alumnosInscritos .= "$value[idAlumno],";
-        
-        //Eliminamos la ultima coma y mostramos las id's de nuestros alumnos inscritos...
-        $alumns = (strlen($alumnosInscritos) > 0) ? substr($alumnosInscritos, 0, strlen($alumnosInscritos) - 1) : 0;
-        
-        $condicionSeccion = "Secciones.idSeccion = $idEtapa AND Alumnos.idAlumno NOT IN ($alumns)";
-        
-        //Mostramos los alumnos que NO están inscritos a nuestra actividad...
         $nombresAlumnos = $this->M_General->seleccionar(
             "Alumnos", //Tabla
-            "DISTINCT Alumnos.idAlumno,Alumnos.nombre", //Campos
-			$condicionSeccion, //Condición
-			["Secciones", "ACT_Inscriben_Alumnos"], //Tabla relación
-			["Alumnos.idSeccion = Secciones.idSeccion", "Alumnos.idAlumno = ACT_Inscriben_Alumnos.idAlumno"], //Relación
+            "Alumnos.idAlumno,Alumnos.nombre", //Campos
+			$condicion, //Condición
+			["Secciones", "Cursos"], //Tabla relación
+			["Alumnos.idSeccion = Secciones.idSeccion","Cursos.idCurso = Secciones.idCurso"], //Relación
 			['left', 'left'] //Tipo relación
-			
         );
         
 		$this->response($nombresAlumnos, 200);      
-		
-            
+		 
     }
 	
 	/**
@@ -1035,22 +1045,23 @@ class C_GestionActividades extends RestController
 
         //Params del get
         $idEtapa = $this->input->get("idEtapa");
+		$codActividad = $this->input->get("codActividad");
 
-        $condicionEtapa = null;
+        $condicion = null;
 
-        if(isset($idEtapa)) $condicionEtapa = "Cursos.idEtapa = $idEtapa";
+        if(isset($idEtapa)) $condicion = "Cursos.idEtapa = $idEtapa and Secciones.idSeccion NOT IN (SELECT ACT_Inscriben_Secciones.idSeccion from ACT_Inscriben_Secciones where ACT_Inscriben_Secciones.idActividad=$codActividad)";
 
         //Consultas a B.D
         $nombresAlumnos = $this->M_General->seleccionar(
             "Secciones", //Tabla
-            "Secciones.idSeccion,Secciones.codSeccion", //Campos
-			$condicionEtapa, //Condición
+            " Secciones.idSeccion,Secciones.codSeccion", //Campos
+			$condicion, //Condición
 			["Cursos"], //Tabla relación
 			["Cursos.idCurso=Secciones.idCurso"], //Relación
 			['left'] //Tipo relación
 			
         );
-		         
+		
 		$this->response($nombresAlumnos, 200);      
 		
     }
