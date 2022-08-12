@@ -760,7 +760,7 @@ class C_GestionActividades extends RestController
         //Recorremos la tabla en busca de alumnos inscritos...
         $nombresAlumnos = $this->M_General->seleccionar(
             "Alumnos", //Tabla
-            "Alumnos.idAlumno,Alumnos.nombre", //Campos
+            "Alumnos.idAlumno,Alumnos.nombre,Secciones.codSeccion", //Campos
 			$condicion, //Condición
 			["Secciones", "Cursos"], //Tabla relación
 			["Alumnos.idSeccion = Secciones.idSeccion","Cursos.idCurso = Secciones.idCurso"], //Relación
