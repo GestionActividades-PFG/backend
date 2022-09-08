@@ -685,28 +685,39 @@ class C_GestionActividades extends RestController
     }
 		
 	/**
-     * Método que obtener todas las Secciones corespondientes al coordinador para añadirlos al Select.
+     * Método que obtener todas las Secciones o cursos corespondientes al coordinador para añadirlos al Select. (secciones para actividad individual o cursos para actividad de clase)
      */
-    public function getSeccionesCoordinador_get() {
+    public function getSeccionesOCursosCoordinador_get() {
 
         //Params del get
         $idEtapa = $this->input->get("idEtapa");
+        $tipoActividad = $this->input->get("tipoActividad");
 
-        if(!isset($idEtapa)) $this->response(null, 400);
+        if(!isset($idEtapa) || !isset($tipoActividad) ) $this->response(null, 400);
+
+        $condicion = "Cursos.idEtapa = $idEtapa";
 		
-		$condicionSeccion = "Cursos.idEtapa = $idEtapa";
-		
-        //Recorremos la tabla en busca de alumnos inscritos...
-        $nombresSecciones = $this->M_General->seleccionar(
-            "Secciones", //Tabla
-            "Secciones.codSeccion", //Campos
-			$condicionSeccion, //Condición
-			["Cursos"], //Tabla relación
-			["Cursos.idCurso = Secciones.idCurso"], //Relación
-			['left'] //Tipo relación
-        );
-        
-		$this->response($nombresSecciones, 200);      
+        if($tipoActividad == 1){
+            
+            //Recorremos la tabla en busca de secciones correspondientes a la etapa
+            $nombresApartados = $this->M_General->seleccionar(
+                "Secciones", //Tabla
+                "Secciones.codSeccion AS codApartado", //Campos
+                $condicion, //Condición
+                ["Cursos"], //Tabla relación
+                ["Cursos.idCurso = Secciones.idCurso"], //Relación
+                ['left'] //Tipo relación
+            );
+        }else{
+            //Recorremos la tabla en busca de cursos correspondientes a la etapa
+            $nombresApartados = $this->M_General->seleccionar(
+                "Cursos", //Tabla
+                "Cursos.codCurso AS codApartado", //Campos
+                $condicion //Condición
+            );
+        }
+		        
+		$this->response($nombresApartados, 200);      
 		 
     }
     
@@ -1063,6 +1074,34 @@ class C_GestionActividades extends RestController
         );
 		
 		$this->response($nombresAlumnos, 200);      
+		
+    }
+
+    /**
+     * Método que obtiene todos las clases inscritas a una actividad correspondientes al curso seleccionado por coordinador a través del Select.
+     */
+    public function getSeccionesInscritasPorCurso_get() {
+
+        //Params del get
+        $idActividad = $this->input->get("idActividad");
+		$codCurso = $this->input->get("codCurso");
+
+        $condicion = null;
+
+        if(isset($idActividad) && isset($codCurso)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Secciones.idCurso= $codCurso";
+
+        //Consultas a B.D
+        $nombresSecciones = $this->M_General->seleccionar(
+            "Act_inscriben_secciones", //Tabla
+            " Secciones.codSeccion AS nombre", //Campos
+			$condicion, //Condición
+			["Secciones","Cursos"], //Tabla relación
+			["ACT_Inscriben_Secciones.idSeccion = Secciones.idSeccion","Secciones.idCurso = Cursos.idCurso"], //Relación
+			['left','left'] //Tipo relación
+			
+        );
+		
+		$this->response($nombresSecciones, 200);      
 		
     }
 	
