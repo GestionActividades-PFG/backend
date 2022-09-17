@@ -1162,17 +1162,20 @@ class C_GestionActividades extends RestController
      */
     function getComprobarParejas_get() {
 
+        $idActividad = $this->input->get("idActividad");
+        $alumnos = $this->input->get("alumnos");;
+
         $sql = "SELECT SUM(T.TOTAL), T.codSeccion
             FROM (SELECT COUNT(*) AS TOTAL,secciones.codSeccion
             FROM act_inscriben_alumnos
             INNER JOIN alumnos on act_inscriben_alumnos.idAlumno = alumnos.idAlumno
             INNER JOIN secciones on alumnos.idSeccion = secciones.idSeccion
-            WHERE act_inscriben_alumnos.idActividad = 2
+            WHERE act_inscriben_alumnos.idActividad = $idActividad
             GROUP BY secciones.codSeccion
                         UNION ALL 
                         SELECT COUNT(*) AS TOTAL,secciones.codSeccion from alumnos 
             inner join secciones on alumnos.idSeccion = secciones.idSeccion
-            where alumnos.idAlumno in (1,2,6,11)
+            where alumnos.idAlumno in ($alumnos)
             GROUP by secciones.codSeccion
                     ) T
             GROUP by T.codSeccion;
