@@ -721,6 +721,20 @@ class C_GestionActividades extends RestController
 		 
     }
     
+	/**
+     * Método que obtener todas las etapas para añadirlas al Select.
+     */
+    public function getEtapas_get() {
+		
+        $nombresApartados = $this->M_General->seleccionar(
+            "Etapas", //Tabla
+            "Etapas.codEtapa AS codApartado" //Campos
+        );
+		        
+		$this->response($nombresApartados, 200);      
+		 
+    }
+
     /**
      * ===========================================
      *          INSCRIPCIONES INDIVIDUALES
@@ -931,6 +945,33 @@ class C_GestionActividades extends RestController
             );
 
 		$this->response($actividadInfo, 200);
+    }
+
+    /**
+     * Método que obtiene todos los Alumnos inscritos a una Actividad Individual por etapa seleccionada.
+     */
+    public function getAlumnosInscritosPorEtapa_get() {
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+        $codEtapa = $this->input->get("codEtapa");
+
+	   $condicion = null;
+	   
+		if(isset($idActividad) and isset($codEtapa)) $condicion = "ACT_Inscriben_Alumnos.idActividad = $idActividad and Etapas.codEtapa = $codEtapa";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Alumnos", //Tabla
+            "Alumnos.idAlumno,Alumnos.nombre,Secciones.codSeccion", //Campos
+			$condicion, //Condición
+			["Alumnos","Secciones","Cursos","Etapas"], //Tabla relación
+			["ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno","Alumnos.idSeccion = Secciones.idSeccion","Secciones.idCurso = Cursos.idCurso","Cursos.idEtapa = Etapas.idEtapa"], //Relación
+			['left','left','left','left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);
+
     }
 
 
@@ -1144,7 +1185,7 @@ class C_GestionActividades extends RestController
         if(isset($idClase)) $condicion = "Secciones.idSeccion = $idClase";
 
 
-        $actividadInfo = 
+        $inscritos = 
             $this->M_General->seleccionar(
                 "ACT_Clase clase", //Tabla
                 "Secciones.codSeccion", //Campos
@@ -1154,7 +1195,34 @@ class C_GestionActividades extends RestController
                 ['left'] //Tipo relación
             );
 
-		$this->response($actividadInfo, 200);
+		$this->response($inscritos, 200);
+    }
+
+    /**
+     * Método que obtiene todos las secciones inscritas a una Actividad de clase por etapa seleccionada.
+     */
+    public function getSeccionesInscritasPorEtapa_get() {
+
+        //Params del get
+		$idActividad = $this->input->get("idActividad");
+        $codEtapa = $this->input->get("codEtapa");
+
+	   $condicion = null;
+	   
+		if(isset($idActividad) and isset($codEtapa)) $condicion = "ACT_Inscriben_Secciones.idActividad = $idActividad and Etapas.codEtapa = $codEtapa";
+
+        //Consultas a B.D
+        $inscritos = $this->M_General->seleccionar(
+            "ACT_Inscriben_Secciones", //Tabla
+            "Secciones.codSeccion AS nombre", //Campos
+			$condicion, //Condición
+			["Secciones","Cursos","Etapas"], //Tabla relación
+			["ACT_Inscriben_Secciones.idSeccion = Secciones.idSeccion","Secciones.idCurso = Cursos.idCurso","Cursos.idEtapa = Etapas.idEtapa"], //Relación
+			['left','left','left'] //Tipo relación
+        );
+            
+		$this->response($inscritos, 200);
+
     }
 
     /**
