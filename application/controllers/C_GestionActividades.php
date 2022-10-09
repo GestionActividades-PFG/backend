@@ -1133,7 +1133,7 @@ class C_GestionActividades extends RestController
 
         //Consultas a B.D
         $nombresSecciones = $this->M_General->seleccionar(
-            "Act_inscriben_secciones", //Tabla
+            "ACT_Inscriben_Secciones", //Tabla
             " Secciones.codSeccion AS nombre", //Campos
 			$condicion, //Condición
 			["Secciones","Cursos"], //Tabla relación
@@ -1234,29 +1234,28 @@ class C_GestionActividades extends RestController
         $alumnos = $this->input->get("alumnos");;
 
         $sql = "SELECT SUM(T.TOTAL) AS total , T.codSeccion
-            FROM (SELECT COUNT(*) AS TOTAL,secciones.codSeccion
-            FROM act_inscriben_alumnos
-            INNER JOIN alumnos on act_inscriben_alumnos.idAlumno = alumnos.idAlumno
-            INNER JOIN secciones on alumnos.idSeccion = secciones.idSeccion
-            WHERE act_inscriben_alumnos.idActividad = $idActividad
-            GROUP BY secciones.codSeccion
+            FROM (SELECT COUNT(*) AS TOTAL,Secciones.codSeccion
+            FROM ACT_Inscriben_Alumnos
+            INNER JOIN Alumnos on ACT_Inscriben_Alumnos.idAlumno = Alumnos.idAlumno
+            INNER JOIN Secciones on Alumnos.idSeccion = Secciones.idSeccion
+            WHERE ACT_Inscriben_Alumnos.idActividad = $idActividad
+            GROUP BY Secciones.codSeccion
                         UNION ALL 
-                        SELECT COUNT(*) AS TOTAL,secciones.codSeccion from alumnos 
-            inner join secciones on alumnos.idSeccion = secciones.idSeccion
-            where alumnos.idAlumno in ($alumnos)
-            GROUP by secciones.codSeccion
+                        SELECT COUNT(*) AS TOTAL,Secciones.codSeccion from Alumnos 
+            inner join Secciones on Alumnos.idSeccion = Secciones.idSeccion
+            where Alumnos.idAlumno in ($alumnos)
+            GROUP by Secciones.codSeccion
                     ) T
             GROUP by T.codSeccion;
         ";
 
         $query = $this->db->query($sql);
 
-
-        
         $this->response($query->result_array(), 200);
     }
 
     /**
+     * @Deprecated
      * Obtienes todas las inscripciones si no se le pasa un parámetro.
      * Campos:
         * tipoInscripcion -> 'c' Clase, 'i' Individual
@@ -1297,6 +1296,7 @@ class C_GestionActividades extends RestController
     }
 
     /**
+     * @Deprecated
 	 * Generar PDF
 	 * 
 	 * Genera un pdf, con los datos pasados al método por medio de BODY.
@@ -1314,7 +1314,7 @@ class C_GestionActividades extends RestController
             "alumnos.nombre,secciones.codSeccion", //Campos
 			$condicion, //Condición
 			["Alumnos","secciones"], //Tabla relación
-			["ACT_Inscriben_Alumnos.idAlumno = alumnos.idAlumno","alumnos.idSeccion = secciones.idSeccion"], //Relación
+			["ACT_Inscriben_Alumnos.idAlumno = alumnos.idAlumno","Alumnos.idSeccion = secciones.idSeccion"], //Relación
 			['left','left'] //Tipo relación
         );
         
