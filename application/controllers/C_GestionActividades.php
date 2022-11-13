@@ -1096,12 +1096,12 @@ class C_GestionActividades extends RestController
     public function getClasesCoordinador_get() {
 
         //Params del get
-        $idEtapa = $this->input->get("idEtapa");
+        $idCurso = $this->input->get("idCurso");
 		$codActividad = $this->input->get("codActividad");
 
         $condicion = null;
 
-        if(isset($idEtapa)) $condicion = "Cursos.idEtapa = $idEtapa and Secciones.idSeccion NOT IN (SELECT ACT_Inscriben_Secciones.idSeccion from ACT_Inscriben_Secciones where ACT_Inscriben_Secciones.idActividad=$codActividad)";
+        if(isset($idCurso)) $condicion = "Cursos.idCurso = $idCurso and Secciones.idSeccion NOT IN (SELECT ACT_Inscriben_Secciones.idSeccion from ACT_Inscriben_Secciones where ACT_Inscriben_Secciones.idActividad=$codActividad)";
 
         //Consultas a B.D
         $nombresAlumnos = $this->M_General->seleccionar(
