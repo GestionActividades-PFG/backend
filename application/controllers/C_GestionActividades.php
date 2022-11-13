@@ -706,7 +706,9 @@ class C_GestionActividades extends RestController
                 $condicion, //Condición
                 ["Cursos"], //Tabla relación
                 ["Cursos.idCurso = Secciones.idCurso"], //Relación
-                ['left'] //Tipo relación
+                ['left'], //Tipo relación
+                null,
+                "Cursos.CodCurso"
             );
         }else{
             //Recorremos la tabla en busca de cursos correspondientes a la etapa
