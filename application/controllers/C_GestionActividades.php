@@ -1093,20 +1093,20 @@ class C_GestionActividades extends RestController
     }
 
     /**
-     * Método que obtiene todos las Clases corespondientes al coordinador para añadirlos al Select.
+     * Método que obtiene todos las Clases corespondientes a la etapa seleccionada por el coordinador para añadirlos al Select.
      */
     public function getClasesCoordinador_get() {
 
         //Params del get
-        $idCurso = $this->input->get("idCurso");
+        $codCurso = $this->input->get("codCurso");
 		$codActividad = $this->input->get("codActividad");
 
         $condicion = null;
 
-        if(isset($idCurso)) $condicion = "Cursos.idCurso = $idCurso and Secciones.idSeccion NOT IN (SELECT ACT_Inscriben_Secciones.idSeccion from ACT_Inscriben_Secciones where ACT_Inscriben_Secciones.idActividad=$codActividad)";
+        if(isset($codCurso)) $condicion = "Cursos.codCurso = $codCurso and Secciones.idSeccion NOT IN (SELECT ACT_Inscriben_Secciones.idSeccion from ACT_Inscriben_Secciones where ACT_Inscriben_Secciones.idActividad=$codActividad)";
 
         //Consultas a B.D
-        $nombresAlumnos = $this->M_General->seleccionar(
+        $nombreClases = $this->M_General->seleccionar(
             "Secciones", //Tabla
             " Secciones.idSeccion,Secciones.codSeccion", //Campos
 			$condicion, //Condición
@@ -1116,7 +1116,35 @@ class C_GestionActividades extends RestController
 			
         );
 		
-		$this->response($nombresAlumnos, 200);      
+		$this->response($nombreClases, 200);      
+		
+    }
+
+    /**
+     * Método que obtiene todos las Clases corespondientes al coordinador para añadirlos al Select.
+     */
+    public function getTodasClasesCoordinador_get() {
+
+        //Params del get
+        $idEtapa = $this->input->get("idEtapa");
+		$codActividad = $this->input->get("codActividad");
+
+        $condicion = null;
+
+        if(isset($idEtapa)) $condicion = " Cursos.idEtapa = $idEtapa and Secciones.idSeccion NOT IN (SELECT ACT_Inscriben_Secciones.idSeccion from ACT_Inscriben_Secciones where ACT_Inscriben_Secciones.idActividad =$codActividad)";
+
+        //Consultas a B.D
+        $nombreClases = $this->M_General->seleccionar(
+            "Secciones", //Tabla
+            "Secciones.idSeccion , Secciones.codSeccion", //Campos
+			$condicion, //Condición
+			["Cursos"], //Tabla relación
+			["Cursos.idCurso=Secciones.idCurso"], //Relación
+			['left'] //Tipo relación
+			
+        );
+
+		$this->response($nombreClases, 200);      
 		
     }
 
