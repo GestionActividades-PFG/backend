@@ -1,17 +1,3 @@
-/*
---	Script SQL Grupo anterior, proyecto base
-*/
-
-
--- START TRANSACTION;
--- DROP DATABASE IF EXISTS Gestion_Escuela;
--- CREATE DATABASE Gestion_Escuela DEFAULT CHARACTER SET utf8 COLLATE utf8_spanish_ci;
--- USE Gestion_Escuela;
-
-/*
---	Script SQL Grupo anterior, proyecto base
-*/
-
 
 CREATE TABLE Aplicaciones
 (
@@ -255,7 +241,7 @@ CREATE TABLE Alumnos
 	sexo ENUM('m','f') NOT NULL,
 	telefono CHAR(9) NOT NULL,
 	telefonoUrgencia CHAR(9) NULL,
-	fechaNacimiento DATE NOT NULL,
+	fechaNacimiento VARCHAR(10) NOT NULL,
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP,
 	
@@ -268,19 +254,6 @@ CREATE TABLE Alumnos
 				ON UPDATE CASCADE
 )ENGINE=INNODB;
 
-INSERT INTO
-	Perfiles (nombre, descripcion)
-VALUES 
-	('Administrador', 'Administrador'),
-	('Gestor', 'Gestor'),
-	('Profesor', 'Profesor'),
-	('Tutor', 'Tutor'),
-	('Coordinador', 'Coordinador');
-COMMIT;
-
-/*-------------------------------------------------------------------------------------------------------*/	
---											ACTIVIDADES
-/*-------------------------------------------------------------------------------------------------------*/	
 
 CREATE TABLE IF NOT EXISTS ACT_Momentos (
 	idMomento TINYINT unsigned NOT NULL AUTO_INCREMENT,
@@ -422,14 +395,17 @@ CREATE TABLE IF NOT EXISTS `ACT_Estadisticas_Totales` (
 	CONSTRAINT fk_ACT_Estadisticas_Totales_idEtapa FOREIGN KEY (idEtapa) REFERENCES Etapas(idEtapa) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-/*-------------------------INSERT---------------------------------------*/
 
-/*
---  Coordinador eso(21) --> COORDINADOR ESO  y ISA(23)-->COORDINADORA CF
---  Esperanza(18),Sergio(19) , Luis(20), Isa(23) y Manu(24) --> ADMIN
---  Tutor 1esob(22) --> TUTOR 1ESOB
---  solo profesor (25)
-*/
+INSERT INTO
+	Perfiles (nombre, descripcion)
+VALUES 
+	('Administrador', 'Administrador'),
+	('Gestor', 'Gestor'),
+	('Profesor', 'Profesor'),
+	('Tutor', 'Tutor'),
+	('Coordinador', 'Coordinador');
+COMMIT;
+
 
 INSERT INTO `Usuarios` (`idUsuario`, `nombre`, `correo`, `bajaTemporal`, `created_at`, `updated_at`) VALUES 
 (NULL, 'Marta Romero Ramirez', 'mromeroramirez.guadalupe@alumnado.fundacionloyola.net', '', current_timestamp(), current_timestamp()),
@@ -491,10 +467,10 @@ INSERT INTO `Secciones` (`idSeccion`, `codSeccion`, `nombre`, `idTutor`, `idCurs
 (NULL, '4ESOA', '4º Educación Secundaria Obligatoria A', '10', '4', current_timestamp(), current_timestamp()),
 (NULL, '4ESOB', '4º Educación Secundaria Obligatoria B', '11', '4', current_timestamp(), current_timestamp()),
 (NULL, '4ESOC', '4º Educación Secundaria Obligatoria C', '12', '4', current_timestamp(), current_timestamp()),
-(NULL, '1SMR', '1º Sistemas Microinformáticos y Redes', '13', '5', current_timestamp(), current_timestamp()),
-(NULL, '2SMR', '2º Sistemas Microinformáticos y Redes', '14', '5', current_timestamp(), current_timestamp()),
-(NULL, '1DAW', '1º Desarrollo de Aplicaciones Web', '15', '6', current_timestamp(), current_timestamp()),
-(NULL, '2DAW', '2º Desarrollo de Aplicaciones Web', '16', '6', current_timestamp(), current_timestamp());
+(NULL, '1SMR', '1º Sistemas Microinformáticos y Redes', '13', '7', current_timestamp(), current_timestamp()),
+(NULL, '2SMR', '2º Sistemas Microinformáticos y Redes', '14', '8', current_timestamp(), current_timestamp()),
+(NULL, '1DAW', '1º Desarrollo de Aplicaciones Web', '15', '9', current_timestamp(), current_timestamp()),
+(NULL, '2DAW', '2º Desarrollo de Aplicaciones Web', '16', '10', current_timestamp(), current_timestamp());
 
 
 INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated_at`) VALUES 
@@ -554,10 +530,9 @@ INSERT INTO `Perfiles_Usuarios` (`idPerfil`, `idUsuario`, `created_at`, `updated
  INSERT INTO `Aplicaciones` (`idAplicacion`, `nombre`, `descripcion`, `url`, `icono`, `created_at`, `updated_at`) VALUES 
 (NULL, 'AdministracionEVG', 'Administración de EVG', ' app/1', 'administracion.jpg', current_timestamp(), current_timestamp()),
 (NULL, 'GestionEVG ', 'Administración de EVG', ' app/2', 'gestion.jpg', current_timestamp(), current_timestamp()),
-(NULL, 'Gestion Actividades', 'Administración de EVG', ' https://04.2daw.esvirgua.com/ActividadesEVG_FRONT', NULL, current_timestamp(), current_timestamp());
+(NULL, 'Gestion Actividades', 'Administración de EVG', ' https://04.2daw.esvirgua.com/Actividades-Front/', NULL, current_timestamp(), current_timestamp());
 
 
--- Asignamos permisos a los perfiles
 
 INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `updated_at`) VALUES 
 ('1', '1', current_timestamp(), current_timestamp()),
@@ -570,298 +545,70 @@ INSERT INTO `Aplicaciones_Perfiles` (`idPerfil`, `idAplicacion`, `created_at`, `
 ('2', '3', current_timestamp(), current_timestamp());
 
 
-/*5 Alumnos para cada clase: 1ESOA,1ESOB,1ESOC,2ESOA,2ESOB,2ESOC,1SMR,2SMR,1DAW,2DAW*/
 
 INSERT INTO `Alumnos` (`idAlumno`, `NIA`, `nombre`, `DNI`, `idSeccion`, `correo`, `sexo`, `telefono`, `telefonoUrgencia`, `fechaNacimiento`, `created_at`, `updated_at`) VALUES 
-(NULL, '235125421', 'Alfredo Domínguez Sopa', '03215625G', '1', 'adomiguezsopa.guadalupe@alumnado.fundacionloyola.net', 'm', '652145255', '655222214', '02/01/2009', current_timestamp(), current_timestamp()),
-(NULL, '021452355', 'Isabel Martínez Moreno', '03215225G', '1', 'imartinezmoreno.guadalupe@alumnado.fundacionloyola.net', 'f', '652145266', '655252563', '02/02/2009', current_timestamp(), current_timestamp()),
-(NULL, '447589654', 'Carlos Gonzalez Ramirez', '03215115G', '1', 'cgonzalezramirez.guadalupe@alumnado.fundacionloyola.net', 'm', '625352636', '653656565', '12/03/2009', current_timestamp(), current_timestamp()),
-(NULL, '471563588', 'Sara Rodríguez Gambino', '03215135G', '1', 'srodriguezgambino.guadalupe@alumnado.fundacionloyola.net', 'f', '652452652', '651151544', '22/04/2009', current_timestamp(), current_timestamp()),
-(NULL, '374569963', 'Marcos Romero Martín', '03215625A', '1', 'mromeromartinez.guadalupe@alumnado.fundacionloyola.net', 'm', '652654123', '659595948', '04/05/2009', current_timestamp(), current_timestamp()),
-(NULL, '471428596', 'Tomás Gambino Marcial', '03625414H', '2', 'tgambinomarcial.guadalupe@alumnado.fundacionloyola.net', 'm', '655654987', '652262626', '22/12/2009', current_timestamp(), current_timestamp()),
-(NULL, '369655214', 'Carmen Vazquez Silva', '23235214H', '2', 'cvazquezsilva.guadalupe@alumnado.fundacionloyola.net', 'f', '632258369', '652652652', '11/11/2009', current_timestamp(), current_timestamp()),
-(NULL, '153357531', 'Juan Carlos Romero Zambrano', '32547856A', '2', 'jcromerozambrano.guadalupe@alumnado.fundacionloyola.net', 'm', '654654654', '652142525', '12/03/2009', current_timestamp(), current_timestamp()),
-(NULL, '159951563', 'Pilar Domínguez Carretera', '32147856S', '2', 'pdominguezcarretera.guadalupe@alumnado.fundacionloyola.net', 'f', '652365236', '652145455', '14/02/2009', current_timestamp(), current_timestamp()),
-(NULL, '852258527', 'Ismael Vélez Martínez', '26541698D', '2', 'ivelezmartinez.guadalupe@alumnado.fundacionloyola.net', 'm', '655578963', '652147888', '15/11/2009', current_timestamp(), current_timestamp()),
-(NULL, '147711472', 'Ramon Silva Matamoros', '32587456F', '3', 'rsilvamatamoros.guadalupe@alumnado.fundacionloyola.net', 'm', '652658521', '651951951', '02/04/2009', current_timestamp(), current_timestamp()),
-(NULL, '369933691', 'Silvia Zambrano Marín', '32578459G', '3', 'szambranomarin.guadalupe@alumnado.fundacionloyola.net', 'f', '65311775', '654369147', '03/05/2009', current_timestamp(), current_timestamp()),
-(NULL, '189977896', 'Francisco Pozo Carrasco', '32541555E', '3', 'fpozocarrasco.guadalupe@alumnado.fundacionloyola.net', 'm', '654888662', '654258369', '12/01/2009', current_timestamp(), current_timestamp()),
-(NULL, '456654562', 'Almudena Rivera Díaz', '26547854F', '3', 'ariveradiaz.guadalupe@alumnado.fundacionloyola.net', 'f', '655215265', '657369258', '07/09/2009', current_timestamp(), current_timestamp()),
-(NULL, '123321230', 'Jesús Cuello Marcial', '256654785F', '3', 'jcuellomarcial.guadalupe@alumnado.fundacionloyola.net', 'm', '652485914', '654748484', '09/01/2009', current_timestamp(), current_timestamp()),
-(NULL, '030200604', 'Daniel Fernández Carrillo', '21456325A', '4', 'dfernandezcarrillo.guadalupe@alumnado.fundacionloyola.net', 'm', '65414255', '652362515', '23/09/2008', current_timestamp(), current_timestamp()),
-(NULL, '242655984', 'Matilda Correa Cano', '36526985A', '4', 'mcorreacano.guadalupe@alumnado.fundacionloyola.net', 'f', '657474874', '652363625', '02/01/2006', current_timestamp(), current_timestamp()),
-(NULL, '759863210', 'Miguel Ángel Ferrera García', '32501420A', '4', 'maferreragarcia.guadalupe@alumnado.fundacionloyola.net', 'm', '652144759', '653653653', '21/08/2008', current_timestamp(), current_timestamp()),
-(NULL, '147539175', 'Lola Rodríguez Villoslada', '20147856D', '4', 'lrodriguezvilloslada.guadalupe@alumnado.fundacionloyola.net', 'f', '652145155', '658658658', '03/01/2008', current_timestamp(), current_timestamp()),
-(NULL, '852645264', 'Marcos Carapeto Ramos', '23652102D', '4', 'mcarapetoramos.guadalupe@alumnado.fundacionloyola.net', 'm', '652145225', '659659659', '07/01/2008', current_timestamp(), current_timestamp()),
-(NULL, '963148520', 'Alberto García Fernandez', '03258745D', '5', 'agarciafernandez.guadalupe@alumnado.fundacionloyola.net', 'm', '652245255', '657657657', '03/02/2008', current_timestamp(), current_timestamp()),
-(NULL, '147893214', 'Marta Vallecillo Gonzalez', '14785236D', '5', 'mvallecillogonzalez.guadalupe@alumnado.fundacionloyola.net', 'f', '622145255', '650650650', '05/12/2008', current_timestamp(), current_timestamp()),
-(NULL, '111223366', 'Juan Manuel Galván Rueda', '21452365F', '5', 'jmgalvanrueda.guadalupe@alumnado.fundacionloyola.net', 'm', '652135255', '652333111', '14/02/2008', current_timestamp(), current_timestamp()),
-(NULL, '222558884', 'Carmen Jaramillo Marcial', '23658745F', '5', 'cjaramillomarcial.guadalupe@alumnado.fundacionloyola.net', 'f', '652145244', '652444777', '10/02/2008', current_timestamp(), current_timestamp()),
-(NULL, '115598877', 'Saúl García Silva', '74596582T', '5', 'sgarciasilva.guadalupe@alumnado.fundacionloyola.net', 'm', '652145222', '653999888', '03/03/2008', current_timestamp(), current_timestamp()),
-(NULL, '335574466', 'Fernando Cano Gonzalez', '23652102T', '6', 'fcanogonzalez.guadalupe@alumnado.fundacionloyola.net', 'm', '652145226', '658777999', '23/04/2008', current_timestamp(), current_timestamp()),
-(NULL, '186552200', 'Ángela Ferrera Marcial', '11122233T', '6', 'aferreramarcial.guadalupe@alumnado.fundacionloyola.net', 'f', '652145227', '654999333', '22/05/2008', current_timestamp(), current_timestamp()),
-(NULL, '000112236', 'Gonzalo Fernandez Vazquez', '22266698Y', '6', 'gfernandezvazquez.guadalupe@alumnado.fundacionloyola.net', 'm', '652115255', '654111333', '12/06/2008', current_timestamp(), current_timestamp()),
-(NULL, '999633221', 'Tania Suarez Carrasco', '55544223Y', '6', 'tsuarezcarrasco.guadalupe@alumnado.fundacionloyola.net', 'f', '652144784', '654888222', '11/02/2008', current_timestamp(), current_timestamp()),
-(NULL, '111111414', 'Manuel Solís Gomez', '25632541J', '6', 'msolisgomez.guadalupe@alumnado.fundacionloyola.net', 'm', '652146599', '654777999', '14/04/2008', current_timestamp(), current_timestamp()),
-(NULL, '151512635', 'Ruben Solís Correa', '23012058J', '13', 'rsoliscorrea.guadalupe@alumnado.fundacionloyola.net', 'm', '653200210', '651999222', '22/01/2005', current_timestamp(), current_timestamp()),
-(NULL, '159151599', 'Laura Fernandez Díaz', '12545875K', '13', 'lfernandezdiaz.guadalupe@alumnado.fundacionloyola.net', 'f', '652014798', '651333777', '15/12/2005', current_timestamp(), current_timestamp()),
-(NULL, '357353577', 'Arturo Carrión Domínguez', '26354785K', '13', 'acarriondominguez.guadalupe@alumnado.fundacionloyola.net', 'm', '651999333', '625114422', '11/11/2005', current_timestamp(), current_timestamp()),
-(NULL, '351268410', 'María Silva Gamero', '66655598K', '13', 'msilvagamero.guadalupe@alumnado.fundacionloyola.net', 'f', '652365211', '651444666', '12/01/2005', current_timestamp(), current_timestamp()),
-(NULL, '222233333', 'Juan Antonio Galván Silva', '25412578U', '13', 'jagalvansilva.guadalupe@alumnado.fundacionloyola.net', 'm', '653252522', '65494944', '02/04/2005', current_timestamp(), current_timestamp()),
-(NULL, '111112222', 'Juan Gamero Silva', '15632547U', '14', 'jgamerosilva.guadalupe@alumnado.fundacionloyola.net', 'm', '652145111', '653222222', '22/12/2004', current_timestamp(), current_timestamp()),
-(NULL, '177779999', 'Raquel Solís Ramos', '32588754U', '14', 'rsolisramos.guadalupe@alumnado.fundacionloyola.net', 'f', '652145999', '656664477', '02/03/2004', current_timestamp(), current_timestamp()),
-(NULL, '444446686', 'Adrian Jaramillo García', '26531485I', '14', 'ajaramillogarcia.guadalupe@alumnado.fundacionloyola.net', 'm', '65214555', '655114422', '12/02/2004', current_timestamp(), current_timestamp()),
-(NULL, '222228888', 'Alondra Ramirez Cuello', '21032015I', '14', 'aramirezcuello.guadalupe@alumnado.fundacionloyola.net', 'f', '652111147', '655114411', '04/01/2004', current_timestamp(), current_timestamp()),
-(NULL, '166667777', 'Juan Carlos Moreno Nieto', '63521478I', '14', 'jcmorenonieto.guadalupe@alumnado.fundacionloyola.net', 'm', '652696933', '655114433', '05/05/2004', current_timestamp(), current_timestamp()),
-(NULL, '161616116', 'Gabriél Romero Fonseca', '02147856O', '15', 'gromerofonseca.guadalupe@alumnado.fundacionloyola.net', 'm', '652858585', '655114444', '02/12/2003', current_timestamp(), current_timestamp()),
-(NULL, '171717117', 'Esmeralda Malavé Gamero', '21452369O', '15', 'emalavegamero.guadalupe@alumnado.fundacionloyola.net', 'f', '652969696', '655114455', '04/03/2003', current_timestamp(), current_timestamp()),
-(NULL, '181818181', 'Jose Rodríguez Marredo', '65214788P', '15', 'jrodriguezmarredo.guadalupe@alumnado.fundacionloyola.net', 'm', '652363636', '655114466', '05/07/2003', current_timestamp(), current_timestamp()),
-(NULL, '212121212', 'Adriana Martín Serrano', '20320145P', '15', 'amartinezserrano.guadalupe@alumnado.fundacionloyola.net', 'f', '652141414', '655114477', '12/08/2003', current_timestamp(), current_timestamp()),
-(NULL, '010203020', 'Juan Manuel Moreno Martínez', '63598745P', '15', 'jmmorenomartinez.guadalupe@alumnado.fundacionloyola.net', 'm', '652474747', '655114488', '32/09/2003', current_timestamp(), current_timestamp()),
-(NULL, '000111002', 'Jacobo Zambrano Romero', '21452365L', '16', 'jzambranoromero.guadalupe@alumnado.fundacionloyola.net', 'm', '652282828', '655114499', '02/07/2002', current_timestamp(), current_timestamp()),
-(NULL, '010407080', 'Lourdes Serrano Ramos', '65327895L', '16', 'lserranoramos.guadalupe@alumnado.fundacionloyola.net', 'f', '652010203', '655114412', '03/03/2002', current_timestamp(), current_timestamp()),
-(NULL, '157584946', 'Lorezon Esturrica Moreno', '362514178L', '16', 'lesturricamoreno.guadalupe@alumnado.fundacionloyola.net', 'm', '652140506', '655114413', '07/07/2002', current_timestamp(), current_timestamp()),
-(NULL, '262651452', 'Macarena Fonseca Sopa', '45217896R', '16', 'mfonsecasopa.guadalupe@alumnado.fundacionloyola.net', 'f', '652989878', '655114414', '04/01/2002', current_timestamp(), current_timestamp()),
-(NULL, '252625265', 'Miguel Marredo Malavé', '02541288R', '16', 'mmarredomalave.guadalupe@alumnado.fundacionloyola.net', 'm', '652144548', '655114415', '02/11/2002', current_timestamp(), current_timestamp()),
-(NULL, '235125121', 'alumno1', '03215625G', '2', 'alumno1.guadalupe@alumnado.fundacionloyola.net', 'm', '652145155', '655221214', '02/01/2009', current_timestamp(), current_timestamp()),
-(NULL, '021452155', 'alumno2', '03212225G', '2', 'alumno2.guadalupe@alumnado.fundacionloyola.net', 'f', '652145166', '655251563', '02/02/2009', current_timestamp(), current_timestamp()),
-(NULL, '447581154', 'alumno3', '03215215G', '2', 'alumno3.guadalupe@alumnado.fundacionloyola.net', 'm', '625351136', '653633565', '12/03/2009', current_timestamp(), current_timestamp()),
-(NULL, '471511588', 'alumno4', '03222235G', '2', 'alumno4.guadalupe@alumnado.fundacionloyola.net', 'f', '652411652', '651451544', '22/04/2009', current_timestamp(), current_timestamp()),
-(NULL, '374511163', 'alumno5', '01215625A', '2', 'alumno5.guadalupe@alumnado.fundacionloyola.net', 'm', '652652223', '659575948', '04/05/2009', current_timestamp(), current_timestamp()),
-(NULL, '235111421', 'alumno6', '03215621G', '2', 'alumno6.guadalupe@alumnado.fundacionloyola.net', 'm', '652145215', '655277214', '02/01/2009', current_timestamp(), current_timestamp()),
-(NULL, '021452115', 'alumno7', '03215211G', '2', 'alumno7.guadalupe@alumnado.fundacionloyola.net', 'f', '652142266', '655277563', '02/02/2009', current_timestamp(), current_timestamp()),
-(NULL, '447589114', 'alumno8', '03215111G', '2', 'alumno8.guadalupe@alumnado.fundacionloyola.net', 'm', '625352626', '653776565', '12/03/2009', current_timestamp(), current_timestamp()),
-(NULL, '471563118', 'alumno9', '03215131G', '2', 'alumno9.guadalupe@alumnado.fundacionloyola.net', 'f', '652452222', '651771544', '22/04/2009', current_timestamp(), current_timestamp()),
-(NULL, '374569113', 'alumno10', '03215825A', '2', 'alumno10.guadalupe@alumnado.fundacionloyola.net', 'm', '652654923', '659229948', '04/05/2009', current_timestamp(), current_timestamp()),
-(NULL, '235112212', 'alumno11', '03212221G', '2', 'alumno11.guadalupe@alumnado.fundacionloyola.net', 'm', '652145225', '655227214', '02/01/2009', current_timestamp(), current_timestamp()),
-(NULL, '021422115', 'alumno12', '03215221G', '2', 'alumno12.guadalupe@alumnado.fundacionloyola.net', 'f', '652142222', '652227563', '02/02/2009', current_timestamp(), current_timestamp()),
-(NULL, '447522114', 'alumno13', '03212211G', '2', 'alumno13.guadalupe@alumnado.fundacionloyola.net', 'm', '625352622', '653776522', '12/03/2009', current_timestamp(), current_timestamp()),
-(NULL, '471522118', 'alumno15', '03222131G', '2', 'alumno15.guadalupe@alumnado.fundacionloyola.net', 'f', '652252222', '651771522', '22/04/2009', current_timestamp(), current_timestamp());
+(NULL, '235125421', 'Alfredo Domínguez Sopa', '03215625G', '1', 'adomiguezsopa.guadalupe@alumnado.fundacionloyola.net', 'm', '652145255', '655222214', '02-01-2009', current_timestamp(), current_timestamp()),
+(NULL, '021452355', 'Isabel Martínez Moreno', '03215225G', '1', 'imartinezmoreno.guadalupe@alumnado.fundacionloyola.net', 'f', '652145266', '655252563', '02-02-2009', current_timestamp(), current_timestamp()),
+(NULL, '447589654', 'Carlos Gonzalez Ramirez', '03215115G', '1', 'cgonzalezramirez.guadalupe@alumnado.fundacionloyola.net', 'm', '625352636', '653656565', '12-03-2009', current_timestamp(), current_timestamp()),
+(NULL, '471563588', 'Sara Rodríguez Gambino', '03215135G', '1', 'srodriguezgambino.guadalupe@alumnado.fundacionloyola.net', 'f', '652452652', '651151544', '22-04-2009', current_timestamp(), current_timestamp()),
+(NULL, '374569963', 'Marcos Romero Martín', '03215625A', '1', 'mromeromartinez.guadalupe@alumnado.fundacionloyola.net', 'm', '652654123', '659595948', '04-05-2009', current_timestamp(), current_timestamp()),
+(NULL, '471428596', 'Tomás Gambino Marcial', '03625414H', '2', 'tgambinomarcial.guadalupe@alumnado.fundacionloyola.net', 'm', '655654987', '652262626', '22-12-2009', current_timestamp(), current_timestamp()),
+(NULL, '369655214', 'Carmen Vazquez Silva', '23235214H', '2', 'cvazquezsilva.guadalupe@alumnado.fundacionloyola.net', 'f', '632258369', '652652652', '11-11-2009', current_timestamp(), current_timestamp()),
+(NULL, '153357531', 'Juan Carlos Romero Zambrano', '32547856A', '2', 'jcromerozambrano.guadalupe@alumnado.fundacionloyola.net', 'm', '654654654', '652142525', '12-03-2009', current_timestamp(), current_timestamp()),
+(NULL, '159951563', 'Pilar Domínguez Carretera', '32147856S', '2', 'pdominguezcarretera.guadalupe@alumnado.fundacionloyola.net', 'f', '652365236', '652145455', '14-02-2009', current_timestamp(), current_timestamp()),
+(NULL, '852258527', 'Ismael Vélez Martínez', '26541698D', '2', 'ivelezmartinez.guadalupe@alumnado.fundacionloyola.net', 'm', '655578963', '652147888', '15-11-2009', current_timestamp(), current_timestamp()),
+(NULL, '147711472', 'Ramon Silva Matamoros', '32587456F', '3', 'rsilvamatamoros.guadalupe@alumnado.fundacionloyola.net', 'm', '652658521', '651951951', '02-04-2009', current_timestamp(), current_timestamp()),
+(NULL, '369933691', 'Silvia Zambrano Marín', '32578459G', '3', 'szambranomarin.guadalupe@alumnado.fundacionloyola.net', 'f', '65311775', '654369147', '03-05-2009', current_timestamp(), current_timestamp()),
+(NULL, '189977896', 'Francisco Pozo Carrasco', '32541555E', '3', 'fpozocarrasco.guadalupe@alumnado.fundacionloyola.net', 'm', '654888662', '654258369', '12-01-2009', current_timestamp(), current_timestamp()),
+(NULL, '456654562', 'Almudena Rivera Díaz', '26547854F', '3', 'ariveradiaz.guadalupe@alumnado.fundacionloyola.net', 'f', '655215265', '657369258', '07-09-2009', current_timestamp(), current_timestamp()),
+(NULL, '123321230', 'Jesús Cuello Marcial', '256654785F', '3', 'jcuellomarcial.guadalupe@alumnado.fundacionloyola.net', 'm', '652485914', '654748484', '09-01-2009', current_timestamp(), current_timestamp()),
+(NULL, '030200604', 'Daniel Fernández Carrillo', '21456325A', '4', 'dfernandezcarrillo.guadalupe@alumnado.fundacionloyola.net', 'm', '65414255', '652362515', '23-09-2008', current_timestamp(), current_timestamp()),
+(NULL, '242655984', 'Matilda Correa Cano', '36526985A', '4', 'mcorreacano.guadalupe@alumnado.fundacionloyola.net', 'f', '657474874', '652363625', '02-01-2006', current_timestamp(), current_timestamp()),
+(NULL, '759863210', 'Miguel Ángel Ferrera García', '32501420A', '4', 'maferreragarcia.guadalupe@alumnado.fundacionloyola.net', 'm', '652144759', '653653653', '21-08-2008', current_timestamp(), current_timestamp()),
+(NULL, '147539175', 'Lola Rodríguez Villoslada', '20147856D', '4', 'lrodriguezvilloslada.guadalupe@alumnado.fundacionloyola.net', 'f', '652145155', '658658658', '03-01-2008', current_timestamp(), current_timestamp()),
+(NULL, '852645264', 'Marcos Carapeto Ramos', '23652102D', '4', 'mcarapetoramos.guadalupe@alumnado.fundacionloyola.net', 'm', '652145225', '659659659', '07-01-2008', current_timestamp(), current_timestamp()),
+(NULL, '963148520', 'Alberto García Fernandez', '03258745D', '5', 'agarciafernandez.guadalupe@alumnado.fundacionloyola.net', 'm', '652245255', '657657657', '03-02-2008', current_timestamp(), current_timestamp()),
+(NULL, '147893214', 'Marta Vallecillo Gonzalez', '14785236D', '5', 'mvallecillogonzalez.guadalupe@alumnado.fundacionloyola.net', 'f', '622145255', '650650650', '05-12-2008', current_timestamp(), current_timestamp()),
+(NULL, '111223366', 'Juan Manuel Galván Rueda', '21452365F', '5', 'jmgalvanrueda.guadalupe@alumnado.fundacionloyola.net', 'm', '652135255', '652333111', '14-02-2008', current_timestamp(), current_timestamp()),
+(NULL, '222558884', 'Carmen Jaramillo Marcial', '23658745F', '5', 'cjaramillomarcial.guadalupe@alumnado.fundacionloyola.net', 'f', '652145244', '652444777', '10-02-2008', current_timestamp(), current_timestamp()),
+(NULL, '115598877', 'Saúl García Silva', '74596582T', '5', 'sgarciasilva.guadalupe@alumnado.fundacionloyola.net', 'm', '652145222', '653999888', '03-03-2008', current_timestamp(), current_timestamp()),
+(NULL, '335574466', 'Fernando Cano Gonzalez', '23652102T', '6', 'fcanogonzalez.guadalupe@alumnado.fundacionloyola.net', 'm', '652145226', '658777999', '23-04-2008', current_timestamp(), current_timestamp()),
+(NULL, '186552200', 'Ángela Ferrera Marcial', '11122233T', '6', 'aferreramarcial.guadalupe@alumnado.fundacionloyola.net', 'f', '652145227', '654999333', '22-05-2008', current_timestamp(), current_timestamp()),
+(NULL, '000112236', 'Gonzalo Fernandez Vazquez', '22266698Y', '6', 'gfernandezvazquez.guadalupe@alumnado.fundacionloyola.net', 'm', '652115255', '654111333', '12-06-2008', current_timestamp(), current_timestamp()),
+(NULL, '999633221', 'Tania Suarez Carrasco', '55544223Y', '6', 'tsuarezcarrasco.guadalupe@alumnado.fundacionloyola.net', 'f', '652144784', '654888222', '11-02-2008', current_timestamp(), current_timestamp()),
+(NULL, '111111414', 'Manuel Solís Gomez', '25632541J', '6', 'msolisgomez.guadalupe@alumnado.fundacionloyola.net', 'm', '652146599', '654777999', '14-04-2008', current_timestamp(), current_timestamp()),
+(NULL, '151512635', 'Ruben Solís Correa', '23012058J', '13', 'rsoliscorrea.guadalupe@alumnado.fundacionloyola.net', 'm', '653200210', '651999222', '22-01-2005', current_timestamp(), current_timestamp()),
+(NULL, '159151599', 'Laura Fernandez Díaz', '12545875K', '13', 'lfernandezdiaz.guadalupe@alumnado.fundacionloyola.net', 'f', '652014798', '651333777', '15-12-2005', current_timestamp(), current_timestamp()),
+(NULL, '357353577', 'Arturo Carrión Domínguez', '26354785K', '13', 'acarriondominguez.guadalupe@alumnado.fundacionloyola.net', 'm', '651999333', '625114422', '11-11-2005', current_timestamp(), current_timestamp()),
+(NULL, '351268410', 'María Silva Gamero', '66655598K', '13', 'msilvagamero.guadalupe@alumnado.fundacionloyola.net', 'f', '652365211', '651444666', '12-01-2005', current_timestamp(), current_timestamp()),
+(NULL, '222233333', 'Juan Antonio Galván Silva', '25412578U', '13', 'jagalvansilva.guadalupe@alumnado.fundacionloyola.net', 'm', '653252522', '65494944', '02-04-2005', current_timestamp(), current_timestamp()),
+(NULL, '111112222', 'Juan Gamero Silva', '15632547U', '14', 'jgamerosilva.guadalupe@alumnado.fundacionloyola.net', 'm', '652145111', '653222222', '22-12-2004', current_timestamp(), current_timestamp()),
+(NULL, '177779999', 'Raquel Solís Ramos', '32588754U', '14', 'rsolisramos.guadalupe@alumnado.fundacionloyola.net', 'f', '652145999', '656664477', '02-03-2004', current_timestamp(), current_timestamp()),
+(NULL, '444446686', 'Adrian Jaramillo García', '26531485I', '14', 'ajaramillogarcia.guadalupe@alumnado.fundacionloyola.net', 'm', '65214555', '655114422', '12-02-2004', current_timestamp(), current_timestamp()),
+(NULL, '222228888', 'Alondra Ramirez Cuello', '21032015I', '14', 'aramirezcuello.guadalupe@alumnado.fundacionloyola.net', 'f', '652111147', '655114411', '04-01-2004', current_timestamp(), current_timestamp()),
+(NULL, '166667777', 'Juan Carlos Moreno Nieto', '63521478I', '14', 'jcmorenonieto.guadalupe@alumnado.fundacionloyola.net', 'm', '652696933', '655114433', '05-05-2004', current_timestamp(), current_timestamp()),
+(NULL, '161616116', 'Gabriél Romero Fonseca', '02147856O', '15', 'gromerofonseca.guadalupe@alumnado.fundacionloyola.net', 'm', '652858585', '655114444', '02-12-2003', current_timestamp(), current_timestamp()),
+(NULL, '171717117', 'Esmeralda Malavé Gamero', '21452369O', '15', 'emalavegamero.guadalupe@alumnado.fundacionloyola.net', 'f', '652969696', '655114455', '04-03-2003', current_timestamp(), current_timestamp()),
+(NULL, '181818181', 'Jose Rodríguez Marredo', '65214788P', '15', 'jrodriguezmarredo.guadalupe@alumnado.fundacionloyola.net', 'm', '652363636', '655114466', '05-07-2003', current_timestamp(), current_timestamp()),
+(NULL, '212121212', 'Adriana Martín Serrano', '20320145P', '15', 'amartinezserrano.guadalupe@alumnado.fundacionloyola.net', 'f', '652141414', '655114477', '12-08-2003', current_timestamp(), current_timestamp()),
+(NULL, '010203020', 'Juan Manuel Moreno Martínez', '63598745P', '15', 'jmmorenomartinez.guadalupe@alumnado.fundacionloyola.net', 'm', '652474747', '655114488', '32-09-2003', current_timestamp(), current_timestamp()),
+(NULL, '000111002', 'Jacobo Zambrano Romero', '21452365L', '16', 'jzambranoromero.guadalupe@alumnado.fundacionloyola.net', 'm', '652282828', '655114499', '02-07-2002', current_timestamp(), current_timestamp()),
+(NULL, '010407080', 'Lourdes Serrano Ramos', '65327895L', '16', 'lserranoramos.guadalupe@alumnado.fundacionloyola.net', 'f', '652010203', '655114412', '03-03-2002', current_timestamp(), current_timestamp()),
+(NULL, '157584946', 'Lorezon Esturrica Moreno', '362514178L', '16', 'lesturricamoreno.guadalupe@alumnado.fundacionloyola.net', 'm', '652140506', '655114413', '07-07-2002', current_timestamp(), current_timestamp()),
+(NULL, '262651452', 'Macarena Fonseca Sopa', '45217896R', '16', 'mfonsecasopa.guadalupe@alumnado.fundacionloyola.net', 'f', '652989878', '655114414', '04-01-2002', current_timestamp(), current_timestamp()),
+(NULL, '252625265', 'Miguel Marredo Malavé', '02541288R', '16', 'mmarredomalave.guadalupe@alumnado.fundacionloyola.net', 'm', '652144548', '655114415', '02-11-2002', current_timestamp(), current_timestamp()),
+(NULL, '235125121', 'alumno1', '03215625G', '2', 'alumno1.guadalupe@alumnado.fundacionloyola.net', 'm', '652145155', '655221214', '02-01-2009', current_timestamp(), current_timestamp()),
+(NULL, '021452155', 'alumno2', '03212225G', '2', 'alumno2.guadalupe@alumnado.fundacionloyola.net', 'f', '652145166', '655251563', '02-02-2009', current_timestamp(), current_timestamp()),
+(NULL, '447581154', 'alumno3', '03215215G', '2', 'alumno3.guadalupe@alumnado.fundacionloyola.net', 'm', '625351136', '653633565', '12-03-2009', current_timestamp(), current_timestamp()),
+(NULL, '471511588', 'alumno4', '03222235G', '2', 'alumno4.guadalupe@alumnado.fundacionloyola.net', 'f', '652411652', '651451544', '22-04-2009', current_timestamp(), current_timestamp()),
+(NULL, '374511163', 'alumno5', '01215625A', '2', 'alumno5.guadalupe@alumnado.fundacionloyola.net', 'm', '652652223', '659575948', '04-05-2009', current_timestamp(), current_timestamp()),
+(NULL, '235111421', 'alumno6', '03215621G', '2', 'alumno6.guadalupe@alumnado.fundacionloyola.net', 'm', '652145215', '655277214', '02-01-2009', current_timestamp(), current_timestamp()),
+(NULL, '021452115', 'alumno7', '03215211G', '2', 'alumno7.guadalupe@alumnado.fundacionloyola.net', 'f', '652142266', '655277563', '02-02-2009', current_timestamp(), current_timestamp()),
+(NULL, '447589114', 'alumno8', '03215111G', '2', 'alumno8.guadalupe@alumnado.fundacionloyola.net', 'm', '625352626', '653776565', '12-03-2009', current_timestamp(), current_timestamp()),
+(NULL, '471563118', 'alumno9', '03215131G', '2', 'alumno9.guadalupe@alumnado.fundacionloyola.net', 'f', '652452222', '651771544', '22-04-2009', current_timestamp(), current_timestamp()),
+(NULL, '374569113', 'alumno10', '03215825A', '2', 'alumno10.guadalupe@alumnado.fundacionloyola.net', 'm', '652654923', '659229948', '04-05-2009', current_timestamp(), current_timestamp()),
+(NULL, '235112212', 'alumno11', '03212221G', '2', 'alumno11.guadalupe@alumnado.fundacionloyola.net', 'm', '652145225', '655227214', '02-01-2009', current_timestamp(), current_timestamp()),
+(NULL, '021422115', 'alumno12', '03215221G', '2', 'alumno12.guadalupe@alumnado.fundacionloyola.net', 'f', '652142222', '652227563', '02-02-2009', current_timestamp(), current_timestamp()),
+(NULL, '447522114', 'alumno13', '03212211G', '2', 'alumno13.guadalupe@alumnado.fundacionloyola.net', 'm', '625352622', '653776522', '12-03-2009', current_timestamp(), current_timestamp()),
+(NULL, '471522118', 'alumno15', '03222131G', '2', 'alumno15.guadalupe@alumnado.fundacionloyola.net', 'f', '652252222', '651771522', '22-04-2009', current_timestamp(), current_timestamp());
 
-
-INSERT INTO `ACT_Momentos` (`idMomento`, `nombre`, `ultimoCelebrado`, `fechaInicio_Inscripcion`, `fechaFin_Inscripcion`, `created_at`, `updated_at`) VALUES 
-(NULL, 'Navidad', NULL, '2022-10-10 23:21:30.000000', '2022-11-10 23:21:30.000000', current_timestamp(), current_timestamp()),
-(NULL, 'Semana Ignaciana', NULL,'2022-04-09 23:21:30.000000', '2022-04-22 23:21:30.000000', current_timestamp(), current_timestamp()),
-(NULL, 'Fiestas Escolares', NULL,'2022-05-11 23:21:30.000000','2022-05-27 23:21:30.000000', current_timestamp(), current_timestamp());
-
-
-INSERT INTO `ACT_Actividades` (`idActividad`, `sexo`, `nombre`, `esIndividual`, `idMomento`, `numMaxParticipantes`, `fechaInicio_Actividad`,
- `fechaFin_Actividad`, `material`, `descripcion`, `idResponsable`, `tipo_Participacion`, `created_at`, `updated_at`) VALUES
- (NULL, 'NP', 'Consurso de Migas', 0, '1', NULL, '2022-05-18 23:21:30.000000', '2022-05-25 23:21:30.000000', 
- 'Productos necesarios para cocinar las migas', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
- (NULL, 'NP', 'Consurso de Fotografía', 1, '1', NULL, '2022-05-18 23:21:30.000000','2022-05-15 23:21:30.000000', 
- NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
- (NULL, 'NP', 'Consurso de Tortilla', 0, '2', NULL, '2022-05-19 23:21:30.000000','2022-07-15 23:21:30.000000', 
- 'Productos necesarios para cocinar la tortilla', 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '14', 'G', current_timestamp(), current_timestamp()),
-   (NULL, 'NP', 'Consurso de Fotografía', 1, '2', NULL, '2022-05-18 23:21:30.000000','2022-07-15 23:21:30.000000', 
- NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '12', 'G', current_timestamp(), current_timestamp()),
-  (NULL, 'MX', 'Futbol',0, '1', NULL, '2022-06-10 23:21:30.000000', '2022-07-15 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-   (NULL, 'MX', 'Futbol',0, '2', NULL, '2022-06-10 23:21:30.000000', '2022-07-15 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'MX', 'Futbol',0, '3', NULL, '2022-06-10 23:21:30.000000','2022-07-15 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '10', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'M', 'Baloncesto',1, '1', NULL, '2022-06-11 23:21:30.000000', '2022-07-11 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-    (NULL, 'M', 'Baloncesto',1, '2', NULL, '2022-06-12 23:21:30.000000','2022-07-14 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'M', 'Baloncesto',1, '3', NULL, '2022-05-15 23:21:30.000000', '2022-06-25 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '11', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'F', 'Balonmano',1, '1', 2, '2022-04-10 23:21:30.000000', '2022-06-21 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-     (NULL, 'F', 'Carrera',1, '2', NULL, '2022-05-20 23:21:30.000000', '2022-07-16 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'F', 'Balonmano',1, '3', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '09', 'C', current_timestamp(), current_timestamp()),
-      (NULL, 'MX', 'Tenis',1, '1', 2, '2022-05-10 23:21:30.000000', '2022-05-15 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp()),
-       (NULL, 'MX', 'Tenis',1, '2', 2, '2022-06-10 23:21:30.000000', '2022-06-23 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp()),
-        (NULL, 'MX', 'Balonmano',1, '2', 2, '2022-06-10 23:21:30.000000', '2022-07-22 23:21:30.000000', 
-NULL, 'Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. 
- Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta)
- desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. ', '08', 'C', current_timestamp(), current_timestamp());
- 
- 
- -- Definimos el tipo de Actividad (Individuales,Clase o de Pareja)
-
-INSERT INTO `ACT_Individuales` (`idActividad`) VALUES 
-(2),
-(4),
-(8),
-(9),
-(10),
-(11),
-(12),
-(13),
-(14),
-(15),
-(16);
-
-INSERT INTO `ACT_Clase` (`idActividad`) VALUES 
-(1),
-(3),
-(5),
-(6),
-(7);
- 
--- Asignamos Actividades a las Etapas
- 
- INSERT INTO `ACT_Actividades_Etapas` (`idActividad`, `idEtapa`) VALUES 
-(1,1),
-(1,3),
-(3,1),
-(14,1),
-(5,3),
-(6,3),
-(7,3),
-(2,1),
-(4,1),
-(8,1),
-(9,3),
-(10,3),
-(11,3),
-(12,2),
-(13,3),
-(14,3),
-(15,2),
-(16,1),
-(16,3);
- 
-
-
-/*
--- Agregamos parejas
-
--- INSERT INTO `ACT_Parejas_Alumnos` (`idAlumno`, `idPareja`) VALUES 
--- (1,2),
--- (3,4);
-*/
-
- -- Inscripciones por Clase
- 
- INSERT INTO `ACT_Inscriben_Secciones` (`idActividad`, `idSeccion`) VALUES 
-(1,2),
-(3,2),
-(5,12),
-(6,12),
-(7,2),
-(1,12),
-(3,12),
-(5,16),
-(6,16),
-(7,14),
-(1,16),
-(3,16),
-(5,15),
-(6,14),
-(7,10),
-(1,1),
-(1,14),
-(1,15);
-
- -- Inscripciones Individuales
- 
- INSERT INTO `ACT_Inscriben_Alumnos` (`idActividad`, `idAlumno`) VALUES 
-(2,1),
-(2,5),
-(2,16),
-(2,18),
-(2,11),
-(4,11),
-(4,12),
-(4,2),
-(4,3),
-(4,5),
-(8,12),
-(8,17),
-(8,19),
-(8,20),
-(8,22),
-(9,1),
-(9,2),
-(9,8),
-(9,9),
-(9,27),
-(10,28),
-(10,22),
-(10,21),
-(10,20),
-(10,25),
-(11,16),
-(11,26),
-(11,28),
-(11,3),
-(11,30),
-(12,31),
-(12,32),
-(12,22),
-(12,7),
-(12,28),
-(9,55),
-(9,56),
-(9,57),
-(9,58),
-(9,59),
-(9,60),
-(13,31),
-(13,32),
-(13,41),
-(13,42),
-(13,46),
-(13,47),
-(14,31),
-(14,32),
-(14,41),
-(14,42),
-(14,46),
-(14,47),
-(14,1),
-(14,2),
-(14,6),
-(14,7),
-(14,16),
-(14,17),
-(16,31),
-(16,32),
-(16,41),
-(16,42),
-(16,46),
-(16,47),
-(16,1),
-(16,2),
-(16,6),
-(16,7),
-(16,16),
-(16,17);
- 

@@ -528,30 +528,68 @@ class C_GestionActividades extends RestController
             );
 
             //Limpiamos las tablas
-            $this -> M_General -> borrar("ACT_Clase", $id,"idActividad");
-            $this -> M_General -> borrar("ACT_Individuales", $id,"idActividad");
+            //No podemos borrar la fila, ya que borraría en cascada.
+            //$this -> M_General -> borrar("ACT_Clase", $id,"idActividad");
 
-            if($data[0]->esIndividual == 0) $this -> M_General -> insertar("ACT_Clase", array("idActividad" => $id));
-            else $this -> M_General -> insertar("ACT_Individuales", array("idActividad" => $id));
-            
+            //$this -> M_General -> borrar("ACT_Individuales", $id,"idActividad");
 
+
+            $esClase = $data[0]->esIndividual == 0;
+
+            //Queries para saber si existen los datos...
+            $existeClase = $this->M_General->seleccionar(
+                "ACT_Clase", //Tabla
+                "idActividad",//Campos
+                "idActividad=".$id, //Condición
+            );
+
+            $existeIndividual = $this->M_General->seleccionar(
+                "ACT_Individuales", //Tabla
+                "idActividad",//Campos
+                "idActividad=".$id, //Condición
+            );
+
+            $existeEtapa = $this->M_General->seleccionar(
+                "ACT_Actividades_Etapas", //Tabla
+                "idActividad",//Campos
+                "idActividad=".$id, //Condición
+            );
+
+            //Si es una actividad de clase, y además no tiene datos, los añadimos
+            if($esClase && $existeClase[0] == null) {
+                $this -> M_General -> insertar("ACT_Clase", array("idActividad" => $id));
+            } 
+
+            //Si es una actividad individual y no existen datos, los añadimos
+            if(!$esClase && $existeIndividual[0] == null) {
+                $this -> M_General -> insertar("ACT_Individuales", array("idActividad" => $id));
+            }
+
+            //Modificamos la actividad con los nuevos datos pasados.
             $this -> M_General -> modificar("ACT_Actividades", $datos, $id, "idActividad");
 
 
             //Limpiamos las etapas
-            $this -> M_General -> borrar("ACT_Actividades_Etapas", $id,"idActividad");
+            // $this -> M_General -> borrar("ACT_Actividades_Etapas", $id,"idActividad");
             
             //Iteramos sobre cada etapa e insertamos los nuevos registros.
+            //TODO: Modificar el insertar, al estar ahí, tarda en insertar muchisimos más ms.
+            $etapasArray = null;
             foreach ($data[0]->idEtapa as $key => $etapa) {
-                $etapas = array(
-                    "idActividad" => $id,
-                    "idEtapa" => $etapa->item_id
-                );
-    
-                $this -> M_General -> insertar("ACT_Actividades_Etapas", $etapas);
+
+                if($existeEtapa[$key] == null) {
+
+                    // $etapasArray[$key] = array(
+                    //     "idActividad" => $id,
+                    //     "idEtapa" => $etapa->item_id
+                    // );
+                    $etapasArray = array(
+                        "idActividad" => $id,
+                        "idEtapa" => $etapa->item_id
+                    );
+                    $this -> M_General -> insertar("ACT_Actividades_Etapas", $etapasArray);
+                }
             }
-
-
         }
         else $this->response($this->actividad, 401);
 
